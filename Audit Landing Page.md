@@ -1,6 +1,6 @@
 # Project Brief
 
-This project is aimed at helping ANU researchers in the fields of ecology/palaeoecology streamline the identification, counting and analysis of ecological data. The current system of analysing pollen in environmental samples is cumbersome and largely paper-based. Our goal is to create a web application that will increase the efficiency of the data capture process.
+This project is aimed at helping ANU researchers in the fields of ecology/palaeoecology streamline the identification, counting and analysis of ecological data. The current system of analysing pollen in environmental samples is cumbersome and largely paper-based. Our goal is to create a web application that will increase the efficiency of this data capture process.
 
 # Contextual Information (or Background Information)
 
