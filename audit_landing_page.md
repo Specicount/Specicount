@@ -7,7 +7,7 @@ This project is aimed at helping ANU researchers in the fields of ecology/palaeo
 With pollen analysis we can reconstruct landscape and climate change over tens to thousands of years, explore the health of pollination systems in agricultural and ecosystem science and monitor the respiratory health of our cities.
 
 # Team
-- Elliott Wagener
-- Matthew Knill 
-- Alex Niven
-- Paige Brown
+- Elliott Wagener - *Back-end development*
+- Matthew Knill - *Back-end development*
+- Alex Niven - *Front-end development*
+- Paige Brown - *Front-end development*
