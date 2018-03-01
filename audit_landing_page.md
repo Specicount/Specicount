@@ -6,9 +6,9 @@ portable application that can be used to capture the data, sort the captured dat
 this to graphing software. The photo-based system is also required to be interfaced so the
 existing work performed is not nullified if the application is adopted as accepted practice. 
 
-As an extension, the application should be designed with the potential for adaptation and use within other scientific
+The application should also be designed with the potential for adaptation and use within other scientific
 communities such as field reporting, allowing the application to be used as a tool in multiple
-scenarios. Further to this, a basic image identification system that could sort an input into
+scenarios. Further to this, a basic image identification system that could sort an input (*what input?*) into
 multiple groups is requested. This would be used to sort initial sedimentary extract slides
 into specific pollen groups, that can be studied in an order to improve productivity.
 
