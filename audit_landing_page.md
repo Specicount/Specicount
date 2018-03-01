@@ -40,7 +40,7 @@ programs to discover trends and publish to other participants within the project
 # Stakeholders
 
 * Rebecca Hamilton (our client)
-    * Wants a streamlined (more efficient) data capture process for their research
+    * Wants a streamlined (more efficient) data capture process for her research
 * Project Team (Elliott, Matthew, Alex, Paige)
     * Want to produce a useful/valuable product
     * Want to achieve a good grade for COMP3500
