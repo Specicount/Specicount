@@ -8,8 +8,8 @@ existing work performed is not nullified if the application is adopted as accept
 
 The application should also be designed with the potential for adaptation and use within other scientific
 communities, such as field reporting. Further to this, a basic image identification system that could sort an input (**what input?**) into
-multiple groups is requested. This would be used to sort initial sedimentary extract slides
-into specific pollen groups, that can be studied in an order to improve productivity.
+multiple groups (**of what?**) is requested. This would be used to sort initial sedimentary extract slides
+into specific pollen groups (**what kind of pollen groups? genus, family, species? idk**) that can be studied in an order to improve productivity.
 
 # Project Background
 
