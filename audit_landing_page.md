@@ -4,10 +4,12 @@ The objective of the project is to digitise the data capture and analysis method
 simplify the workload of the client and increase productivity. The client wishes to have a
 portable application that can be used to capture the data, sort the captured data and export
 this to graphing software. The photo-based system is also required to be interfaced so the
-existing work performed is not nullified if the application is adopted as accepted practice. 
+existing work performed is not nullified if the application is adopted as accepted practice (**this sentence is a bit vague**). 
 
 The application should also be designed with the potential for adaptation and use within other scientific
-communities, such as field reporting. Further to this, a basic image identification system that could sort an input (**what input?**) into
+communities, such as field reporting. 
+
+In addition to this, a basic image identification system that could sort an input (**what input?**) into
 multiple groups (**of what?**) is requested. This would be used to sort initial sedimentary extract slides
 into specific pollen groups (**what kind of pollen groups? genus, family, species? idk**) that can be studied in an order to improve productivity.
 
