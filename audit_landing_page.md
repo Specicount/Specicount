@@ -29,17 +29,23 @@ programs to discover trends and publish to other participants within the project
 
 #### Members
 
-| Name | ID |
-| --- | --- |
-| Elliott Wagener | u6053577 |
-| Matthew Knill | u6052043 |
-| Alex Niven | u5801168 |
-| Paige Brown | u6048298 |
+| **Name** | **Email** | **Roles** |
+| --- | --- | -- |
+| Elliott Wagener | u6053577@anu.edu.au | Team Leader, Repository Control, Back-End Developer |
+| Alex Niven | u5801168@anu.edu.au | Communications Lead, Front-End Developer, Repository Control |
+| Paige Brown | u6048298@anu.edu.au | Testing Lead, Front-End Lead, Front-End Developer, Repository Control |
+| Matthew Knill | u6052043@anu.edu.au | Back-End Lead, Back-End Developer |
 
 #### Roles
 
-| Role | Assigned To |
+| **Role** | **Description** |
 | --- | --- |
+| Team Leader |  |
+| Team Leader |  |
+| Team Leader |  |
+| Team Leader |  |
+| Team Leader |  |
+
 
 # Stakeholders
 
