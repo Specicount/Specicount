@@ -1,16 +1,14 @@
 # Project Brief
 
-The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. 
+ANU researchers in the fields of ecology/palaeoecology are currently using a system of analysing pollen in environmental samples that is cumbersome and largely paper-based. The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. We will accomplish this objective through the creation of a web application that would replace the paper-based step in the current workflow.
 
-The client wishes to have a portable application that can be used to capture the data, sort the captured data and export this to graphing software. The photo-based system is also required to be interfaced so the existing work performed is not nullified if the application is adopted as accepted practice (**this sentence is a bit vague**). 
+# Requirements
 
-The application should also be designed with the potential for adaptation and use within other scientific communities, such as field reporting. 
-
-In addition to this, a basic image identification system that could sort an input (**what input?**) into multiple groups (**of what?**) is requested. This would be used to sort initial sedimentary extract slides into specific pollen groups (**what kind of pollen groups? genus, family, species? idk**) that can be studied in an order to improve productivity.
+View the requirements [here](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA6fj4p-DHRZn2aLwt_poO40C0Y8)
 
 # Project Background
 
-Ms. Hamilton is currently assisting in completing the research project The Pace and Rhythm
+Our client, Ms. Hamilton, is currently assisting in completing the research project The Pace and Rhythm
 of Climate: 600,000 Years in a Biological Hotspot. The aim of the research project is to
 create a vegetation and fire record of Sulawesi, Indonesia over a 600,000-year period. This
 research has ramifications within the study of climate change over a large timeframe, using
@@ -28,6 +26,11 @@ programs to discover trends and publish to other participants within the project
 
 
 # Team
+
+| Name | Role
+| --- | --- |
+| Elliott Wagener | Back-end development |
+| Elliott Wagener | Back-end development |
 - Elliott Wagener - *Back-end development*
 - Matthew Knill - *Back-end development*
 - Alex Niven - *Front-end development*
