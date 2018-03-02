@@ -38,18 +38,6 @@ programs to discover trends and publish to other participants within the project
 
 #### Roles
 
-| **Role** | **Description** |
-| --- | --- |
-| Team Leader | Role includes vision, general admin and motivating others. This will be largely rotated. |
-| Communications Lead | Responsible for any communication between Clients, Project group, Shadow group and other stakeholders. |
-| Back-End Lead | Responsible for work regarding non-UI related business. This includes server creation, design and coding. |
-| Back-End Developer | Main contact point for anything related to Back-End processes and systems. |
-| Front-End Lead | Responsible for work regarding any Client facing systems. This includes UI, usability on devices and design. |
-| Front-End Developer | Main contact point for anything related to Front-End processes and systems. |
-| Repository Control | Responsible for ensuring Code and Document repository are maintained. |
-| Testing Lead | Responsible for design of testing platform. Testing will be performed by all involved. |
-| Back-End Developer | Main contact point for anything related to Back-End processes and systems. |
-
 * *Team Leader* - Role includes vision, general admin and motivating others. This will be largely rotated.
 * *Communications* Lead - Responsible for any communication between Clients, Project group, Shadow group and other stakeholders.
 * *Back-End Lead* - Main contact point for anything related to Back-End processes and systems.
