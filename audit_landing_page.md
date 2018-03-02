@@ -2,10 +2,6 @@
 
 ANU researchers in the fields of ecology/palaeoecology are currently using a system of analysing pollen in environmental samples that is cumbersome and largely paper-based. The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. We will accomplish this objective through the creation of a web application that would replace the paper-based step in the current workflow.
 
-# Requirements
-
-View the requirements [here](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA6fj4p-DHRZn2aLwt_poO40C0Y8)
-
 # Project Background
 
 Our client, Ms. Hamilton, is currently assisting in completing the research project *The Pace and Rhythm
@@ -47,7 +43,7 @@ programs to discover trends and publish to other participants within the project
 * *Repository Control* - Responsible for ensuring Code and Document repository are maintained.
 * *Testing Lead* - Responsible for design of testing platform. Testing will be performed by all involved.
 
-# Stakeholders
+# Stakeholders - *Needs fixing*
 
 * Rebecca Hamilton (our client)
     * Wants a streamlined (more efficient) data capture process for her research
@@ -62,11 +58,11 @@ programs to discover trends and publish to other participants within the project
 * The broader scientific community
     * Can adapt our project/application for their needs
 
-# Documents
+# Documents - *Add links as we go*
 
 Our repository can be found [here](). In the repository you will find:
 
-* [Project Requirements]()
+* [Project Requirements](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA6fj4p-DHRZn2aLwt_poO40C0Y8)
 * [Project Schedule]()
 * [Decisions Paper]()
 * [Meetings]() (client, team and tutorial)
