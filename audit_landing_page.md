@@ -36,7 +36,7 @@ programs to discover trends and publish to other participants within the project
 | Paige Brown | u6048298@anu.edu.au | <ul><li>Testing Lead</li><li>Front-End Lead</li><li>Front-End Developer</li><li>Repository Control</li></ul> |
 | Matthew Knill | u6052043@anu.edu.au | <ul><li>Back-End Lead</li><li>Back-End Developer</li></ul> |
 
-#### Roles
+#### Role Descriptions
 
 * *Team Leader* - Role includes vision, general admin and motivating others. This will be largely rotated.
 * *Communications* Lead - Responsible for any communication between Clients, Project group, Shadow group and other stakeholders.
