@@ -65,7 +65,7 @@ Our repository can be found [here](). In the repository you will find:
 * [Project Requirements](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA6fj4p-DHRZn2aLwt_poO40C0Y8)
 * [Project Schedule]()
 * [Decisions Paper]()
-* [Meetings]() (client, team and tutorial)
+* [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn) (client, team and tutorial)
 
 
 
