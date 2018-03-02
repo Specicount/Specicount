@@ -8,8 +8,8 @@ View the requirements [here](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA
 
 # Project Background
 
-Our client, Ms. Hamilton, is currently assisting in completing the research project The Pace and Rhythm
-of Climate: 600,000 Years in a Biological Hotspot. The aim of the research project is to
+Our client, Ms. Hamilton, is currently assisting in completing the research project *The Pace and Rhythm
+of Climate: 600,000 Years in a Biological Hotspot*. The aim of the research project is to
 create a vegetation and fire record of Sulawesi, Indonesia over a 600,000-year period. This
 research has ramifications within the study of climate change over a large timeframe, using
 this area as a hotspot for further research and study. The client’s specific role within the
