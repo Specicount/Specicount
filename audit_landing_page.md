@@ -27,14 +27,19 @@ programs to discover trends and publish to other participants within the project
 
 # Team
 
-| Name | Role
+#### Members
+
+| Name | ID |
 | --- | --- |
-| Elliott Wagener | Back-end development |
-| Elliott Wagener | Back-end development |
-- Elliott Wagener - *Back-end development*
-- Matthew Knill - *Back-end development*
-- Alex Niven - *Front-end development*
-- Paige Brown - *Front-end development*
+| Elliott Wagener | u6053577 |
+| Matthew Knill | u6052043 |
+| Alex Niven | u5801168 |
+| Paige Brown | u6048298 |
+
+#### Roles
+
+| Role | Assigned To |
+| --- | --- |
 
 # Stakeholders
 
