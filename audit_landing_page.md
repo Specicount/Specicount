@@ -43,7 +43,7 @@ programs to discover trends and publish to other participants within the project
 * *Repository Control* - Responsible for ensuring Code and Document repository are maintained.
 * *Testing Lead* - Responsible for design of testing platform. Testing will be performed by all involved.
 
-# Stakeholders - *Needs fixing*
+# Stakeholders
 
 * Rebecca Hamilton (our client)
     * Wants a streamlined (more efficient) data capture process for her research
@@ -69,7 +69,7 @@ programs to discover trends and publish to other participants within the project
 
 
 
-# Documents - *Add links as we go*
+# Documents
 
 Our repository can be found [here](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing). In the repository you will find:
 
