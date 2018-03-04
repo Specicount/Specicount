@@ -51,7 +51,7 @@ programs to discover trends and publish to other participants within the project
     * Want to produce a useful/valuable product
     * Want to achieve a good grade for COMP3500
 * Janelle Stevenson
-    * Our project would assist in her students' data collection methods
+    * Our project would assist in her teaching her students the various data collection methods
 
 #### Potential Stakeholders
 
