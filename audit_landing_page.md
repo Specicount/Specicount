@@ -51,7 +51,7 @@ programs to discover trends and publish to other participants within the project
     * Want to produce a useful/valuable product
     * Want to achieve a good grade for COMP3500
 * Janelle Stevenson
-    * Our project would assist in her teaching students data collection methods
+    * Our project would assist in her students' data collection methods
 
 #### Potential Stakeholders
 
@@ -60,7 +60,7 @@ programs to discover trends and publish to other participants within the project
 
 # Documents - *Add links as we go*
 
-Our repository can be found [here](). In the repository you will find:
+Our repository can be found [here](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing). In the repository you will find:
 
 * [Project Requirements](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA6fj4p-DHRZn2aLwt_poO40C0Y8)
 * [Project Schedule]()
