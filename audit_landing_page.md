@@ -53,10 +53,21 @@ programs to discover trends and publish to other participants within the project
 * Janelle Stevenson
     * Our project would assist in her teaching her students the various data collection methods
 
-#### Potential Stakeholders
+##### Potential Stakeholders
 
 * The broader scientific community
     * Can adapt our project/application for their needs
+
+# Meetings Schedule
+
+##### Client Meetings
+* 2pm-4pm every Tuesday (with the exception of Week 8, where we will be running testing on students in another timeslot)
+
+##### Team Meetings
+* 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and checking agenda for client meeting)
+* 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
+
+
 
 # Documents - *Add links as we go*
 
