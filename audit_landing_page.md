@@ -45,12 +45,12 @@ programs to discover trends and publish to other participants within the project
 
 # Stakeholders
 
-* Rebecca Hamilton (our client)
+* Client - Dr Rebecca Hamilton
     * Wants a streamlined (more efficient) data capture process for her research
-* Project Team (Elliott, Matthew, Alex, Paige)
+* Project Team - Elliott, Matthew, Alex, Paige
     * Want to produce a useful/valuable product
     * Want to achieve a good grade for COMP3500
-* Janelle Stevenson
+* Research Professor - Dr Janelle Stevenson
     * Our project would assist in her teaching her students the various data collection methods
 
 ##### Potential Stakeholders
