@@ -2,7 +2,6 @@
 
 ANU researchers in the fields of ecology/palaeoecology are currently using a system of analysing pollen in environmental samples that is cumbersome and largely paper-based. The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. We will accomplish this objective through the creation of a web application that would replace the paper-based step in the current workflow.
 
-Test
 
 # Project Background
 
