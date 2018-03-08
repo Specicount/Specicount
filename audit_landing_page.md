@@ -82,5 +82,8 @@ Our repository can be found [here](https://drive.google.com/drive/folders/1NtZnS
 * [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
 * [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn) (client, team and tutorial)
 
+You can find our to-do list [here](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues).
+
+
 
 
