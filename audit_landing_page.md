@@ -37,10 +37,10 @@ programs to discover trends and publish to other participants within the project
 
 * *Team Leader* - Responsible for motivating others and keeping the team on track - i.e. making sure we do what needs to be done.
 * *Communications Lead* - Responsible for any communication between Clients, Project group, Shadow group and other stakeholders. Leads presentations.
-* *Back-End Lead Developer* - A back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
+* *Back-End Lead Developer* - The back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
 * *Back-End Developer* - Responsible for developing the core website functionality. This includes server creation and administration, database design and coding a basic website template.
-* *Front-End Lead* - A front-end developer that makes executive decisions on UI design choices. Expresses the vision for our project through mock sketches of potential website layouts.
-* *Front-End Lead Developer* - Responsible for UI design and ensuring responsiveness across devices. Will refine the HTML and CSS produced by the back-end developers.
+* *Front-End Lead Developer* - The front-end developer that makes executive decisions on UI design choices. Expresses the vision for our project through mock sketches of potential website layouts.
+* *Front-End Developer* - Responsible for UI design and ensuring responsiveness across devices. Will refine the HTML and CSS produced by the back-end developers.
 * *Repository Control* - Responsible for creating, updating and organising documents on our repository.
 * *Testing Lead* - Responsible for gathering feedback from testers and passing those evaluations on to the rest of the team.
 
