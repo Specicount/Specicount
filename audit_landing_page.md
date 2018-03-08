@@ -30,17 +30,17 @@ programs to discover trends and publish to other participants within the project
 | --- | --- | -- |
 | Elliott Wagener | u6053577@anu.edu.au | <ul><li>Team Leader</li><li>Repository Control</li><li>Back-End Developer</li></ul> |
 | Alex Niven | u5801168@anu.edu.au | <ul><li>Communications Lead</li><li>Repository Control</li><li>Front-End Developer</li></ul> |
-| Paige Brown | u6048298@anu.edu.au | <ul><li>Testing Lead</li><li>Front-End Lead</li><li>Repository Control</li></ul> |
-| Matthew Knill | u6052043@anu.edu.au | <ul><li>Back-End Lead</li></ul> |
+| Paige Brown | u6048298@anu.edu.au | <ul><li>Testing Lead</li><li>Front-End Lead Developer</li><li>Repository Control</li></ul> |
+| Matthew Knill | u6052043@anu.edu.au | <ul><li>Back-End Lead Developer</li></ul> |
 
 #### Role Descriptions
 
 * *Team Leader* - Responsible for motivating others and keeping the team on track - i.e. making sure we do what needs to be done.
 * *Communications Lead* - Responsible for any communication between Clients, Project group, Shadow group and other stakeholders. Leads presentations.
-* *Back-End Lead* - A back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
+* *Back-End Lead Developer* - A back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
 * *Back-End Developer* - Responsible for developing the core website functionality. This includes server creation and administration, database design and coding a basic website template.
 * *Front-End Lead* - A front-end developer that makes executive decisions on UI design choices. Expresses the vision for our project through mock sketches of potential website layouts.
-* *Front-End Developer* - Responsible for UI design and ensuring responsiveness across devices. Will refine the HTML and CSS produced by the back-end developers.
+* *Front-End Lead Developer* - Responsible for UI design and ensuring responsiveness across devices. Will refine the HTML and CSS produced by the back-end developers.
 * *Repository Control* - Responsible for creating, updating and organising documents on our repository.
 * *Testing Lead* - Responsible for gathering feedback from testers and passing those evaluations on to the rest of the team.
 
