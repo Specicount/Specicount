@@ -50,7 +50,9 @@ programs to discover trends and publish to other participants within the project
     * Wants a streamlined data capture process to assist in her research
 * Dr Janelle Stevenson - Research Project Primary Investigator
     * Wants the research project to succeed
-    * Wants a streamlined data capture process to assist in in her research and in the teaching of her students in the lab
+    * Wants a streamlined data capture process to assist in:
+        * her own research 
+        * the teaching of her students in the lab
 * Elliott, Matthew, Alex, Paige - Project Team
     * Want to produce a useful/valuable product
     * Want to achieve a good grade for COMP3500
