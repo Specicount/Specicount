@@ -68,7 +68,7 @@ programs to discover trends and publish to other participants within the project
 * 2pm-4pm every Tuesday (with the exception of Week 8, where we will be running testing on students in another timeslot)
 
 ##### Team Meetings
-* 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and checking agenda for client meeting)
+* 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and establishing agenda for client meeting)
 * 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
 
 
