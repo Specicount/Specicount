@@ -35,7 +35,7 @@ programs to discover trends and publish to other participants within the project
 
 #### Role Descriptions
 
-* *Team Leader* - Responsible for motivating others and keeping the team on track - i.e. making sure we do what needs to be done.
+* *Team Leader* - Responsible for motivating others and always looking for ways to keep the project moving forward.  This role should be assigned to whoever has the expertise needed for the current phase of the project. The Team Leader should also be fairly involved with whatever work is currently happening and should, in general, adopt a greater workload than everybody else. This role will be rotated between the team members throught the course of the project.
 * *Communications Lead* - Responsible for any communication between Clients, Project group, Shadow group and other stakeholders. Leads presentations.
 * *Back-End Lead Developer* - The back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
 * *Back-End Developer* - Responsible for developing the core website functionality. This includes server creation and administration, database design and coding a basic website template.
