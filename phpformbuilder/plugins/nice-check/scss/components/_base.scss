@@ -1,0 +1,142 @@
+/*
+    Skins:
+        Blue:   #3498DB
+        Green:  #1ABC9C
+        Grey:   #3F3F3F
+        Purple: #AF7AC5
+        Red:    #EC7063
+        Yellow: #F1C40F
+*/
+$rem-size: 14px;
+$left-pad: 30px;
+
+/* Debug*/
+
+/* [class^=col-] {
+    -webkit-box-shadow: inset 0 0 0 1px #D6BF2B;
+    box-shadow: inset 0 0 0 1px #D6BF2B;
+    background: #F5DB31;
+}
+
+.checkbox-inline, .radio-inline, .checkbox, .radio {
+    -webkit-box-shadow: inset 0 0 0 1px #E08114;
+    box-shadow: inset 0 0 0 1px #E08114;
+    background: #F59931;
+} */
+
+.checkbox-inline, .radio-inline, .checkbox label, .radio label, .form-check-label {
+    position: relative;
+    padding-left: $left-pad !important;
+    margin-right: 40px;
+}
+.foundation-checkbox, .foundation-radio {
+    position: relative;
+    margin-right: 40px;
+    label {
+        position: relative;
+        padding-left: $left-pad;
+    }
+}
+.check {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: $rem-size * 1.4;
+    height: $rem-size * 1.4;
+}
+.form-check .check {
+    top: 1px;
+}
+.form-horizontal .checkbox-inline, .form-horizontal .radio-inline {
+    .check {
+        top: $rem-size / 2;
+    }
+}
+input[type="checkbox"] {
+    display: none;
+    ~ .check:before, ~ label .check:before {
+        -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        transition: -webkit-transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        transition: transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        transition: transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75), -webkit-transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        -webkit-transform: rotate(-45deg) scale(0, 0);
+        transform: rotate(-45deg) scale(0, 0);
+        content: "";
+        position: absolute;
+        margin-left: $rem-size * 0.1;
+        left: 2px;
+        top: $rem-size * 0.15;
+        z-index: 1;
+        width: $rem-size * 0.9;
+        height: $rem-size * 0.5;
+        border: 2px solid $active-color;
+        border-top-style: none;
+        border-right-style: none;
+    }
+
+    &:checked ~ .check:before, &:checked + label .check:before {
+        -webkit-transform: rotate(-45deg) scale(1, 1);
+        transform: rotate(-45deg) scale(1, 1);
+    }
+
+    ~ .check:after, ~ label .check:after {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: 0;
+        width: $rem-size * 1.4;
+        height: $rem-size * 1.4;
+        background: #fff;
+        border: 2px solid #ccc;
+        cursor: pointer;
+    }
+    &:checked ~ .check:after, &:checked + label .check:after {
+        border: 2px solid lighten(desaturate($active-color, 40%), 20%);
+    }
+}
+
+$radio-input-size: $rem-size;
+$radio-input-before-size: 0.7142857142857143 * $rem-size; /* 14px => 10px */
+$radio-input-after-size: 1.428571428571429 * $rem-size; /* 14px => 20px */
+
+input[type="radio"] {
+    display: none;
+    ~ .check:before, ~ label .check:before {
+        -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        transition: -webkit-transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        transition: transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        transition: transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75), -webkit-transform 0.4s cubic-bezier(0.45, 1.8, 0.5, 0.75);
+        -webkit-transform: scale(0, 0);
+        transform: scale(0, 0);
+        content: "";
+        position: absolute;
+        top: ($radio-input-size - $radio-input-before-size) / 2 + 3px;
+        left: ($radio-input-size - $radio-input-before-size) / 2 + 3px;
+        z-index: 1;
+        width: $radio-input-before-size;
+        height: $radio-input-before-size;
+        background: $active-color;
+        border-radius: 50%;
+    }
+
+    &:checked ~ .check:before, &:checked + label .check:before {
+        -webkit-transform: scale(1, 1);
+        transform: scale(1, 1);
+    }
+
+    ~ .check:after, ~ label .check:after {
+        content: "";
+        position: absolute;
+        width: $radio-input-after-size;
+        height: $radio-input-after-size;
+        background: #fff;
+        -webkit-box-shadow: inset 0 0 0 2px #ccc;
+        box-shadow: inset 0 0 0 2px #ccc;
+        border-radius: 50%;
+    }
+    &:checked ~ .check:after, &:checked + label .check:after {
+        -webkit-box-shadow: inset 0 0 0 2px $active-color;
+        box-shadow: inset 0 0 0 2px $active-color;
+    }
+}

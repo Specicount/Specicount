@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<default>
+		<includes>
+			<!--
+				Path to css and js files into plugins folder.
+				If your files are not in plugins folder, use absolute paths.
+			-->
+			<css>
+				<file>popover/dist/jquery.webui-popover.min.css</file>
+			</css>
+			<js>
+				<file>popover/dist/jquery.webui-popover.min.js</file>
+			</js>
+		</includes>
+		<js_code>
+<![CDATA[   $("%selector%").webuiPopover({
+    url: '#%formID%-content',
+    closeable: %closeable%,
+    animation: %animation%,
+    placement: %placement%,
+    width: %width%,
+    height: %height%,
+    backdrop: %backdrop%,
+    onShow: function() {
+    $('.webui-popover').css('background-color', $('body').css('background-color'));
+        if($('.g-recaptcha')[0]) {
+            scaleCaptcha();
+        }
+    }
+});
+if ($("#%formID% .has-error")[0]) {
+    WebuiPopovers.show("%selector%");
+}]]>
+		</js_code>
+	</default>
+</root>

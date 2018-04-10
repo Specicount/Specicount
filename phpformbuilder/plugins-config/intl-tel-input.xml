@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <default>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <js>
+                <file>intl-tel-input/js/intlTelInput.min.js</file>
+                <file>intl-tel-input/js/utils.js</file>
+            </js>
+            <css>
+                <file>intl-tel-input/css/intlTelInput.css</file>
+            </css>
+        </includes>
+        <js_code>
+<![CDATA[   var absolutePath = function(href) {
+        var link = document.createElement("a");
+        link.href = href;
+        return (link.protocol+"//"+link.host+link.pathname+link.search+link.hash);
+    };
+
+    // material forms
+    if($("%selector%").closest('.material-form')[0] && !$("%selector%").closest('.material-form').hasClass('form-horizontal')) {
+        var $activeTelInput;
+        $("%selector%").on('focus', function() {
+            $activeTelInput = $(this);
+            $('label[for=' + $(this).attr('id') + ']').addClass('active').closest('.input-field').addClass('telinput-active');
+        });
+
+        // avoid to loose focus on flags click
+        $(document).click(function(event) {
+            if(!$(event.target).closest('.input-field.telinput-active').length) {
+                $('.telinput-active').removeClass('telinput-active').find('label.active').removeClass('active');
+            }
+        });
+    }
+    $("%selector%").each(function() {
+        // find utils.js url
+        var scriptTags = document.getElementsByTagName('script'),
+            utilsScript,
+            source;
+        for(var i = 0; i < scriptTags.length; i++) {
+            source = absolutePath(scriptTags[i].src);
+            if(source.match('/phpformbuilder/plugins/')) {
+                var formBuilderUrl = source;
+                utilsScript = formBuilderUrl.substring(0, formBuilderUrl.lastIndexOf("phpformbuilder/plugins/")) + 'phpformbuilder/plugins/intl-tel-input/js/utils.js';
+                i = scriptTags.length -1;
+            }
+        }
+        var hasValidator = $(this).attr('data-fv-intphonenumber') !== undefined || false;
+
+        // if no formvalidation
+        if(!hasValidator) {
+            $(this).intlTelInput({
+                utilsScript: 'class/phpformbuilder/plugins/intl-tel-input/js/utils.js',
+                initialCountry: 'auto',
+                geoIpLookup: function(callback) {
+                  $.get("//ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                  });
+                }
+            });
+
+            // bs4 style (flex)
+            $('.form-group.row .intl-tel-input').css({
+                'display': 'flex',
+                'flex': '1 1 auto'
+            });
+        } else if(typeof(FormValidation.Validator.intPhoneNumber) === 'undefined') {
+
+            // Define new validator
+            FormValidation.Validator.intPhoneNumber = {
+                html5Attributes: {
+                    autoplaceholder: 'autoPlaceholder',
+                    message: 'message',
+                    initialCountry: 'initialCountry',
+                    preferredcountries: 'preferredCountries',
+                    allowDropdown: 'allowDropdown'
+                },
+
+                init: function(validator, $field, options) {
+                    var autoPlaceholder    = options.autoPlaceholder !== 'undefined' ? options.autoPlaceholder : true,
+                        message            = options.message || 'The phone number is not valid',
+                        initialCountry     = options.initialCountry || 'auto',
+                        preferredCountries = options.preferredCountries || 'us',
+                        allowDropdown      = options.allowDropdown !== 'undefined' ? options.allowDropdown : true;
+                    if ('string' === typeof preferredCountries) {
+                        preferredCountries = preferredCountries.split(',');
+                    }
+
+                    // Attach the intlTelInput on field
+                    $field.intlTelInput({
+                        utilsScript: utilsScript,
+                        autoPlaceholder: autoPlaceholder,
+                        message: message,
+                        initialCountry: initialCountry,
+                        preferredCountries: preferredCountries,
+                        allowDropdown: allowDropdown,
+                        geoIpLookup: function(callback) {
+                          $.get("//ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                            var countryCode = (resp && resp.country) ? resp.country : "";
+                            callback(countryCode);
+                          });
+                        }
+                    });
+
+                    // bs4 style (flex)
+                    $('.form-group.row .intl-tel-input').css({
+                        'display': 'flex',
+                        'flex': '1 1 auto'
+                    });
+
+                    // Revalidate the field when changing the country
+                    var $form     = validator.getForm(),
+                        fieldName = $field.attr('data-fv-field');
+                    $form.on('click.country.intphonenumber', '.country-list', function() {
+                        $form.formValidation('revalidateField', fieldName);
+                    });
+                },
+
+                destroy: function(validator, $field, options) {
+                    $field.intlTelInput('destroy');
+
+                    // Turn off the event
+                    validator.getForm().off('click.country.intphonenumber');
+                },
+
+                validate: function(validator, $field, options) {
+                    var isValid = $field.val() === '' || $field.intlTelInput('isValidNumber'),
+                        err     = $field.intlTelInput('getValidationError'),
+                        message = null;
+                    switch (err) {
+                        case intlTelInputUtils.validationError.INVALID_COUNTRY_CODE:
+                            message = 'The country code is not valid';
+                            break;
+
+                        case intlTelInputUtils.validationError.TOO_SHORT:
+                            message = 'The phone number is too short';
+                            break;
+
+                        case intlTelInputUtils.validationError.TOO_LONG:
+                            message = 'The phone number is too long';
+                            break;
+
+                        case intlTelInputUtils.validationError.NOT_A_NUMBER:
+                            message = 'The value is not a number';
+                            break;
+
+                        default:
+                            message = 'The phone number is not valid';
+                            break;
+                    }
+
+                    return {
+                        valid: isValid,
+                        message: message
+                    };
+                }
+            };
+        }
+    });]]>
+        </js_code>
+    </default>
+</root>

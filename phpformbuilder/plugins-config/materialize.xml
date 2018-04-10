@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <default>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>materialize/css/materialize.min.css</file>
+            </css>
+            <js>
+                <file>materialize/js/materialize.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $('select').not('.selectpicker').not('.has-image-picker').material_select();
+    $('.has-image-picker').parent('.input-field').find('label').css('top', '-2.2em');
+    $('.has-error input, .has-error textarea, .has-error select').addClass('validate invalid');]]>
+        </js_code>
+    </default>
+    <custom>
+        <!--
+            If you need differents includes for your custom code,
+            copy the default '<includes>' structure and put the needed files into '<file>' nodes.
+            You can add several files nodes if necessary.
+        -->
+        <js_code>
+            <!-- your custom code here -->
+        </js_code>
+    </custom>
+</root>

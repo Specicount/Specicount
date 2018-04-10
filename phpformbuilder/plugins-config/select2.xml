@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <default>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>select2-themes/css/select2.min.css</file>
+            </css>
+            <js>
+                <file>select2/dist/js/select2.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[function buildTemplate(option) {
+    var output  = option.text, // default
+        icon    = $(option.element).data('icon');
+        content = $(option.element).data('content');
+    if(icon !== undefined) {
+        output = $('<span><i class="' + icon + ' mr-3"></i>' + option.text + '</span>');
+    }
+    if(content !== undefined) {
+        output = $('<span>' + content + option.text + '</span>');
+    }
+    return output;
+}
+$("%selector%").each(function() {
+    if($(this).data('width') !== undefined) {
+        $(this).css('width', $(this).data('width'));
+    }
+}, $("%selector%"));
+$("%selector%").select2({
+    theme: "%theme%",
+    templateResult: buildTemplate
+});]]>
+        </js_code>
+    </default>
+    <countries-flags-16>
+        <includes>
+            <css>
+                <file>select2-themes/css/select2.min.css</file>
+                <file>countries/world-flags-sprite/stylesheets/flags16.min.css</file>
+            </css>
+            <js>
+                <file>select2/dist/js/select2.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[function formatState (state, container) {
+    if (state.element) {
+        $(container).addClass($(state.element).attr("class"));
+    }
+    if (!state.id) {
+        return state.text;
+    }
+    var $state = $('<a class="f16"><span class="flag ' + state.id.toLowerCase() + '"><span class="text">' + state.text + '</span></span></a>');
+
+    return $state;
+};
+$("%selector%").select2({
+    theme: "%theme%",
+    templateResult: formatState
+});]]>
+        </js_code>
+    </countries-flags-16>
+    <countries-flags-32>
+        <includes>
+            <css>
+                <file>select2-themes/css/select2.min.css</file>
+                <file>countries/world-flags-sprite/stylesheets/flags32.min.css</file>
+            </css>
+            <js>
+                <file>select2/dist/js/select2.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[function formatState (state, container) {
+    if (state.element) {
+        $(container).addClass($(state.element).attr("class"));
+    }
+    if (!state.id) {
+        return state.text;
+    }
+    var $state = $('<a class="f32"><span class="flag ' + state.id.toLowerCase() + '"><span class="text">' + state.text + '</span></span></a>');
+    return $state;
+};
+$("%selector%").select2({
+    theme: "%theme%",
+    templateResult: formatState
+});]]>
+        </js_code>
+    </countries-flags-32>
+</root>

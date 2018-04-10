@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <default>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.date.css</file>
+            </css>
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.date.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").each(function() {
+        $(this).attr('data-value', $(this).val()).pickadate({
+            labelYearSelect: 'Select a year',
+            formatSubmit: 'yyyy-mm-dd',
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            }
+        });
+        if($("%selector%").width() < 240) {
+            $("%selector% ~ .picker").css({
+                'min-width': '240px',
+                'font-size': '14px'
+            });
+        }
+    });]]>
+        </js_code>
+    </default>
+    <custom-date>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.date.css</file>
+            </css>
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.date.js</file>
+                <!-- Remove comment to use any translation
+                <file>pickadate/lib/compressed/translations/fr_FR.js</file>
+                 -->
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").each(function() {
+        $(this).attr('data-value', $(this).val()).pickadate({
+            selectYears: 120,
+            // max: true,
+            selectMonths: true,
+            format: '%format%',
+            formatSubmit: 'yyyy-mm-dd',
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            }
+        });
+    });]]>
+        </js_code>
+    </custom-date>
+    <custom-time>
+        <includes>
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.time.css</file>
+            </css>
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.time.js</file>
+                <!-- Remove comment to use any translation
+                <file>pickadate/lib/compressed/translations/fr_FR.js</file>
+                 -->
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickatime({
+        format: 'HH:i',
+        formatLabel: '%format%',
+        formatSubmit: 'HH:i:00',
+        interval: %interval%
+    });]]>
+        </js_code>
+    </custom-time>
+    <year_month_selectors>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.date.css</file>
+            </css>
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.date.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").each(function() {
+        $(this).attr('data-value', $(this).val()).pickadate({
+            labelMonthNext: 'Next month',
+            labelMonthPrev: 'Previous month',
+            labelMonthSelect: 'Select a month in dropdown list',
+            labelYearSelect: 'Select a year in dropdown list',
+            selectYears: 120,
+            max: true,
+            selectMonths: true,
+            format: 'dddd dd mmm yyyy',
+            formatSubmit: 'yyyy-mm-dd',
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            }
+        });
+    });]]>
+        </js_code>
+    </year_month_selectors>
+    <pickadate-french>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.date.js</file>
+                <file>pickadate/lib/compressed/translations/fr_FR.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickadate({
+        labelYearSelect: 'Select a year',
+        formatSubmit: 'yyyy-mm-dd'
+    });]]>
+        </js_code>
+    </pickadate-french>
+    <pickatime>
+        <includes>
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.time.css</file>
+            </css>
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.time.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickatime({
+        format: 'HH !h i m!in',
+        formatLabel: '<b>H</b>:i',
+        formatSubmit: 'HH:i',
+        interval: 15
+    });]]>
+        </js_code>
+    </pickatime>
+    <pickatime-french>
+        <includes>
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.time.css</file>
+            </css>
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.time.js</file>
+                <file>pickadate/lib/compressed/translations/fr_FR.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickatime({
+        format: 'HH !heures i m!inutes',
+        formatLabel: '<b>H</b>:i',
+        formatSubmit: 'HH:i',
+        interval: 15
+    });]]>
+        </js_code>
+    </pickatime-french>
+    <pickadate-polish>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <js>
+                <file>pickadate/lib/compressed/picker.js</file>
+                <file>pickadate/lib/compressed/picker.date.js</file>
+                <file>pickadate/lib/compressed/translations/pl_PL.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickadate({
+        formatSubmit: 'yyyy-mm-dd'
+    });]]>
+        </js_code>
+    </pickadate-polish>
+</root>

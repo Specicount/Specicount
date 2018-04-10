@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <default>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>pickadate-material/picker.min.css</file>
+            </css>
+            <js>
+                <file>pickadate-material/picker.min.js</file>
+                <file>pickadate-material/picker.date.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").each(function() {
+        $(this).attr('data-value', $(this).val()).pickadate({
+            labelYearSelect: 'Select a year',
+            formatSubmit: 'yyyy-mm-dd',
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            }
+        });
+    });]]>
+        </js_code>
+    </default>
+    <year_month_selectors>
+        <includes>
+            <!--
+                Path to css and js files into plugins folder.
+                If your files are not in plugins folder, use absolute paths.
+            -->
+            <css>
+                <file>pickadate-material/picker.min.css</file>
+            </css>
+            <js>
+                <file>pickadate-material/picker.min.js</file>
+                <file>pickadate-material/picker.date.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").each(function() {
+        $(this).attr('data-value', $(this).val()).pickadate({
+            labelMonthNext: 'Next month',
+            labelMonthPrev: 'Previous month',
+            labelMonthSelect: 'Sélect a month in dropdown list',
+            labelYearSelect: 'Sélect a year in dropdown list',
+            selectYears: 120,
+            max: true,
+            selectMonths: true,
+            format: 'dddd dd mmm yyyy',
+            formatSubmit: 'yyyy-mm-dd',
+            hiddenName: true,
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            }
+        });
+    });]]>
+        </js_code>
+    </year_month_selectors>
+    <french>
+        <includes>
+            <js>
+                <file>pickadate-material/picker.min.js</file>
+                <file>pickadate-material/picker.date.min.js</file>
+                <file>pickadate-material/translations/fr_FR.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").each(function() {
+        $(this).attr('data-value', $(this).val()).pickadate({
+            selectYears: 120,
+            max: true,
+            selectMonths: true,
+            format: 'dddd dd mmm yyyy',
+            formatSubmit: 'yyyy-mm-dd',
+            hiddenName: true,
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            }
+        });
+    });]]>
+        </js_code>
+    </french>
+    <pickatime>
+        <includes>
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.time.css</file>
+            </css>
+            <js>
+                <file>pickadate-material/picker.min.js</file>
+                <file>pickadate-material/picker.time.min.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickatime({
+        format: 'HH !h i m!in',
+        formatLabel: '<b>H</b>:i',
+        formatSubmit: 'HH:i',
+        interval: 15
+    });]]>
+        </js_code>
+    </pickatime>
+    <pickatime-french>
+        <includes>
+            <css>
+                <file>pickadate/lib/compressed/themes/classic.css</file>
+                <file>pickadate/lib/compressed/themes/classic.time.css</file>
+            </css>
+            <js>
+                <file>pickadate-material/picker.min.js</file>
+                <file>pickadate-material/picker.time.min.js</file>
+                <file>pickadate/lib/compressed/translations/fr_FR.js</file>
+            </js>
+        </includes>
+        <js_code>
+<![CDATA[   $("%selector%").pickatime({
+        format: 'HH !heures i m!inutes',
+        formatLabel: '<b>H</b>:i',
+        formatSubmit: 'HH:i',
+        interval: 15
+    });]]>
+        </js_code>
+    </pickatime-french>
+</root>
