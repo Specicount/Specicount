@@ -10,6 +10,14 @@
           <option name="port" value="22" />
         </fileTransfer>
       </webServer>
+      <webServer id="4f84c010-9d6b-44fd-b121-0b68b46c0287" name="SEProj Server" url="http://seprojgrp2b.anu.edu.au">
+        <fileTransfer host="seprojgrp2b.anu.edu.au" port="22" privateKey="C:\Users\Matthew\.ssh\OpenSSH\private" rootFolder="/var/www" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

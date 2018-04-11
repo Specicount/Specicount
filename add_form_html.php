@@ -39,9 +39,9 @@ require_once "navbar.php"; // Add Side Nav Bar
     <?php
     require_once "sidebar.php"; // Add Side Nav Bar
     ?>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
-            <div style="padding-top: 30px" class="col-md-11 col-lg-10">
+            <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
                 <?php
                 if (isset($sent_message)) {
                     echo $sent_message;
@@ -61,6 +61,7 @@ require_once "navbar.php"; // Add Side Nav Bar
     </div>
 </div>
 <script src="js/jquery-3.3.1.js"></script>
+<script src="js/jquery.hoverIntent.min.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/popper.js"></script>
 <script src="js/bsadmin.js"></script>

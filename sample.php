@@ -33,14 +33,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
 
         $error = false;
         foreach ($_POST as $specimen => $count) {
-            $update["spec_id"] = Mysql::SQLValue($specimen);
-            $update["sample_id"] = Mysql::SQLValue($sample);
-            $update["last_update"] = "'" . $date . "'";
-            $update["count"] = Mysql::SQLValue($count);
+            if ($specimen != "lycopodium" && $specimen != "charcoal") {
+                $update = array();
+                $update["spec_id"] = Mysql::SQLValue($specimen);
+                $update["sample_id"] = Mysql::SQLValue($sample);
+                $update["last_update"] = "'" . $date . "'";
+                $update["count"] = Mysql::SQLValue($count);
 
-            $db->updateRows('found_specimen', $update, array("sample_id" => Mysql::SQLValue($sample), "spec_id" => Mysql::SQLValue($specimen)));
-            if (!empty($db->error())) $error = true;
-            $i++;
+                $db->updateRows('found_specimen', $update, array("sample_id" => Mysql::SQLValue($sample), "spec_id" => Mysql::SQLValue($specimen)));
+                if (!empty($db->error())) $error = true;
+            } else {
+                $update = array();
+                $db->updateRows('samples',
+                    array($specimen => Mysql::SQLValue($count)),
+                    array("sample_id" => Mysql::SQLValue($sample)));
+                if (!empty($db->error())) $error = true;
+            }
+            //$i++;
         }
 
         if ($_POST["submit-btn"] == "reorder") {
@@ -55,6 +64,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
             $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
         }
     }
+}
+
+# Get sample data
+$db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample)), null, null, true, 1);
+$sample_data = $db->recordsArray()[0];
+if ($db->error()){
+    $msg = '<p class="alert alert-danger">Sample data not found</p>' . "\n";
 }
 
 /* ==================================================
@@ -90,32 +106,6 @@ if($db->rowCount() > 0) {
     $i = 0;
     $specs = $db->recordsArray();
     $form->addHtml("<div>");
-    foreach ($specs as $specimen) {
-        $i %= 3;
-        if ($i == 0) $form->addHtml('<div class="row">');
-        $form->addHtml('<div class="col-md-4">');
-        $form->addHtml('<text style="font-weight: bold;padding: 5px">ID: ' . $specimen["spec_id"] . '</text>
-            <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'"><i class="fa fa-edit" aria-hidden="true"></i></a>
-            <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle" aria-hidden="true"></i></a>');
-        $form->addHtml("<table style='width: 100%'>");
-        //$form->groupInputs($specimen["spec_id"], $specimen["spec_id"].'_subtract', $specimen["spec_id"].'_add');
-        $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
-        $form->addBtn('button', $specimen["spec_id"].'_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\''.$specimen["spec_id"].'\')');
-        $form->addHtml("</td><td>");
-        $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required');
-        $form->addHtml("</td><td style='text-align: right'>");
-        $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\')');
-        $form->addHtml("</td></tr></table>");
-        $image = $specimen["image_folder"].$specimen["primary_image"];
-        if (is_file($image)) {
-            $form->addHtml('<img style="width: 100%;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/'.$specimen["primary_image"].'">');
-        }
-        $form->addHtml('</div>');
-        if ($i == 2) $form->addHtml('</div>');
-        $i++;
-    }
-    $form->addHtml('</div><br><br>');
-
 
     #######################
     # Clear/Save
@@ -124,6 +114,67 @@ if($db->rowCount() > 0) {
     $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=alert(\'Are you sure you want to revert unsaved changes?\')', 'my-btn-group');
     $form->addBtn('submit', 'submit-btn', "reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
     $form->printBtnGroup('my-btn-group');
+
+    # Lycopodium
+
+    $form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
+    $form->addHtml('<text style="font-weight: bold;padding: 5px">Lycopodium</text>');
+    $form->addHtml("<table style='width: 100%'>");
+    $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
+    $form->addBtn('button', 'lycopodium_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'lycopodium\')');
+    $form->addHtml("</td><td>");
+    $form->addInput('number', 'lycopodium', $sample_data["lycopodium"], '', 'required');
+    $form->addHtml("</td><td style='text-align: right'>");
+    $form->addBtn('button', 'lycopodium_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'lycopodium\')');
+    $form->addHtml("</td></tr></table>");
+    $form->addHtml('</div>');
+
+    # Charcoal
+    $form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
+    $form->addHtml('<text style="font-weight: bold;padding: 5px">Charcoal</text>');
+    $form->addHtml("<table style='width: 100%'>");
+    $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
+    $form->addBtn('button', 'charcoal_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'charcoal\')');
+    $form->addHtml("</td><td>");
+    $form->addInput('number', 'charcoal', $sample_data["charcoal"], '', 'required');
+    $form->addHtml("</td><td style='text-align: right'>");
+    $form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'charcoal\')');
+    $form->addHtml("</td></tr></table>");
+    $form->addHtml('</div>');
+
+
+
+    $form->addHtml('<hr>');
+
+    $form->addHtml('<div class="flexbin flexbin-margin">');
+
+    foreach ($specs as $specimen) {
+        $form->addHtml('<div class="flex-container specimen-container">');
+        $image = $specimen["image_folder"].$specimen["primary_image"];
+        if (is_file($image)) {
+            $form->addHtml('<img src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/'.$specimen["primary_image"].'">');
+        }
+        $form->addHtml('<div class="counter">
+                                <p>' . $specimen["count"] . '</p>
+                              </div>');
+        $form->addHtml('<div class="overlay">');
+        $form->addHtml('<a href="#">
+                                <span><i class="fas fa-window-close close-btn"></i></span>
+                             </a>');
+        $form->addHtml('<text>ID: ' . $specimen["spec_id"] . '</text>
+            <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>
+            <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
+        $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\')');
+        $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required');
+
+        $form->addHtml('</div>');
+        $form->addHtml('</div>');
+
+    }
+    $form->addHtml('</div><br><br>');
+
+
+
 
 } else {
     $form->addHtml('<p style="font-style: italic">No specimens added to this sample</p>');
@@ -135,6 +186,8 @@ $title = "$project > $core > $sample > Sample Count";
 require_once "add_form_html.php";
 ?>
 <script>
+
+
     function add(specimen){
         document.getElementById(specimen).value = parseFloat(document.getElementById(specimen).value) + 1;
     }
@@ -156,4 +209,45 @@ require_once "add_form_html.php";
         }
         ?>
     }
+
+    $(document).ready(function() {
+
+        // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
+        // If mouse intends to hover over specimen
+        $(".specimen-container").hoverIntent(
+        function() {
+            var current_overlay = $(".overlay[style*='block']");
+            console.log(current_overlay);
+            fadeOutOverlay(current_overlay.parent());
+
+            $(this).children(".overlay").fadeIn(200);
+            $(this).children(".counter").fadeOut(200);
+        },
+        function() {
+            fadeOutOverlay($(this));
+        });
+
+        //Takes
+        function fadeOutOverlay(specimen_container) {
+            var counter = specimen_container.find(".counter");
+            var count = specimen_container.find("input").val();
+            counter.children("p").text(count);
+            specimen_container.find(".overlay").fadeOut(200);
+            counter.fadeIn(200);
+        }
+        /*
+        //If close button on overlay clicked
+        $(".overlay .close-btn").click(function(){
+            fadeOutOverlay($(this).parent().parent().parent().parent())
+        })
+
+        //If overlay clicked
+        $('.overlay').click(function (event){
+            //Don't propogate the click to the parent specimen
+            event.stopPropagation();
+        });
+        */
+
+
+    });
 </script>

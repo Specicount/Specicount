@@ -1,6 +1,6 @@
 -- CREATE DATABASE BioBase;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
@@ -8,8 +8,8 @@ CREATE TABLE users (
 );
 
 -- This contains all the information relating to the project
-CREATE TABLE projects (
-  project_name VARCHAR (200) NOT NULL,
+CREATE TABLE IF NOT EXISTS projects (
+  project_name VARCHAR (150) NOT NULL,
   biorealm VARCHAR (100) DEFAULT NULL,
   country VARCHAR (100) DEFAULT NULL,
   region VARCHAR (100) DEFAULT NULL,
@@ -17,9 +17,9 @@ CREATE TABLE projects (
 );
 
 -- This contains all the information relating to the core
-CREATE TABLE cores (
+CREATE TABLE IF NOT EXISTS cores (
   core_id VARCHAR (45) NOT NULL,
-  project_name VARCHAR (200) NOT NULL,
+  project_name VARCHAR (150) NOT NULL,
   description VARCHAR (600),
   tags VARCHAR (200),
   PRIMARY KEY (core_id, project_name),
@@ -28,7 +28,7 @@ CREATE TABLE cores (
 
 -- This contains all the information relating to the sample
 -- Not sure if we bother storing determined fields at this stage?????
-CREATE TABLE samples (
+CREATE TABLE IF NOT EXISTS samples (
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
   analyst_first_name VARCHAR (60) NOT NULL,
@@ -39,12 +39,13 @@ CREATE TABLE samples (
   mid_depth DECIMAL(19,2),
   modelled_age INT (11), -- ????
   lycopodium INT (11),
+  charcoal INT (11),
   -- tags VARCHAR (200), not tags at present
   PRIMARY KEY (sample_id, core_id),
   FOREIGN KEY (core_id) REFERENCES cores(core_id)
 );
 
-CREATE TABLE specimen (
+CREATE TABLE IF NOT EXISTS specimen (
   spec_id VARCHAR (45) PRIMARY KEY NOT NULL,
   family VARCHAR (45) DEFAULT NULL,
   genus VARCHAR (45) DEFAULT NULL,
@@ -87,7 +88,7 @@ CREATE TABLE specimen (
 );
 
 /*-- Images related to specimen
-CREATE TABLE images (
+CREATE TABLE IF NOT EXISTS images (
   spec_id VARCHAR (45) NOT NULL,
   image_path VARCHAR (200) NOT NULL,
   image_type VARCHAR (200),
@@ -97,7 +98,7 @@ CREATE TABLE images (
 );*/
 
 /*-- Tags related to specimen
-CREATE TABLE tags (
+CREATE TABLE IF NOT EXISTS tags (
   poll_id VARCHAR (45),
   tag VARCHAR (300),
   PRIMARY KEY (poll_id, tag)
@@ -105,7 +106,7 @@ CREATE TABLE tags (
 
 -- This contains the amount of pollen found at the specific location.
 -- It also shows the date it was last found.
-CREATE TABLE found_specimen (
+CREATE TABLE IF NOT EXISTS found_specimen (
   sample_id VARCHAR (45) NOT NULL,
   spec_id VARCHAR (45) NOT NULL,
   count INT (11) DEFAULT 0,
