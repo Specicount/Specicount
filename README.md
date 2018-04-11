@@ -5,11 +5,11 @@ ANU researchers in the fields of ecology/palaeoecology are currently using a sys
 
 # Project Background
 
-Our client, Ms. Hamilton, is currently assisting in completing the research project *The Pace and Rhythm
+Our clients, Rebecca Hamilton & Janelle Stevenson, are currently involved in the research project *The Pace and Rhythm
 of Climate: 600,000 Years in a Biological Hotspot*. The aim of the research project is to
 create a vegetation and fire record of Sulawesi, Indonesia over a 600,000-year period. This
 research has ramifications within the study of climate change over a large timeframe, using
-this area as a hotspot for further research and study. The client’s specific role within the
+this area as a hotspot for further research and study. The clients' specific role within the
 project is to analyse the pollen samples provided from the sedimentary extracts, and record
 this combined with the presence of charcoal to indicate patterns of vegetation and fire
 within the area.
