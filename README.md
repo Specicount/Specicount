@@ -76,9 +76,9 @@ programs to discover trends and publish to other participants within the project
 
 Our repository can be found [here](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing). In the repository you will find:
 
-* [Project Requirements](https://drive.google.com/open?id=1D5DRx0kPDescI-hsA6fj4p-DHRZn2aLwt_poO40C0Y8)
-* [Project Schedule](https://drive.google.com/open?id=1-yhn3WrEjKDih8XIvvdnwzMBPrjEuM6m)
+* [Project Requirements](https://drive.google.com/open?id=1ftBVNch_Gn8EKxaUfufyif1UBm1UDPIrzac4ghlxoBo)
+* [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
 * [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
-* [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn) (client, team and tutorial)
+* [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
 
 You can find our to-do list [here](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues).
