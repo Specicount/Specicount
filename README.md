@@ -28,15 +28,15 @@ programs to discover trends and publish to other participants within the project
 
 | **Name** | **Email** | **Roles** |
 | --- | --- | -- |
-| Elliott Wagener | u6053577@anu.edu.au | <ul><li>Team Leader</li><li>Back-End Developer</li><li>Repository Control</li></ul> |
+| Paige Brown | u6048298@anu.edu.au | <ul><li>Team Leader</li><li>Testing Lead</li><li>Front-End Lead Developer</li></ul> |
 | Alex Niven | u5801168@anu.edu.au | <ul><li>Communications Lead</li><li>Front-End Developer</li><li>Repository Control</li></ul> |
-| Paige Brown | u6048298@anu.edu.au | <ul><li>Testing Lead</li><li>Front-End Lead Developer</li><li>Repository Control</li></ul> |
+| Elliott Wagener | u6053577@anu.edu.au | <ul><li>Front-End Developer</li><li>Back-End Developer</li><li>Repository Control</li></ul> |
 | Matthew Knill | u6052043@anu.edu.au | <ul><li>Back-End Lead Developer</li></ul> |
 
 #### Role Descriptions
 
-* *Team Leader* - Responsible for assigning tasks, motivating others and looking for ways to keep the project moving forward. The Team Leader should be fairly involved with whatever work is currently happening and should, in general, adopt a greater workload than everybody else. The Team Leader is also responsible for any downfalls the project experiences during their leadership. This role will be rotated between the team members throught the course of the project and should be assigned to whoever has the expertise needed for the current phase of the project.
-* *Communications Lead* - Responsible for any communication between Clients, Project group, Shadow group and other stakeholders. Leads presentations.
+* *Team Leader* - Responsible for assigning tasks, motivating others and looking for ways to keep the project moving forward. The Team Leader should be involved with whatever work is currently happening and should, in general, adopt a greater workload than everybody else. The Team Leader is also responsible for any downfalls the project experiences during their leadership. This role will be rotated between the team members throught the course of the project and should be assigned to whoever has the expertise needed for the current phase of the project.
+* *Communications Lead* - Responsible for any communication between Clients, Project group, Shadow group and other Stakeholders. Leads presentations.
 * *Back-End Lead Developer* - The back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
 * *Back-End Developer* - Responsible for developing the core website functionality. This includes server creation and administration, database design and coding a basic website template.
 * *Front-End Lead Developer* - The front-end developer that makes executive decisions on UI design choices. Expresses the vision for our project through mock sketches of potential website layouts.
@@ -55,7 +55,6 @@ programs to discover trends and publish to other participants within the project
         * the teaching of her students in the lab
 * Elliott, Matthew, Alex, Paige - Project Team
     * Want to produce a useful/valuable product
-    * Want to achieve a good grade for COMP3500
 
 ##### Potential Stakeholders
 
