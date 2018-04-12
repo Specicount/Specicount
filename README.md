@@ -37,11 +37,13 @@ The project is housed on Apache2 server using PHP 7 and other items which can be
 
 Although the code and database is largly bespoke, a few tools have been employed to create this project. These include:
 * [phpformbuilder](https://www.phpformbuilder.pro/)
-* Bootstrap 4
-* Fontawesome
-* Jquery
-* Popper
-* Bsadmin
+* [Bootstrap 4](https://getbootstrap.com/)
+* [Fontawesome 5](https://fontawesome.com/)
+* [Jquery 3](https://jquery.com/)
+* [Popper](https://popper.js.org/)
+* [Bsadmin](https://github.com/kjdion84/bsadmin)
+* [Flexbin](https://www.npmjs.com/package/flexbin)
+* [hoverIntent jQuery Plug-in](https://github.com/briancherne/jquery-hoverIntent)
 
 # Team
 
