@@ -5,7 +5,7 @@
 4. <a href='#team'>Team</a>
 5. <a href='#stakeholders'>Stakeholders</a>
 6. <a href='#meetings_schedule'>Meetings Schedule</a>
-7. <a href='#documents'>Documents</a>
+7. <a href='#documents_and_links'>Documents and Links</a>
 8. <a href='#the_website'>The Website</a>
 
 # <a name='project_brief'></a> 1. Project Brief
@@ -87,7 +87,7 @@ Will meet in person if everyone is available, otherwise over google hangouts wit
 * 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and establishing agenda for client meeting)
 * 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
 
-# <a name='documents'></a> 7. Documents
+# <a name='documents_and_links'></a> 7. Documents and Links
 
 In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive, among other artifacts, you will find:
 
