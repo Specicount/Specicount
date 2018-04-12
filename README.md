@@ -27,24 +27,6 @@ ability to have a portable application that captures, sorts and organises the da
 Although the initial scope is purely for the prototype to be used in the Clients' research project , the vision of the Clients is to produce a polymorphic application that can be used
 in the wider research community for multiple data capture senarios, eliminating the need for paper-based methods in the forthcoming digital age.
 
-# Current Work
-
-The source code for our project can be found within [this Gitlab repository](https://gitlab.cecs.anu.edu.au/u6053577/BioData). This is relocated to the various testing and production servers used on ANU to provide a view at the UI and usability of the project.
-A current prototype can be found here (please note, this can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
-**We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
-
-The project is housed on Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
-
-Although the code and database is largly bespoke, a few tools have been employed to create this project. These include:
-* [phpformbuilder](https://www.phpformbuilder.pro/)
-* [Bootstrap 4](https://getbootstrap.com/)
-* [Fontawesome 5](https://fontawesome.com/)
-* [Jquery 3](https://jquery.com/)
-* [Popper](https://popper.js.org/)
-* [Bsadmin](https://github.com/kjdion84/bsadmin)
-* [Flexbin](https://www.npmjs.com/package/flexbin)
-* [hoverIntent](https://github.com/briancherne/jquery-hoverIntent)
-
 # Team
 
 #### Members
@@ -108,3 +90,21 @@ In our [google drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22K
 On GitLab you can find our:
 * [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
 * [Website's Server Files](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
+
+# Current Work
+
+The source code for our project can be found within [this Gitlab repository](https://gitlab.cecs.anu.edu.au/u6053577/BioData). This is relocated to the various testing and production servers used on ANU to provide a view at the UI and usability of the project.
+A current prototype can be found here (please note, this can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
+**We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
+
+The project is housed on Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
+
+Although the code and database is largly bespoke, a few tools have been employed to create this project. These include:
+* [phpformbuilder](https://www.phpformbuilder.pro/)
+* [Bootstrap 4](https://getbootstrap.com/)
+* [Fontawesome 5](https://fontawesome.com/)
+* [Jquery 3](https://jquery.com/)
+* [Popper](https://popper.js.org/)
+* [Bsadmin](https://github.com/kjdion84/bsadmin)
+* [Flexbin](https://www.npmjs.com/package/flexbin)
+* [hoverIntent](https://github.com/briancherne/jquery-hoverIntent)
