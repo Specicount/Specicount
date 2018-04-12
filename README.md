@@ -43,7 +43,7 @@ Although the code and database is largly bespoke, a few tools have been employed
 * [Popper](https://popper.js.org/)
 * [Bsadmin](https://github.com/kjdion84/bsadmin)
 * [Flexbin](https://www.npmjs.com/package/flexbin)
-* [hoverIntent jQuery Plug-in](https://github.com/briancherne/jquery-hoverIntent)
+* [hoverIntent](https://github.com/briancherne/jquery-hoverIntent)
 
 # Team
 
