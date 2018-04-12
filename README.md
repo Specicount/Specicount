@@ -87,6 +87,7 @@ In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22K
 * [Teamwork Processes](https://drive.google.com/open?id=15SU2-uzkVhSpzMk53GWEpBvZ7E_-LrMdUV15Q6smaxw)
 * [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
 * [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
+* [Database Design](https://drive.google.com/open?id=11WfqL32Xysvv5brx0RQadU2u5PD3nEhS)
 
 On GitLab you can find our:
 * [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
