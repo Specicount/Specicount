@@ -25,43 +25,62 @@ $sample = $_GET["sample"];
 ============================================= */
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sample') === true) {
-    $validator = Form::validate('add-new-sample');
 
-    if ($validator->hasErrors()) {
-        $_SESSION['errors']['user-form'] = $validator->getAllErrors();
+    if($_POST["submit-btn"] == "export") {
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
+
+        $db->selectRows('found_specimen', array('sample_id' => Mysql::SQLValue($sample)));
+        $specimen_data = $db->recordsArray();
+        // open the "output" stream
+        // see http://www.php.net/manual/en/wrappers.php.php#refsect2-wrappers.php-unknown-unknown-unknown-descriptioq
+        $f = fopen('php://output', 'w');
+        fputcsv($f, array("Specimen ID", "Count"), ",");
+        foreach ($specimen_data as $spec) {
+            fputcsv($f, array($spec["spec_id"], $spec["count"]), ",");
+        }
+        header("Refresh:0");
+        exit;
     } else {
 
-        $error = false;
-        foreach ($_POST as $specimen => $count) {
-            if ($specimen != "lycopodium" && $specimen != "charcoal") {
-                $update = array();
-                $update["spec_id"] = Mysql::SQLValue($specimen);
-                $update["sample_id"] = Mysql::SQLValue($sample);
-                $update["last_update"] = "'" . $date . "'";
-                $update["count"] = Mysql::SQLValue($count);
+        $validator = Form::validate('add-new-sample');
 
-                $db->updateRows('found_specimen', $update, array("sample_id" => Mysql::SQLValue($sample), "spec_id" => Mysql::SQLValue($specimen)));
-                if (!empty($db->error())) $error = true;
-            } else {
-                $update = array();
-                $db->updateRows('samples',
-                    array($specimen => Mysql::SQLValue($count)),
-                    array("sample_id" => Mysql::SQLValue($sample)));
+        if ($validator->hasErrors()) {
+            $_SESSION['errors']['user-form'] = $validator->getAllErrors();
+        } else {
+
+            $error = false;
+            foreach ($_POST as $specimen => $count) {
+                if ($specimen != "lycopodium" && $specimen != "charcoal") {
+                    $update = array();
+                    $update["spec_id"] = Mysql::SQLValue($specimen);
+                    $update["sample_id"] = Mysql::SQLValue($sample);
+                    $update["last_update"] = "'" . $date . "'";
+                    $update["count"] = Mysql::SQLValue($count);
+
+                    $db->updateRows('found_specimen', $update, array("sample_id" => Mysql::SQLValue($sample), "spec_id" => Mysql::SQLValue($specimen)));
+                    if (!empty($db->error())) $error = true;
+                } else {
+                    $update = array();
+                    $db->updateRows('samples',
+                        array($specimen => Mysql::SQLValue($count)),
+                        array("sample_id" => Mysql::SQLValue($sample)));
+                    if (!empty($db->error())) $error = true;
+                }
+                //$i++;
+            }
+
+            if ($_POST["submit-btn"] == "reorder") {
+                $sql = "UPDATE BioBase.found_specimen SET `order` = `count` WHERE sample_id = " . Mysql::SQLValue($sample);
+                $db->query($sql);
                 if (!empty($db->error())) $error = true;
             }
-            //$i++;
-        }
 
-        if ($_POST["submit-btn"] == "reorder") {
-            $sql = "UPDATE BioBase.found_specimen SET `order` = `count` WHERE sample_id = ".Mysql::SQLValue($sample);
-            $db->query($sql);
-            if (!empty($db->error())) $error = true;
-        }
-
-        if ($error) {
-            $msg = '<p class="alert alert-danger">Error updating samples, please try re-saving</p>' . "\n";
-        } else {
-            $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
+            if ($error) {
+                $msg = '<p class="alert alert-danger">Error updating samples, please try re-saving</p>' . "\n";
+            } else {
+                $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
+            }
         }
     }
 }
@@ -112,6 +131,7 @@ if($db->rowCount() > 0) {
     #######################
     $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save append" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
     $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=alert(\'Are you sure you want to revert unsaved changes?\')', 'my-btn-group');
+    $form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
     $form->addBtn('submit', 'submit-btn', "reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
     $form->printBtnGroup('my-btn-group');
 
@@ -235,12 +255,13 @@ require_once "add_form_html.php";
             specimen_container.find(".overlay").fadeOut(200);
             counter.fadeIn(200);
         }
-        /*
+
         //If close button on overlay clicked
         $(".overlay .close-btn").click(function(){
             fadeOutOverlay($(this).parent().parent().parent().parent())
         })
 
+        /*
         //If overlay clicked
         $('.overlay').click(function (event){
             //Don't propogate the click to the parent specimen

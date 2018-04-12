@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($i == 0) $form->addHtml('<div class="row">');
             $form->addHtml('<div class="col-md-4">');
             $form->addHtml('<text style="font-weight: bold;padding: 5px">ID: ' . $specimen["spec_id"] . '</text>
-                <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-edit" aria-hidden="true"></i></a>
                 <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle" aria-hidden="true"></i></a>');
             //$form->groupInputs("add-to-sample", "edit");
             $form->addBtn('submit', 'add-to-sample', $specimen["spec_id"], 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in');
