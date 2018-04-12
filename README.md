@@ -1,18 +1,18 @@
 # Contents
-1. <a href='#1'>Project Brief</a>
-2. <a href='#2'>Project Background</a>
-3. <a href='#3'>Project Description</a>
-4. <a href='#4'>Team</a>
-5. <a href='#5'>Stakeholders</a>
-6. <a href='#6'>Meetings Schedule</a>
-7. <a href='#7'>Documents</a>
-8. <a href='#8'>The Website</a>
+1. <a href='#project_brief'>Project Brief</a>
+2. <a href='#project_background'>Project Background</a>
+3. <a href='#project_description'>Project Description</a>
+4. <a href='#team'>Team</a>
+5. <a href='#stakeholders'>Stakeholders</a>
+6. <a href='#meetings_schedule'>Meetings Schedule</a>
+7. <a href='#documents'>Documents</a>
+8. <a href='#the_website'>The Website</a>
 
-# <span id='1'>Project Brief</span>
+# <span id='project_brief'>Project Brief</span>
 
 ANU researchers in the fields of ecology/palaeoecology are currently using a system of analysing pollen in environmental samples that is cumbersome and largely paper-based. The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. We will accomplish this objective through the creation of a web application that would replace the paper-based step in the current workflow.
 
-# <span id='2'>Project Background</span> 
+# <span id='project_background'>Project Background</span> 
 
 Our clients, Rebecca Hamilton & Janelle Stevenson, are currently involved in the research project *The Pace and Rhythm
 of Climate: 600,000 Years in a Biological Hotspot*. The aim of the research project is to
@@ -30,14 +30,14 @@ to identify the pollen samples found, and record this. Once all items are record
 is then manually fed back into a Microsoft Excel spreadsheet and exported into graphing
 programs to discover trends and publish to other participants within the project.
 
-# <span id='3'>Project Description</span> 
+# <span id='project_description'>Project Description</span> 
 
 The objective of the project is to digitise the data capture methods currently used to reduce the Clients' workload and increase productivity. This includes the
 ability to have a portable application that captures, sorts and organises the data to be exported to the graphing software used within the wider project community.
 Although the initial scope is purely for the prototype to be used in the Clients' research project , the vision of the Clients is to produce a polymorphic application that can be used
 in the wider research community for multiple data capture senarios, eliminating the need for paper-based methods in the forthcoming digital age.
 
-# <span id='4'>Team</span> 
+# <span id='team'>Team</span> 
 
 #### Members
 
@@ -59,7 +59,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 * *Repository Control* - Responsible for creating, updating and organising documents on our repository.
 * *Testing Lead* - Responsible for gathering feedback from testers and passing those evaluations on to the rest of the team.
 
-# <span id='5'>Stakeholders</span>
+# <span id='stakeholders'>Stakeholders</span>
 
 * Dr Rebecca Hamilton - Client
     * Wants a streamlined data capture process to assist in her research
@@ -76,7 +76,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 * The broader scientific community
     * Can adapt our project/application for their needs
 
-# <span id='6'>Meetings Schedule</span> 
+# <span id='meetings_schedule'>Meetings Schedule</span> 
 
 ##### Client Meetings
 We aim for weekly meetings but frequency also depends on necessity.
@@ -87,7 +87,7 @@ Will meet in person if everyone is available, otherwise over google hangouts wit
 * 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and establishing agenda for client meeting)
 * 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
 
-# <span id='7'>Documents</span> 
+# <span id='documents'>Documents</span> 
 
 In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive you will find:
 
@@ -103,7 +103,7 @@ On GitLab you can find our:
 * [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
 * [Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
 
-# <span id='8'>The Website</span> 
+# <span id='the_website'>The Website</span> 
 
 We currently hosting the website on:
 * A server in Matthew's house - This is used for development and where we push live changes immediately
