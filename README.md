@@ -89,7 +89,7 @@ Will meet in person if everyone is available, otherwise over google hangouts wit
 
 # <a name='documents'></a> 7. Documents
 
-In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive you will find:
+In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive, among other artifacts, you will find:
 
 * [Project Requirements](https://drive.google.com/open?id=1ftBVNch_Gn8EKxaUfufyif1UBm1UDPIrzac4ghlxoBo)
 * [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
