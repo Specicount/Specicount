@@ -104,11 +104,11 @@ We currently hosting the website on:
 The project is housed on Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing).
 
 Although the code and database is largly bespoke, a few tools have been employed to create this project. These include:
-* [phpformbuilder](https://www.phpformbuilder.pro/)
-* [Bootstrap 4](https://getbootstrap.com/)
-* [Fontawesome 5](https://fontawesome.com/)
-* [Jquery 3](https://jquery.com/)
-* [Popper](https://popper.js.org/)
-* [Bsadmin](https://github.com/kjdion84/bsadmin)
-* [Flexbin](https://www.npmjs.com/package/flexbin)
-* [hoverIntent](https://github.com/briancherne/jquery-hoverIntent)
+* [PHP Form Builder](https://www.phpformbuilder.pro/) for CRUD operations to the database
+* [Bootstrap 4](https://getbootstrap.com/) for styling
+* [Fontawesome 5](https://fontawesome.com/) for icons
+* [Jquery 3](https://jquery.com/) for enhanced javascript
+* [Bsadmin](https://github.com/kjdion84/bsadmin) for basic website template
+* [Popper](https://popper.js.org/) for bsadmin (dependency)
+* [Flexbin](https://www.npmjs.com/package/flexbin) for displaying specimen images in grid format
+* [hoverIntent](https://github.com/briancherne/jquery-hoverIntent) for mouse hover functionality
