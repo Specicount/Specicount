@@ -106,8 +106,8 @@ On GitLab you can find our:
 # <a name='the_website'></a> 8. The Website
 
 We currently hosting the website on:
-* A server in Matthew's house - This is used for development and where we push live changes immediately
-* A virtual machine located on-campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
+* A server in Matthew's house - This is used for development and where we push live changes immediately.
+* A virtual machine located on campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
 (Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 
 **We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
