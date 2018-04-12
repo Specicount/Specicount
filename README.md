@@ -106,4 +106,6 @@ Our google drive can be found [here](https://drive.google.com/drive/folders/1NtZ
 * [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
 * [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
 
-You can find our to-do list [here](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues) and all the website's server files [here](https://gitlab.cecs.anu.edu.au/u6053577/BioData/).
+On GitLab you can find:
+* [our to-do list](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
+* [the website's server files](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
