@@ -89,11 +89,13 @@ In our [google drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22K
 
 On GitLab you can find our:
 * [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
-* [Website's Server Files](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
+* [Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
 
 # Current Work
 
-The source code for our project can be found within [this Gitlab repository](https://gitlab.cecs.anu.edu.au/u6053577/BioData). This is relocated to the various testing and production servers used on ANU to provide a view at the UI and usability of the project.
+We currently hosting the website on:
+* A server in Matthew's house - This is used for development and where we push live changes immediately
+* A virtual machine provided by ANU for student purposes - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
 A current prototype can be found here (please note, this can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 **We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
 
