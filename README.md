@@ -84,6 +84,8 @@ Although the code and database is largly bespoke, a few tools have been employed
 
 # Meetings Schedule
 
+Will meet in person if everyone is available, otherwise over google hangouts with screenshare.
+
 ##### Client Meetings
 * 2pm-4pm every Tuesday (with the exception of Week 8, where we will be running testing on students in another timeslot)
 
