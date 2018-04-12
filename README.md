@@ -68,12 +68,11 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 # Meetings Schedule
 
-Will meet in person if everyone is available, otherwise over google hangouts with screenshare.
-
 ##### Client Meetings
 * 2pm-4pm every Tuesday (with the exception of Week 8, where we will be running testing on students in another timeslot)
 
 ##### Team Meetings
+Will meet in person if everyone is available, otherwise over google hangouts with screenshare.
 * 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and establishing agenda for client meeting)
 * 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
 
