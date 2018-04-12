@@ -112,7 +112,7 @@ We currently hosting the website on:
 
 **We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
 
-The project is housed on an Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing).
+The project is housed on an Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing). You can view the [Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/) on GitLab.
 
 Although the code and database is largly bespoke, a few tools have been employed to create this project. These include:
 * [PHP Form Builder](https://www.phpformbuilder.pro/) for CRUD operations to the database
