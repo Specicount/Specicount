@@ -85,6 +85,7 @@ In our [google drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22K
 * [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
 * [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
 * [Teamwork Processes](https://drive.google.com/open?id=15SU2-uzkVhSpzMk53GWEpBvZ7E_-LrMdUV15Q6smaxw)
+* [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
 * [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
 
 On GitLab you can find our:
@@ -95,12 +96,12 @@ On GitLab you can find our:
 
 We currently hosting the website on:
 * A server in Matthew's house - This is used for development and where we push live changes immediately
-* A virtual machine provided by ANU for student purposes - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
+* A virtual machine located on-campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
 (Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 
 **We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
 
-The project is housed on Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
+The project is housed on Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing).
 
 Although the code and database is largly bespoke, a few tools have been employed to create this project. These include:
 * [phpformbuilder](https://www.phpformbuilder.pro/)
