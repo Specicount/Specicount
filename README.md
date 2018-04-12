@@ -29,7 +29,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 # Current Work
 
-The source code for our project can be found within the GitLab page. This is relocated to the various testing and production servers used on ANU to provide a view at the UI and usability of the project.
+The source code for our project can be found within [this Gitlab repository](https://gitlab.cecs.anu.edu.au/u6053577/BioData). This is relocated to the various testing and production servers used on ANU to provide a view at the UI and usability of the project.
 A current prototype can be found here (please note, this can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 **We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
 
