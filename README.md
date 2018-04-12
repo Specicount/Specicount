@@ -30,7 +30,7 @@ to identify the pollen samples found, and record this. Once all items are record
 is then manually fed back into a Microsoft Excel spreadsheet and exported into graphing
 programs to discover trends and publish to other participants within the project.
 
-# <a name='project_description'> 3. Project Description
+# <a name='project_description'></a> 3. Project Description
 
 The objective of the project is to digitise the data capture methods currently used to reduce the Clients' workload and increase productivity. This includes the
 ability to have a portable application that captures, sorts and organises the data to be exported to the graphing software used within the wider project community.
