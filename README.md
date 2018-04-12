@@ -95,17 +95,16 @@ Will meet in person if everyone is available, otherwise over google hangouts wit
 * 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and establishing agenda for client meeting)
 * 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
 
-
-
 # Documents
 
-Our google drive can be found [here](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing). In the drive you will find:
+In our [google drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive you will find:
 
 * [Project Requirements](https://drive.google.com/open?id=1ftBVNch_Gn8EKxaUfufyif1UBm1UDPIrzac4ghlxoBo)
 * [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
 * [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
+* [Teamwork Processes](https://drive.google.com/open?id=15SU2-uzkVhSpzMk53GWEpBvZ7E_-LrMdUV15Q6smaxw)
 * [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
 
-On GitLab you can find:
-* [our to-do list](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
-* [the website's server files](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
+On GitLab you can find our:
+* [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
+* [Website's Server Files](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
