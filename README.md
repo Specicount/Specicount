@@ -69,6 +69,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 # Meetings Schedule
 
 ##### Client Meetings
+We aim for weekly meetings but frequency also depends on necessity.
 * 2pm-4pm every Tuesday (with the exception of Week 8, where we will be running testing on students in another timeslot)
 
 ##### Team Meetings
