@@ -120,6 +120,6 @@ Although the code and database is largly bespoke, a few tools have been employed
 * [Fontawesome 5](https://fontawesome.com/) for icons
 * [Jquery 3](https://jquery.com/) for enhanced javascript
 * [Bsadmin](https://github.com/kjdion84/bsadmin) for basic website template
-* [Popper](https://popper.js.org/) for bsadmin (dependency)
+* [Popper](https://popper.js.org/) for positioning HTML elements
 * [Flexbin](https://www.npmjs.com/package/flexbin) for displaying specimen images in grid format
 * [hoverIntent](https://github.com/briancherne/jquery-hoverIntent) for mouse hover functionality
