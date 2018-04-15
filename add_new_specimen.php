@@ -166,7 +166,7 @@ if ($_GET["edit"]) {
 $form = new Form($form_name, 'horizontal', 'novalidate', 'bs4');
 
 if ($sample) {
-    $form->addHtml("<p style='font-style: italic'>Note: This will also be added to sample: $sample</p>");
+    $form->addHtml("<p style='font-style: italic'>Note: This will add the specimen to the website's database and also add it to the current sample: $sample</p>");
 }
 
 #######################

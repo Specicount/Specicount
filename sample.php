@@ -23,9 +23,7 @@ $sample = $_GET["sample"];
 /* =============================================
     validation if posted
 ============================================= */
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sample') === true) {
-
     if($_POST["submit-btn"] == "export") {
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
@@ -45,13 +43,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
 
         $validator = Form::validate('add-new-sample');
 
+        $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample)), null, null, true, 1);
+        $sample_data = $db->recordsArray()[0];
+
         if ($validator->hasErrors()) {
             $_SESSION['errors']['user-form'] = $validator->getAllErrors();
-        } else {
+        } else if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) { // Was last updated by this device
 
             $error = false;
             foreach ($_POST as $specimen => $count) {
-                if ($specimen != "lycopodium" && $specimen != "charcoal") {
+                if ($specimen != "lycopodium" && $specimen != "charcoal" && $specimen != "last_edit") {
                     $update = array();
                     $update["spec_id"] = Mysql::SQLValue($specimen);
                     $update["sample_id"] = Mysql::SQLValue($sample);
@@ -61,10 +62,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
                     $db->updateRows('found_specimen', $update, array("sample_id" => Mysql::SQLValue($sample), "spec_id" => Mysql::SQLValue($specimen)));
                     if (!empty($db->error())) $error = true;
                 } else {
-                    $update = array();
-                    $db->updateRows('samples',
-                        array($specimen => Mysql::SQLValue($count)),
-                        array("sample_id" => Mysql::SQLValue($sample)));
+                    if ($specimen == "last_edit") {
+                        $db->updateRows('samples',
+                            array("last_edit" => "'" . $date . "'"),
+                            array("sample_id" => Mysql::SQLValue($sample)));
+                    } else {
+                        $db->updateRows('samples',
+                            array($specimen => Mysql::SQLValue($count)),
+                            array("sample_id" => Mysql::SQLValue($sample)));
+                    }
                     if (!empty($db->error())) $error = true;
                 }
                 //$i++;
@@ -81,6 +87,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
             } else {
                 $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
             }
+        } else { // Was updated somewhere else
+            $msg = '<p class="alert alert-danger">Updated by another device, please try again</p>' . "\n";
         }
     }
 }
@@ -126,11 +134,13 @@ if($db->rowCount() > 0) {
     $specs = $db->recordsArray();
     $form->addHtml("<div>");
 
+    $form->addHtml("<input type=\"hidden\" name=\"last_edit\" value=\"".$sample_data["last_edit"]."\">");
+
     #######################
     # Clear/Save
     #######################
     $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save append" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
-    $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=alert(\'Are you sure you want to revert unsaved changes?\')', 'my-btn-group');
+    $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=updateAllCounters()', 'my-btn-group');
     $form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
     $form->addBtn('submit', 'submit-btn', "reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
     $form->printBtnGroup('my-btn-group');
@@ -169,13 +179,13 @@ if($db->rowCount() > 0) {
     $form->addHtml('<div class="flexbin flexbin-margin">');
 
     foreach ($specs as $specimen) {
-        $form->addHtml('<div class="flex-container specimen-container">');
         $image = $specimen["image_folder"].$specimen["primary_image"];
+        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="flex-container specimen-container">');
         if (is_file($image)) {
             $form->addHtml('<img src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/'.$specimen["primary_image"].'">');
         }
         $form->addHtml('<div class="counter">
-                                <p>' . $specimen["count"] . '</p>
+                                <p id="'.$specimen["spec_id"].'_counter">' . $specimen["count"] . '</p>
                               </div>');
         $form->addHtml('<div class="overlay">');
         $form->addHtml('<a href="#">
@@ -184,8 +194,8 @@ if($db->rowCount() > 0) {
         $form->addHtml('<text>ID: ' . $specimen["spec_id"] . '</text>
             <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>
             <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
-        $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\')');
-        $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required');
+        $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\');updateCounter(\''.$specimen["spec_id"].'\')');
+        $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
 
         $form->addHtml('</div>');
         $form->addHtml('</div>');
@@ -207,12 +217,15 @@ require_once "add_form_html.php";
 ?>
 <script>
 
-
-    function add(specimen){
-        document.getElementById(specimen).value = parseFloat(document.getElementById(specimen).value) + 1;
+    function updateCounter(spec_id){
+        document.getElementById(spec_id+"_counter").innerHTML = document.getElementById(spec_id).value;
     }
-    function subtract(specimen){
-        document.getElementById(specimen).value = parseFloat(document.getElementById(specimen).value) - 1;
+    function add(spec_id) {
+        document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) + 1;
+    }
+
+    function subtract(spec_id){
+        document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
@@ -231,13 +244,11 @@ require_once "add_form_html.php";
     }
 
     $(document).ready(function() {
-
         // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
         // If mouse intends to hover over specimen
         $(".specimen-container").hoverIntent(
         function() {
             var current_overlay = $(".overlay[style*='block']");
-            console.log(current_overlay);
             fadeOutOverlay(current_overlay.parent());
 
             $(this).children(".overlay").fadeIn(200);
@@ -249,17 +260,17 @@ require_once "add_form_html.php";
 
         //Takes
         function fadeOutOverlay(specimen_container) {
-            var counter = specimen_container.find(".counter");
-            var count = specimen_container.find("input").val();
-            counter.children("p").text(count);
             specimen_container.find(".overlay").fadeOut(200);
+            var counter = specimen_container.find(".counter");
             counter.fadeIn(200);
         }
 
+
         //If close button on overlay clicked
         $(".overlay .close-btn").click(function(){
-            fadeOutOverlay($(this).parent().parent().parent().parent())
+            fadeOutOverlay($(this).parent().parent().parent().parent());
         })
+
 
         /*
         //If overlay clicked
@@ -268,6 +279,16 @@ require_once "add_form_html.php";
             event.stopPropagation();
         });
         */
+
+        /*
+        function updateAllCounters() {
+            $(".overlay input").each(function() {
+                var spec_id = $(this).attr('id');
+                $("#"+spec_id+" p").text($(this).val());
+            });
+        }
+        */
+
 
 
     });

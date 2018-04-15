@@ -13,7 +13,7 @@ if (!empty($_GET["sample"])) {
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="sample.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-stopwatch"></i> Sample Count</a></li>
             <li><a href="search_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-search"></i> Search Specimen</a></li>
-            <li><a href="add_new_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-syringe"></i> Add New Specimen</a></li>
+            <li><a href="add_new_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-plus"></i> Add New Specimen</a></li>
         </ul>
     </nav>
     <?php

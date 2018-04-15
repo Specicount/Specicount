@@ -33,13 +33,14 @@ CREATE TABLE IF NOT EXISTS samples (
   core_id VARCHAR (45) NOT NULL,
   analyst_first_name VARCHAR (60) NOT NULL,
   analyst_last_name VARCHAR (60) NOT NULL,
-  start_date DATETIME NOT NULL,
+  start_date DATE NOT NULL,
   top_depth DECIMAL(19,2),
   bottom_depth DECIMAL(19,2),
   mid_depth DECIMAL(19,2),
   modelled_age INT (11), -- ????
   lycopodium INT (11),
   charcoal INT (11),
+  last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
   PRIMARY KEY (sample_id, core_id),
   FOREIGN KEY (core_id) REFERENCES cores(core_id)
