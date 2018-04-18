@@ -12,25 +12,39 @@ include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
 require_once 'phpformbuilder/database/Mysql.php';
 
+if ($_GET["edit"]) {
+    $form_name = 'add-new-project-edit';
+    $name = "Edit Project ".$_GET["edit"];
+} else {
+    $form_name = 'add-new-project';
+    $name = "Add New Project";
+}
+
+$db = new Mysql();
+
 /* =============================================
     validation if posted
 ============================================= */
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-project') === true) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     // create validator & auto-validate required fields
-    $validator = Form::validate('add-new-project');
+    $validator = Form::validate($form_name);
 
     if ($validator->hasErrors()) {
-        $_SESSION['errors']['user-form'] = $validator->getAllErrors();
+        $_SESSION['errors'][$form_name] = $validator->getAllErrors();
     } else {
-        $db = new Mysql();
 
         $update["project_name"] = Mysql::SQLValue($_POST["project_name"]);
         $update["biorealm"] = Mysql::SQLValue($_POST["biorealm"]);
         $update["country"] = Mysql::SQLValue($_POST["country"]);
         $update["region"] = Mysql::SQLValue($_POST["region"]);
 
-        $db->insertRow('projects', $update);
+        if ($_GET["edit"]) {
+            $db->updateRows('projects', $update, array("project_name" => $update["project_name"]));
+        } else {
+            $db->insertRow('projects', $update);
+        }
+
         if (!empty($db->error())) {
             $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
         } else {
@@ -39,18 +53,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-project') =
     }
 }
 
+if ($_GET["edit"]) {
+    unset($_SESSION['add-new-project-edit']);
+    $project_name = trim($_GET["edit"]);
+    $db->selectRows('projects', array('project_name' => Mysql::SQLValue($project_name)));
+    $project = $db->recordsArray()[0];
+    $_SESSION[$form_name]["project_name"] = $project["project_name"];
+    $_SESSION[$form_name]["biorealm"] = $project["biorealm"];
+    $_SESSION[$form_name]["country"] = $project["country"];
+    $_SESSION[$form_name]["region"] = $project["region"];
+}
+
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form('add-new-project', 'horizontal', 'novalidate', 'bs4');
+$form = new Form($form_name, 'horizontal', 'novalidate', 'bs4');
 
 
 $form->startFieldset('Project Data');
 $form->setCols(6, 6);
 $form->groupInputs('project_name', 'biorealm');
+
 $form->addHelper('Project Name', 'project_name');
-$form->addInput('text', 'project_name', '', '', 'required'); // Need to have warning for code
+if ($_GET["edit"]) {
+    $form->addInput('text', 'project_name', '', '', 'required, readonly="readonly"');
+} else {
+    $form->addInput('text', 'project_name', '', '', 'required'); // Need to have warning for code
+}
 $form->setCols(0, 6);
 $form->addHelper('Biorealm', 'biorealm');
 $form->addInput('text', 'biorealm', '', '', '');
@@ -76,6 +106,6 @@ $form->printBtnGroup('my-btn-group');
 
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
-$title = "Add New Project";
+$title = $name;
 require_once "add_form_html.php";
 ?>

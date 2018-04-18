@@ -53,13 +53,13 @@ CREATE TABLE IF NOT EXISTS specimen (
   species VARCHAR (45) DEFAULT NULL,
   poll_spore VARCHAR (10),
   grain_arrangement VARCHAR (45),
-  grain_morphology VARCHAR (45),
+  grain_morphology VARCHAR (200),
   polar_axis_length DECIMAL(19,1),
   equatorial_axis_length DECIMAL(19,1),
   size VARCHAR (45),-- ***determined*** 6 (integer)
   equatorial_shape_major VARCHAR (45),-- ***determined*** 7 character
   equatorial_shape_minor VARCHAR (45) DEFAULT 'rounded',
-  polar_shape VARCHAR (45),
+  polar_shape VARCHAR (200),
   surface_pattern VARCHAR (60),
   wall_thickness DECIMAL(19,1),
   wall_evenness VARCHAR (45),
@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS tags (
 CREATE TABLE IF NOT EXISTS found_specimen (
   sample_id VARCHAR (45) NOT NULL,
   spec_id VARCHAR (45) NOT NULL,
+  order INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
   PRIMARY KEY (sample_id, spec_id),

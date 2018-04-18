@@ -31,8 +31,10 @@ $db = new Mysql();
 
 if ($_GET["edit"]) {
     $form_name = 'add-new-specimen-edit';
+    $name = "Edit Specimen ".$_GET["edit"];
 } else {
     $form_name = 'add-new-specimen';
+    $name = "Add New Specimen";
 }
 
 /* =============================================
@@ -41,7 +43,7 @@ if ($_GET["edit"]) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     $validator = Form::validate($form_name);
     if ($validator->hasErrors()) {
-        $_SESSION['errors']['user-form'] = $validator->getAllErrors();
+        $_SESSION['errors'][$form_name] = $validator->getAllErrors();
     } else {
         $type = trim($_POST["poll_spore"]);
         $update["spec_id"] = Mysql::SQLValue($_POST["spec_id"], "text");
@@ -179,7 +181,7 @@ $form->setCols(4, 4);
 $form->groupInputs('spec_id', 'family');
 $form->addHelper('Specimen ID', 'spec_id');
 if ($_GET["edit"]) {
-    $form->addInput('text', 'spec_id', '', 'Descriptors ', 'required, readonly="readonly"'); // Need to have warning for code !!!!!!!!!
+    $form->addInput('text', 'spec_id', '', 'Descriptors ', 'required, readonly="readonly"');
 } else {
     $form->addInput('text', 'spec_id', '', 'Descriptors ', 'required'); // Need to have warning for code !!!!!!!!!
 }
@@ -230,35 +232,6 @@ $form->endDependentFields(); # End Spore Fields
 $form->startDependentFields('poll_spore', 'pollen'); # Pollen Fields
 
 # 3. Grain Morphology [pollen]
-/*$form->addCheckbox('grain_morphology_pollen', 'inaperturate',  'inaperturate');
-$form->addCheckbox('grain_morphology_pollen', 'monoporate',  'monoporate');
-$form->addCheckbox('grain_morphology_pollen', 'monocolpate / monosulcate',  'monocolpate / monosulcate');
-$form->addCheckbox('grain_morphology_pollen', 'diporate',  'diporate');
-$form->addCheckbox('grain_morphology_pollen', 'dicolpate',  'dicolpate');
-$form->addCheckbox('grain_morphology_pollen', 'dicolporate',  'dicolporate');
-$form->addCheckbox('grain_morphology_pollen', 'triporate',  'triporate');
-$form->addCheckbox('grain_morphology_pollen', 'tricolpate',  'tricolpate');
-$form->addCheckbox('grain_morphology_pollen', 'tricolporate',  'tricolporate');
-$form->addCheckbox('grain_morphology_pollen', '4 porate',  '4 porate');
-$form->addCheckbox('grain_morphology_pollen', '4 colpate',  '4 colpate');
-$form->addCheckbox('grain_morphology_pollen', '4 colporate',  '4 colporate');
-$form->addCheckbox('grain_morphology_pollen', '5 porate',  '5 porate');
-$form->addCheckbox('grain_morphology_pollen', '5 colpate',  '5 colpate');
-$form->addCheckbox('grain_morphology_pollen', '5 colporate',  '5 colporate');
-$form->addCheckbox('grain_morphology_pollen', 'zonoporate',  'zonoporate');
-$form->addCheckbox('grain_morphology_pollen', 'zonocolpate',  'zonocolpate');
-$form->addCheckbox('grain_morphology_pollen', 'zonocolporate',  'zonocolporate');
-$form->addCheckbox('grain_morphology_pollen', 'pantoporate',  'pantoporate');
-$form->addCheckbox('grain_morphology_pollen', 'pantocolpate',  'pantocolpate');
-$form->addCheckbox('grain_morphology_pollen', 'pantocolporate',  'pantocolporate');
-$form->addCheckbox('grain_morphology_pollen', 'heterocolpate',  'heterocolpate');
-$form->addCheckbox('grain_morphology_pollen', 'fenestrate',  'fenestrate');
-$form->addCheckbox('grain_morphology_pollen', 'syncopate / syncolporate',  'syncopate / syncolporate');
-$form->addCheckbox('grain_morphology_pollen', 'parasyncolpate / parasyncolporate',  'parasyncolpate / parasyncolporate');
-$form->addCheckbox('grain_morphology_pollen', 'vesiculate / saccate',  'vesiculate / saccate');
-$form->addCheckbox('grain_morphology_pollen', 'spiraperturate',  'spiraperturate');
-$form->printCheckboxGroup('grain_morphology_pollen', 'Grain Morphology ', false, 'required');*/
-
 $form->addOption('grain_morphology_pollen[]', 'inaperturate',  'inaperturate', '', '');
 $form->addOption('grain_morphology_pollen[]', 'monoporate',  'monoporate', '', '');
 $form->addOption('grain_morphology_pollen[]', 'monocolpate / monosulcate',  'monocolpate / monosulcate', '', '');
@@ -590,6 +563,5 @@ $form->addPlugin('nice-check', 'form', 'default', ['%skin%' => 'purple']);
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new', 'bs4');
 
-//$form = array($form, $form_primary_image, $form_images);
-$title = "Add New Specimen";
+$title = $name;
 require_once "add_form_html.php";

@@ -73,7 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
                     }
                     if (!empty($db->error())) $error = true;
                 }
-                //$i++;
             }
 
             if ($_POST["submit-btn"] == "reorder") {
@@ -123,56 +122,57 @@ $form->setCols(4, 8);*/
 //$qry = "SELECT * FROM BioBase.found_specimen WHERE sample_id = '$sample'";
 //$db->selectRows('found_specimen', array('sample_id' => Mysql::SQLValue($sample)), null, "order", false);
 
+
+
+#######################
+# Sample grid
+#######################
+
+
+$form->addHtml("<input type=\"hidden\" name=\"last_edit\" value=\"".$sample_data["last_edit"]."\">");
+
+#######################
+# Clear/Save
+#######################
+$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save append" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('button', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onClick=window.location.reload()', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
+$form->printBtnGroup('my-btn-group');
+
+# Lycopodium
+
+$form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
+$form->addHtml('<text style="font-weight: bold;padding: 5px">Lycopodium</text>');
+$form->addHtml("<table style='width: 100%'>");
+$form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
+$form->addBtn('button', 'lycopodium_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'lycopodium\')');
+$form->addHtml("</td><td>");
+$form->addInput('number', 'lycopodium', $sample_data["lycopodium"], '', 'required');
+$form->addHtml("</td><td style='text-align: right'>");
+$form->addBtn('button', 'lycopodium_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'lycopodium\')');
+$form->addHtml("</td></tr></table>");
+$form->addHtml('</div>');
+
+# Charcoal
+$form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
+$form->addHtml('<text style="font-weight: bold;padding: 5px">Charcoal</text>');
+$form->addHtml("<table style='width: 100%'>");
+$form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
+$form->addBtn('button', 'charcoal_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'charcoal\')');
+$form->addHtml("</td><td>");
+$form->addInput('number', 'charcoal', $sample_data["charcoal"], '', 'required');
+$form->addHtml("</td><td style='text-align: right'>");
+$form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'charcoal\')');
+$form->addHtml("</td></tr></table>");
+$form->addHtml('</div>');
+
 $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id=".Mysql::SQLValue($sample)." ORDER BY `order` DESC");
 $specs = array();
+$specs = $db->recordsArray();
+$form->addHtml("<div>");
+
 if($db->rowCount() > 0) {
-
-    #######################
-    # Sample grid
-    #######################
-    $i = 0;
-    $specs = $db->recordsArray();
-    $form->addHtml("<div>");
-
-    $form->addHtml("<input type=\"hidden\" name=\"last_edit\" value=\"".$sample_data["last_edit"]."\">");
-
-    #######################
-    # Clear/Save
-    #######################
-    $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save append" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
-    $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=updateAllCounters()', 'my-btn-group');
-    $form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
-    $form->addBtn('submit', 'submit-btn', "reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
-    $form->printBtnGroup('my-btn-group');
-
-    # Lycopodium
-
-    $form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
-    $form->addHtml('<text style="font-weight: bold;padding: 5px">Lycopodium</text>');
-    $form->addHtml("<table style='width: 100%'>");
-    $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
-    $form->addBtn('button', 'lycopodium_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'lycopodium\')');
-    $form->addHtml("</td><td>");
-    $form->addInput('number', 'lycopodium', $sample_data["lycopodium"], '', 'required');
-    $form->addHtml("</td><td style='text-align: right'>");
-    $form->addBtn('button', 'lycopodium_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'lycopodium\')');
-    $form->addHtml("</td></tr></table>");
-    $form->addHtml('</div>');
-
-    # Charcoal
-    $form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
-    $form->addHtml('<text style="font-weight: bold;padding: 5px">Charcoal</text>');
-    $form->addHtml("<table style='width: 100%'>");
-    $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
-    $form->addBtn('button', 'charcoal_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'charcoal\')');
-    $form->addHtml("</td><td>");
-    $form->addInput('number', 'charcoal', $sample_data["charcoal"], '', 'required');
-    $form->addHtml("</td><td style='text-align: right'>");
-    $form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'charcoal\')');
-    $form->addHtml("</td></tr></table>");
-    $form->addHtml('</div>');
-
-
 
     $form->addHtml('<hr>');
 
@@ -180,22 +180,22 @@ if($db->rowCount() > 0) {
 
     foreach ($specs as $specimen) {
         $image = $specimen["image_folder"].$specimen["primary_image"];
-        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="flex-container specimen-container">');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'" class="flex-container specimen-container">');
         if (is_file($image)) {
             $form->addHtml('<img src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/'.$specimen["primary_image"].'">');
         }
         $form->addHtml('<div class="counter">
                                 <p id="'.$specimen["spec_id"].'_counter">' . $specimen["count"] . '</p>
                               </div>');
-        $form->addHtml('<div class="overlay">');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'_overlay" class="overlay">');
         $form->addHtml('<a href="#">
-                                <span><i class="fas fa-window-close close-btn"></i></span>
+                                <span><i id="'.$specimen["spec_id"].'_close-btn" class="fas fa-window-close close-btn"></i></span>
                              </a>');
         $form->addHtml('<text>ID: ' . $specimen["spec_id"] . '</text>
             <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>
             <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
-        $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\');updateCounter(\''.$specimen["spec_id"].'\')');
-        $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
+        $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'_input'.'\');updateCounter(\''.$specimen["spec_id"].'\')');
+        $form->addInput('number', $specimen["spec_id"].'_input', $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
 
         $form->addHtml('</div>');
         $form->addHtml('</div>');
@@ -212,20 +212,22 @@ if($db->rowCount() > 0) {
 
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
+
 $title = "$project > $core > $sample > Sample Count";
 require_once "add_form_html.php";
 ?>
 <script>
 
     function updateCounter(spec_id){
-        document.getElementById(spec_id+"_counter").innerHTML = document.getElementById(spec_id).value;
-    }
-    function add(spec_id) {
-        document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) + 1;
+        document.getElementById(spec_id+"_counter").innerHTML = document.getElementById(spec_id+"_input").value;
     }
 
-    function subtract(spec_id){
-        document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
+    function add(input_id) {
+        document.getElementById(input_id).value = parseFloat(document.getElementById(input_id).value) + 1;
+    }
+
+    function subtract(input_id){
+        document.getElementById(input_id).value = parseFloat(document.getElementById(input_id).value) - 1;
     }
     window.onkeyup = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
@@ -235,7 +237,8 @@ require_once "add_form_html.php";
         $i = 0;
         foreach ($keys as $k) {
             echo "if (key == ".(ord($k) - 32).") {
-                   document.getElementById('".$specs[$i]["spec_id"]."').value = parseFloat(document.getElementById('".$specs[$i]["spec_id"]."').value) + 1;
+                   add('".$specs[$i]["spec_id"]."');
+                   updateCounter('".$specs[$i]["spec_id"]."');
                   }";
             $i++;
             if ($i >= count($specs)) break;
@@ -243,53 +246,36 @@ require_once "add_form_html.php";
         ?>
     }
 
+
     $(document).ready(function() {
+
+
         // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
         // If mouse intends to hover over specimen
-        $(".specimen-container").hoverIntent(
-        function() {
-            var current_overlay = $(".overlay[style*='block']");
-            fadeOutOverlay(current_overlay.parent());
+            $(".specimen-container").hoverIntent(
+            function() {
+                fadeInOverlay($(this).attr('id'));
+            },
+            function() {
+                fadeOutOverlay($(this).attr('id'));
+            }
+        );
 
-            $(this).children(".overlay").fadeIn(200);
-            $(this).children(".counter").fadeOut(200);
-        },
-        function() {
-            fadeOutOverlay($(this));
-        });
-
-        //Takes
-        function fadeOutOverlay(specimen_container) {
-            specimen_container.find(".overlay").fadeOut(200);
-            var counter = specimen_container.find(".counter");
-            counter.fadeIn(200);
+        function fadeInOverlay(spec_id) {
+            $("#"+spec_id+"_overlay").fadeIn(200);
+            $("#"+spec_id+"_counter").fadeOut(200);
         }
 
+        function fadeOutOverlay(spec_id) {
+            $("#"+spec_id+"_overlay").fadeOut(200);
+            $("#"+spec_id+"_counter").fadeIn(200);
+        }
 
         //If close button on overlay clicked
         $(".overlay .close-btn").click(function(){
-            fadeOutOverlay($(this).parent().parent().parent().parent());
+            //console.log($(this)[0]);
+            var spec_id = $(this).attr('id').split('_')[0];
+            fadeOutOverlay(spec_id);
         })
-
-
-        /*
-        //If overlay clicked
-        $('.overlay').click(function (event){
-            //Don't propogate the click to the parent specimen
-            event.stopPropagation();
-        });
-        */
-
-        /*
-        function updateAllCounters() {
-            $(".overlay input").each(function() {
-                var spec_id = $(this).attr('id');
-                $("#"+spec_id+" p").text($(this).val());
-            });
-        }
-        */
-
-
-
     });
 </script>

@@ -10,7 +10,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="Bootstrap 4 Form Generator - how to create an Employment Application Form with Php Form Builder Class">
-<link rel="icon" href="images/grain-2025704_960_720_small.png">
+<link rel="icon" href="images/pollen.png">
 <style type="text/css">
     fieldset {
         margin-bottom: 80px;

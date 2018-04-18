@@ -18,10 +18,28 @@
     height: 100%;
     width: 100%;
     background-color: rgba(255,255,255,0.8);
-    display: none;
     vertical-align: middle;
     text-align: center;
+    display:none;
+    /*
+    -webkit-transition: all 0.2s ease-in-out 0s;
+    -moz-transition: all 0.2s ease-in-out 0s;
+    -ms-transition: all 0.2s ease-in-out 0s;
+    transition: all 0.2s ease-in-out 0s;
+
+    opacity: 0;
+    visibility: hidden;
+    */
+
 }
+
+/*
+.specimen-container:hover .overlay, .specimen-container:active .overlay {
+    opacity: 1;
+    visibility: visible;
+
+}
+*/
 
 text {
     font-weight: bold;
@@ -32,6 +50,16 @@ p {
     font-weight: bold;
     padding: 0px 5px;
     margin-left: -1px;
+}
+
+.counter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: max-content;
+    height: 27px;
+    background-color: rgba(255,255,255,0.9);
+    border: 2px solid grey;
 }
 
 .overlay .close-btn {
@@ -65,17 +93,6 @@ p {
     margin-top: -2%;
     font-size: calc(0.9vw + 10px);
 }
-
-.counter {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: max-content;
-    height: 27px;
-    background-color: rgba(255,255,255,0.9);
-    border: 2px solid grey;
-}
-
 
 
 .overlay .fa-plus {
