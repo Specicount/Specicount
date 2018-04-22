@@ -17,11 +17,18 @@
         </includes>
         <js_code>
 <![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
         $(this).attr('data-value', $(this).val()).pickadate({
             labelYearSelect: 'Select a year',
             formatSubmit: 'yyyy-mm-dd',
             onClose: function() {
                 this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
             }
         });
         if($("%selector%").width() < 240) {
@@ -53,6 +60,8 @@
         </includes>
         <js_code>
 <![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
         $(this).attr('data-value', $(this).val()).pickadate({
             selectYears: 120,
             // max: true,
@@ -61,6 +70,11 @@
             formatSubmit: 'yyyy-mm-dd',
             onClose: function() {
                 this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
             }
         });
     });]]>
@@ -81,11 +95,23 @@
             </js>
         </includes>
         <js_code>
-<![CDATA[   $("%selector%").pickatime({
-        format: 'HH:i',
-        formatLabel: '%format%',
-        formatSubmit: 'HH:i:00',
-        interval: %interval%
+<![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
+        $(this).attr('data-value', $(this).val()).pickatime({
+            format: 'HH:i',
+            formatLabel: '%format%',
+            formatSubmit: 'HH:i:00',
+            interval: %interval%,
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
+            }
+        });
     });]]>
         </js_code>
     </custom-time>
@@ -106,6 +132,8 @@
         </includes>
         <js_code>
 <![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
         $(this).attr('data-value', $(this).val()).pickadate({
             labelMonthNext: 'Next month',
             labelMonthPrev: 'Previous month',
@@ -118,6 +146,11 @@
             formatSubmit: 'yyyy-mm-dd',
             onClose: function() {
                 this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
             }
         });
     });]]>
@@ -136,9 +169,21 @@
             </js>
         </includes>
         <js_code>
-<![CDATA[   $("%selector%").pickadate({
-        labelYearSelect: 'Select a year',
-        formatSubmit: 'yyyy-mm-dd'
+<![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
+        $(this).attr('data-value', $(this).val()).pickadate({
+            labelYearSelect: 'Select a year',
+            formatSubmit: 'yyyy-mm-dd',
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
+            }
+        });
     });]]>
         </js_code>
     </pickadate-french>
@@ -154,11 +199,23 @@
             </js>
         </includes>
         <js_code>
-<![CDATA[   $("%selector%").pickatime({
-        format: 'HH !h i m!in',
-        formatLabel: '<b>H</b>:i',
-        formatSubmit: 'HH:i',
-        interval: 15
+<![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
+        $(this).attr('data-value', $(this).val()).pickatime({
+            format: 'HH !h i m!in',
+            formatLabel: '<b>H</b>:i',
+            formatSubmit: 'HH:i',
+            interval: 15,
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
+            }
+        });
     });]]>
         </js_code>
     </pickatime>
@@ -175,11 +232,23 @@
             </js>
         </includes>
         <js_code>
-<![CDATA[   $("%selector%").pickatime({
-        format: 'HH !heures i m!inutes',
-        formatLabel: '<b>H</b>:i',
-        formatSubmit: 'HH:i',
-        interval: 15
+<![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
+        $(this).attr('data-value', $(this).val()).pickatime({
+            format: 'HH !heures i m!inutes',
+            formatLabel: '<b>H</b>:i',
+            formatSubmit: 'HH:i',
+            interval: 15,
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
+            }
+        });
     });]]>
         </js_code>
     </pickatime-french>
@@ -196,8 +265,20 @@
             </js>
         </includes>
         <js_code>
-<![CDATA[   $("%selector%").pickadate({
-        formatSubmit: 'yyyy-mm-dd'
+<![CDATA[   $("%selector%").each(function() {
+        var parentFormId = $(this).closest('form').attr('id'),
+            fieldName = $(this).attr('name');
+        $(this).attr('data-value', $(this).val()).pickadate({
+            formatSubmit: 'yyyy-mm-dd',
+            onClose: function() {
+                this.set('select', this.get('highlight'));
+            },
+            onSet: function() {
+                if(typeof($('#' + parentFormId).formValidation) !== "undefined") {
+                    $('#' + parentFormId).formValidation('revalidateField', fieldName);
+                }
+            }
+        });
     });]]>
         </js_code>
     </pickadate-polish>

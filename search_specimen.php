@@ -36,9 +36,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
         $update["count"] = Mysql::SQLValue(1);
         $db->insertRow('found_specimen', $update);
         if (!empty($db->error())) {
-            $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
+            if (stripos($db->error(), "Duplicate") !== false) {
+                $msg = '<p class="alert alert-danger">Specimen: '.$update["spec_id"].' has already added to the sample</p>' . "\n";
+            } else {
+                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
+            }
+
         } else {
-            $msg = '<p class="alert alert-success">Successfully added to sample !</p>' . " \n";
+            $msg = '<p class="alert alert-success">Successfully added: '.$update["spec_id"].' to the sample !</p>' . " \n";
         }
     }
 

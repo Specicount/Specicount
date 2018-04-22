@@ -8,11 +8,9 @@
  * @license     http://formvalidation.io/license/
  */
 
-// CUSTOM
 .input-group ~ i.form-control-feedback {
     right: 44px !important;
 }
-// END CUSTOM
 
 .fv-has-feedback {
     position: relative;
@@ -71,7 +69,7 @@
 .fv-form-bootstrap4 .form-group.row .fv-control-feedback {
     right: 15px;
 }
-.fv-form-bootstrap4 .form-group.row .form-check~.fv-control-feedback {
+.fv-form-bootstrap4 .form-group.row .form-check ~ .fv-control-feedback {
     top: -7px; /* labelHeight/2 - iconHeight/2 */
 }
 /* Inline form */
@@ -79,14 +77,14 @@
     vertical-align: top;
 }
 /* Stacked form */
-.fv-form-bootstrap4:not(.form-inline) label~.fv-control-feedback {
+.fv-form-bootstrap4:not(.form-inline) label ~ .fv-control-feedback {
     top: 32px;
 }
 /* Without label */
-.fv-form-bootstrap4:not(.form-inline) label.sr-only~.fv-control-feedback {
+.fv-form-bootstrap4:not(.form-inline) label.sr-only ~ .fv-control-feedback {
     top: -7px; /* labelHeight/2 - iconHeight/2 */
 }
-.fv-form-bootstrap4:not(.form-inline) .form-check~.fv-control-feedback {
+.fv-form-bootstrap4:not(.form-inline) .form-check ~ .fv-control-feedback {
     top: 25px; /* labelHeight + checkboxHeight/2 - iconHeight/2 */
 }
 
@@ -106,32 +104,32 @@
 
 /* Icon position */
 .fv-form-foundation5 .fv-control-feedback {
-    right: 15px;    /* The padding-right of .columns */
-    width: 37px;    /* Same as height of input */
+    right: 15px; /* The padding-right of .columns */
+    width: 37px; /* Same as height of input */
     height: 37px;
     line-height: 37px;
 }
 
 .fv-form-foundation5 .row .row:not(.collapse) .fv-control-feedback {
-    right: 8px;     /* Multiple fields in the same row, same as padding-right of .row .row .column(s) */
+    right: 8px; /* Multiple fields in the same row, same as padding-right of .row .row .column(s) */
 }
 
 .fv-form-foundation5 .row .collapse .fv-control-feedback {
     right: 0;
 }
 
-.fv-form-foundation5.fv-form-horizontal [type="checkbox"]~.fv-control-feedback,
-.fv-form-foundation5.fv-form-horizontal [type="radio"]~.fv-control-feedback {
-    top: -8px;      /* labelHeight/2 - iconHeight/2 */
+.fv-form-foundation5.fv-form-horizontal [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-foundation5.fv-form-horizontal [type='radio'] ~ .fv-control-feedback {
+    top: -8px; /* labelHeight/2 - iconHeight/2 */
 }
 
 /* Stacked form */
 .fv-form-foundation5 label .fv-control-feedback {
-    top: 21px;      /* Same as height of label */
+    top: 21px; /* Same as height of label */
 }
 
-.fv-form-foundation5 [type="checkbox"]~.fv-control-feedback,
-.fv-form-foundation5 [type="radio"]~.fv-control-feedback {
+.fv-form-foundation5 [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-foundation5 [type='radio'] ~ .fv-control-feedback {
     top: 15px;
 }
 
@@ -142,7 +140,7 @@
 
 .fv-form-foundation5 .fv-has-success label,
 .fv-form-foundation5 .fv-has-success .fv-control-feedback {
-    color: #43AC6A; /* Same as $success-color */
+    color: #43ac6a; /* Same as $success-color */
 }
 
 /* --------------------
@@ -151,15 +149,15 @@
 
 /* Icon position */
 .fv-form-foundation .fv-control-feedback {
-    right: 15px;    /* The padding-right of .columns */
-    width: 39px;    /* Same as height of input */
+    right: 15px; /* The padding-right of .columns */
+    width: 39px; /* Same as height of input */
     height: 39px;
     line-height: 39px;
 }
 
-.fv-form-foundation [type="checkbox"]~.fv-control-feedback,
-.fv-form-foundation [type="radio"]~.fv-control-feedback {
-    top: -7px;      /* labelHeight/2 - iconHeight/2 */
+.fv-form-foundation [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-foundation [type='radio'] ~ .fv-control-feedback {
+    top: -7px; /* labelHeight/2 - iconHeight/2 */
 }
 
 .fv-form-foundation .form-error {
@@ -168,9 +166,9 @@
 
 /* Stacked form */
 .fv-form-foundation label .fv-control-feedback,
-.fv-form-foundation fieldset [type="checkbox"]~.fv-control-feedback,
-.fv-form-foundation fieldset [type="radio"]~.fv-control-feedback {
-    top: 25px;      /* Same as height of label */
+.fv-form-foundation fieldset [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-foundation fieldset [type='radio'] ~ .fv-control-feedback {
+    top: 25px; /* Same as height of label */
 }
 
 /* Color */
@@ -196,15 +194,15 @@
  * ------------ */
 
 .fv-form-pure .fv-control-feedback {
-    width: 36px;    /* Height of Pure input */
+    width: 36px; /* Height of Pure input */
     height: 36px;
     line-height: 36px;
 }
 
 /* Horizontal form */
-.fv-form-pure.pure-form-aligned [type="checkbox"]~.fv-control-feedback,
-.fv-form-pure.pure-form-aligned [type="radio"]~.fv-control-feedback {
-    top: -9px;      /* labelHeight/2 - iconHeight/2 */
+.fv-form-pure.pure-form-aligned [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-pure.pure-form-aligned [type='radio'] ~ .fv-control-feedback {
+    top: -9px; /* labelHeight/2 - iconHeight/2 */
 }
 
 .fv-form-pure.pure-form-aligned .fv-help-block {
@@ -218,27 +216,27 @@
 }
 
 .fv-form-pure.pure-form-stacked .fv-control-feedback {
-    top: 22px;      /* Same as height of label */
+    top: 22px; /* Same as height of label */
 }
 
-.fv-form-pure.pure-form-stacked .pure-radio~.fv-control-feedback {
+.fv-form-pure.pure-form-stacked .pure-radio ~ .fv-control-feedback {
     top: 20px;
 }
 
-.fv-form-pure.pure-form-stacked .fv-sr-only~.fv-control-feedback {
+.fv-form-pure.pure-form-stacked .fv-sr-only ~ .fv-control-feedback {
     top: -9px;
 }
 
 .fv-form-pure .fv-has-error label,
 .fv-form-pure .fv-has-error .fv-help-block,
 .fv-form-pure .fv-has-error .fv-control-feedback {
-    color: #CA3C3C; /* Same as .button-error */
+    color: #ca3c3c; /* Same as .button-error */
 }
 
 .fv-form-pure .fv-has-success label,
 .fv-form-pure .fv-has-success .fv-help-block,
 .fv-form-pure .fv-has-success .fv-control-feedback {
-    color: #1CB841; /* Same as .button-success */
+    color: #1cb841; /* Same as .button-success */
 }
 
 /* -------------------
@@ -262,8 +260,8 @@
  * -------------- */
 
 .fv-form-uikit .fv-control-feedback {
-    top: 25px;      /* Height of UIKit label */
-    width: 30px;    /* Height of UIKit input */
+    top: 25px; /* Height of UIKit label */
+    width: 30px; /* Height of UIKit input */
     height: 30px;
     line-height: 30px;
 }
@@ -277,30 +275,30 @@
     top: 0;
 }
 
-.fv-form-uikit.uk-form-horizontal [type="checkbox"]~.fv-control-feedback,
-.fv-form-uikit.uk-form-horizontal [type="radio"]~.fv-control-feedback {
+.fv-form-uikit.uk-form-horizontal [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-uikit.uk-form-horizontal [type='radio'] ~ .fv-control-feedback {
     top: -7px;
 }
 
 /* Without labels */
-.fv-form-uikit label.fv-sr-only~.fv-control-feedback {
+.fv-form-uikit label.fv-sr-only ~ .fv-control-feedback {
     top: -7px !important;
 }
 
 /* Stacked form */
-.fv-form-uikit.uk-form-stacked [type="checkbox"]~.fv-control-feedback,
-.fv-form-uikit.uk-form-stacked [type="radio"]~.fv-control-feedback {
+.fv-form-uikit.uk-form-stacked [type='checkbox'] ~ .fv-control-feedback,
+.fv-form-uikit.uk-form-stacked [type='radio'] ~ .fv-control-feedback {
     top: 20px;
 }
 
 .fv-form-uikit .fv-has-error label,
 .fv-form-uikit .fv-has-error .uk-form-label,
 .fv-form-uikit .fv-has-error .fv-control-feedback {
-    color: #D85030;     /* Same as .uk-form-danger */
+    color: #d85030; /* Same as .uk-form-danger */
 }
 
 .fv-form-uikit .fv-has-success label,
 .fv-form-uikit .fv-has-success .uk-form-label,
 .fv-form-uikit .fv-has-success .fv-control-feedback {
-    color: #659F13;     /* Same as .uk-form-success */
+    color: #659f13; /* Same as .uk-form-success */
 }

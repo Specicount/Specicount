@@ -15,15 +15,27 @@ class FormExtended extends Form
         $this->startFieldset('Please fill in this form to contact us');
         $this->addHtml('<p class="text-warning">All fields are required</p>');
         $this->groupInputs('user-name', 'user-first-name');
-        $this->setCols(0, 6, 'xs');
-        $this->addIcon('user-name', '<span class="glyphicon glyphicon-user"></span>', 'before');
+        $this->setCols(0, 6, 'sm');
+        $user_icon = '<span class="glyphicon glyphicon-user"></span>';
+        if ($this->framework == 'bs4') {
+            $user_icon = '<i class="fa fa-user" aria-hidden="true"></i>';
+        }
+        $this->addIcon('user-name', $user_icon, 'before');
         $this->addInput('text', 'user-name', '', '', 'required, placeholder=Name');
-        $this->addIcon('user-first-name', '<span class="glyphicon glyphicon-user"></span>', 'before');
+        $this->addIcon('user-first-name', $user_icon, 'before');
         $this->addInput('text', 'user-first-name', '', '', 'required, placeholder=First Name');
-        $this->setCols(0, 12, 'xs');
-        $this->addIcon('user-email', '<span class="glyphicon glyphicon-envelope"></span>', 'before');
+        $this->setCols(0, 12, 'sm');
+        $email_icon = '<span class="glyphicon glyphicon-envelope"></span>';
+        if ($this->framework == 'bs4') {
+            $email_icon = '<i class="fa fa-envelope" aria-hidden="true"></i>';
+        }
+        $this->addIcon('user-email', $email_icon, 'before');
         $this->addInput('email', 'user-email', '', '', 'required, placeholder=Email');
-        $this->addIcon('user-phone', '<span class="glyphicon glyphicon-earphone"></span>', 'before');
+        $phone_icon = '<span class="glyphicon glyphicon-earphone"></span>';
+        if ($this->framework == 'bs4') {
+            $phone_icon = '<i class="fa fa-phone" aria-hidden="true"></i>';
+        }
+        $this->addIcon('user-phone', $phone_icon, 'before');
         $this->addInput('text', 'user-phone', '', '', 'required, placeholder=Phone');
         $this->addTextarea('message', '', '', 'cols=30, rows=4, required, placeholder=Message');
         $this->addPlugin('word-character-count', '#message', 'default', array('%maxAuthorized%' => 100));
@@ -36,7 +48,7 @@ class FormExtended extends Form
         $this->endFieldset();
 
         // Custom radio & checkbox css
-        if($this->framework != 'material') {
+        if ($this->framework != 'material') {
             $this->addPlugin('nice-check', 'form', 'default', ['%skin%' => 'green']);
         }
 
@@ -103,7 +115,6 @@ class FormExtended extends Form
 
             return false;
         } else {
-
             return true;
         }
     }
@@ -114,7 +125,7 @@ class FormExtended extends Form
     {
 
         // get hostname
-        $hostname = 'phpformbuilder.pro';
+        $hostname = 'phpformbuilder.pro'; // replace hostname with yours
         $email_config = array(
             'sender_email'    => 'contact@' . $hostname,
             'recipient_email' => $address,
@@ -179,7 +190,7 @@ class FormExtended extends Form
         $this->addOption('civility' . $index, 'M.', 'M.');
         $this->addOption('civility' . $index, 'M<sup>rs</sup>', 'Mrs');
         $this->addOption('civility' . $index, 'M<sup>s</sup>', 'Ms');
-        $this->addSelect('civility' . $index, 'Civility' . $index_text, 'class=selectpicker, required');
+        $this->addSelect('civility' . $index, 'Civility' . $index_text, 'class=select2, required');
 
         return $this;
     }
@@ -241,7 +252,7 @@ class FormExtended extends Form
         $this->addHtml('<p>&nbsp;</p>');
         $cancel_class = 'btn btn-default';
         $submit_class = 'btn btn-success';
-        if($this->framework == 'foundation') {
+        if ($this->framework == 'foundation') {
             $cancel_class = 'button warning';
             $submit_class = 'button primary';
         }

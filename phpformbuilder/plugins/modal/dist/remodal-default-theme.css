@@ -62,6 +62,7 @@
 
   color: #2b2e38;
   background: #fff;
+  text-align: left;
 }
 
 .remodal.remodal-is-opening,
@@ -94,7 +95,7 @@
 .remodal-close {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
 
   display: block;
   overflow: visible;
@@ -121,7 +122,7 @@
 }
 
 .remodal-close:before {
-  font-family: Arial, "Helvetica CY", "Nimbus Sans L", sans-serif !important;
+  font-family: Arial, 'Helvetica CY', 'Nimbus Sans L', sans-serif !important;
   font-size: 25px;
   line-height: 35px;
 
@@ -133,7 +134,7 @@
 
   width: 35px;
 
-  content: "\00d7";
+  content: '\00d7';
   text-align: center;
 }
 

@@ -54,7 +54,7 @@
         // if no formvalidation
         if(!hasValidator) {
             $(this).intlTelInput({
-                utilsScript: 'class/phpformbuilder/plugins/intl-tel-input/js/utils.js',
+                utilsScript: 'phpformbuilder/plugins/intl-tel-input/js/utils.js',
                 initialCountry: 'auto',
                 geoIpLookup: function(callback) {
                   $.get("//ipinfo.io", function() {}, "jsonp").always(function(resp) {
@@ -72,6 +72,26 @@
         } else if(typeof(FormValidation.Validator.intPhoneNumber) === 'undefined') {
 
             // Define new validator
+            FormValidation.I18n = $.extend(true, FormValidation.I18n || {}, {
+                'en_US': {
+                    intPhoneNumber: {
+                        'default': 'Please enter a valid phone number',
+                        'countryCode': 'The country code is not valid',
+                        'tooShort': 'The phone number is too short',
+                        'tooLong': 'The phone number is too long',
+                        'notANumber': ''
+                    }
+                },
+                'fr_FR': {
+                    intPhoneNumber: {
+                        'default': 'Veuillez entrer un numéro de téléphone valide',
+                        'countryCode': 'Le code du pays est invalide',
+                        'tooShort': 'Le numéro de téléphone est trop court',
+                        'tooLong': 'Le numéro de téléphone est trop long',
+                        'notANumber': 'Veuillez entrer un nombre'
+                    }
+                }
+            });
             FormValidation.Validator.intPhoneNumber = {
                 html5Attributes: {
                     autoplaceholder: 'autoPlaceholder',
@@ -131,26 +151,27 @@
                 validate: function(validator, $field, options) {
                     var isValid = $field.val() === '' || $field.intlTelInput('isValidNumber'),
                         err     = $field.intlTelInput('getValidationError'),
-                        message = null;
+                        message = null,
+                        locale   = validator.getLocale();
                     switch (err) {
                         case intlTelInputUtils.validationError.INVALID_COUNTRY_CODE:
-                            message = 'The country code is not valid';
+                            message = FormValidation.Helper.format(FormValidation.I18n[locale].intPhoneNumber.countryCode);
                             break;
 
                         case intlTelInputUtils.validationError.TOO_SHORT:
-                            message = 'The phone number is too short';
+                            message = FormValidation.Helper.format(FormValidation.I18n[locale].intPhoneNumber.tooShort);
                             break;
 
                         case intlTelInputUtils.validationError.TOO_LONG:
-                            message = 'The phone number is too long';
+                            message = FormValidation.Helper.format(FormValidation.I18n[locale].intPhoneNumber.tooLong);
                             break;
 
                         case intlTelInputUtils.validationError.NOT_A_NUMBER:
-                            message = 'The value is not a number';
+                            message = FormValidation.Helper.format(FormValidation.I18n[locale].intPhoneNumber.notANumber);
                             break;
 
                         default:
-                            message = 'The phone number is not valid';
+                            message = FormValidation.Helper.format(FormValidation.I18n[locale].intPhoneNumber.default);
                             break;
                     }
 

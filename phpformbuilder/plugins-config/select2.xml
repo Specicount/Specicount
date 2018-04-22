@@ -14,7 +14,7 @@
             </js>
         </includes>
         <js_code>
-<![CDATA[function buildTemplate(option) {
+            <![CDATA[function buildTemplate(option) {
     var output  = option.text, // default
         icon    = $(option.element).data('icon');
         content = $(option.element).data('content');
@@ -29,6 +29,10 @@
 $("%selector%").each(function() {
     if($(this).data('width') !== undefined) {
         $(this).css('width', $(this).data('width'));
+    } else if($(this).parent('.input-group').length > 0) {
+        $(this).css('width', 'auto');
+    } else {
+        $(this).css('width', '100%');
     }
 }, $("%selector%"));
 $("%selector%").select2({
@@ -48,14 +52,21 @@ $("%selector%").select2({
             </js>
         </includes>
         <js_code>
-<![CDATA[function formatState (state, container) {
+            <![CDATA[function formatState (state, container) {
+    var stateClass = '';
     if (state.element) {
         $(container).addClass($(state.element).attr("class"));
     }
     if (!state.id) {
         return state.text;
     }
-    var $state = $('<a class="f16"><span class="flag ' + state.id.toLowerCase() + '"><span class="text">' + state.text + '</span></span></a>');
+    var lowerId = state.id.toLowerCase();
+    if(lowerId.length < 4) {
+        stateClass = 'flag ' + lowerId;
+    } else if (state.element) {
+        stateClass = $(state.element).attr("class");
+    }
+    var $state = $('<a class="f16"><span class="' + stateClass + '"><span class="text">' + state.text + '</span></span></a>');
 
     return $state;
 };
@@ -76,7 +87,7 @@ $("%selector%").select2({
             </js>
         </includes>
         <js_code>
-<![CDATA[function formatState (state, container) {
+            <![CDATA[function formatState (state, container) {
     if (state.element) {
         $(container).addClass($(state.element).attr("class"));
     }
@@ -92,4 +103,30 @@ $("%selector%").select2({
 });]]>
         </js_code>
     </countries-flags-32>
+    <multiple>
+        <js_code>
+            <![CDATA[function buildTemplate(option) {
+    var output  = option.text, // default
+        icon    = $(option.element).data('icon');
+        content = $(option.element).data('content');
+    if(icon !== undefined) {
+        output = $('<span><i class="' + icon + ' mr-3"></i>' + option.text + '</span>');
+    }
+    if(content !== undefined) {
+        output = $('<span>' + content + option.text + '</span>');
+    }
+    return output;
+}
+$("%selector%").each(function() {
+    if($(this).data('width') !== undefined) {
+        $(this).css('width', $(this).data('width'));
+    }
+}, $("%selector%"));
+$("%selector%").select2({
+    theme: "%theme%",
+    templateResult: buildTemplate,
+    closeOnSelect: false
+});]]>
+        </js_code>
+    </multiple>
 </root>

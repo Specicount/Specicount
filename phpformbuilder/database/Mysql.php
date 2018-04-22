@@ -1776,21 +1776,27 @@ class Mysql
                 }
                 break;
             case "date":
-                if (self::isDate($value)) {
+                if (empty($value)) {
+                    $return_value = "NULL";
+                } elseif (self::isDate($value)) {
                     $return_value = "'" . date('Y-m-d', strtotime($value)) . "'";
                 } else {
                     $return_value = "NULL";
                 }
                 break;
             case "datetime":
-                if (self::isDate($value)) {
+                if (empty($value)) {
+                    $return_value = "NULL";
+                } elseif (self::isDate($value)) {
                     $return_value = "'" . date('Y-m-d H:i:s', strtotime($value)) . "'";
                 } else {
                     $return_value = "NULL";
                 }
                 break;
             case "time":
-                if (self::isDate($value)) {
+                if (empty($value)) {
+                    $return_value = "NULL";
+                } elseif (self::isDate($value)) {
                     $return_value = "'" . date('H:i:s', strtotime($value)) . "'";
                 } else {
                     $return_value = "NULL";

@@ -9,12 +9,24 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
+function delete_files($target) {
+    if(is_dir($target)){
+        $files = glob( $target . '*', GLOB_MARK ); //GLOB_MARK adds a slash to directories returned
+
+        foreach( $files as $file )
+        {
+            delete_files( $file );
+        }
+
+        rmdir( $target );
+    } elseif(is_file($target)) {
+        unlink( $target );
+    }
+}
+
 /* =============================================
     start session and include form class
 ============================================= */
-
-/*error_reporting(E_ALL);
-ini_set('display_errors', 1);*/
 
 session_start();
 include_once 'phpformbuilder/Form.php';
@@ -41,77 +53,90 @@ if ($_GET["edit"]) {
     validation if posted
 ============================================= */
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
-    $validator = Form::validate($form_name);
-    if ($validator->hasErrors()) {
-        $_SESSION['errors'][$form_name] = $validator->getAllErrors();
-    } else {
-        $type = trim($_POST["poll_spore"]);
-        $update["spec_id"] = Mysql::SQLValue($_POST["spec_id"], "text");
-        $update["family"] = Mysql::SQLValue($_POST["family"], "text");
-        $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
-        $update["species"] = Mysql::SQLValue($_POST["species"], "text");
-        $update["poll_spore"] = Mysql::SQLValue($type, "text");
-        $update["grain_arrangement"] = Mysql::SQLValue($_POST["grain_arrangement"], "text");
-        $update["grain_morphology"] = Mysql::SQLValue(implode(",", $_POST["grain_morphology_$type"]), "text"); // poll / spore
-        $update["polar_axis_length"] = Mysql::SQLValue($_POST["polar_axis_length"], "float");
-        $update["equatorial_axis_length"] = Mysql::SQLValue($_POST["equatorial_axis_length"], "float");
-        //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
-        //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
-        $update["equatorial_shape_minor"] = Mysql::SQLValue($_POST["equatorial_shape"], "text");
-        $update["polar_shape"] = Mysql::SQLValue(implode(",", $_POST["polar_shape"]), "text");
-        $update["surface_pattern"] = Mysql::SQLValue($_POST["surface_pattern"], "text");
-        $update["wall_thickness"] = Mysql::SQLValue($_POST["wall_thickness"], "float");
-        $update["wall_evenness"] = Mysql::SQLValue($_POST["wall_evenness"], "text");
-        $update["exine_type"] = Mysql::SQLValue($_POST["exine_type"], "text");
-        $update["colporus"] = Mysql::SQLValue($_POST["colporus"], "text");
-        $update["L_P"] = Mysql::SQLValue($_POST["L_P"], "float");
-        $update["L_E"] = Mysql::SQLValue($_POST["L_E"], "float");
-        $update["pore_protrusion"] = Mysql::SQLValue($_POST["pore_protrusion"], "text");
-        $update["pore_shape_e"] = Mysql::SQLValue($_POST["pore_shape_e"], "text");
-        $update["pore_shape_size"] = Mysql::SQLValue($_POST["pore_shape_size"], "text");
-        $update["pore_shape_p"] = Mysql::SQLValue($_POST["pore_shape_p"], "text");
-        $update["pore_margin"] = Mysql::SQLValue($_POST["pore_margin"], "text");
-        $update["colpus_sulcus_length_c"] = Mysql::SQLValue($_POST["colpus_sulcus_length_c_$type"], "float"); // poll / spore
-        $update["colpus_sulcus_shape"] = Mysql::SQLValue($_POST["colpus_sulcus_shape_$type"], "text"); // poll / spore
-        //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
-        $update["colpus_sulcus_margin"] = Mysql::SQLValue($_POST["colpus_sulcus_margin_$type"], "text"); // poll / spore
-        $update["apocolpium_width_e"] = Mysql::SQLValue($_POST["apocolpium_width_e"], "float");
-        //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
-        $update["trilete_scar_arm_length"] = Mysql::SQLValue($_POST["trilete_scar_arm_length"], "text");
-        $update["trilete_scar_shape"] = Mysql::SQLValue($_POST["trilete_scar_shape"], "text");
-        $update["p_sacci_size"] = Mysql::SQLValue($_POST["p_sacci_size"], "text");
-        $update["e_sacci_size"] = Mysql::SQLValue($_POST["e_sacci_size"], "text");
-        $update["morphology_notes"] = Mysql::SQLValue($_POST["morphology_notes"], "text");
-
-        if (!empty($_POST["uploaded-images"])) {
-            $update["image_folder"] = Mysql::SQLValue($image_folder.$_POST["spec_id"]."/", "text");
-            $update["primary_image"] = Mysql::SQLValue($_POST["uploaded-images"][0], "text");
-            mkdir($image_folder.$_POST["spec_id"]);
-            foreach ($_POST["uploaded-images"] as $image) {
-                //echo $image_folder.$image, $image_folder.$_POST["spec_id"]."/".$image;
-                rename($image_folder.$image, $image_folder.$_POST["spec_id"]."/".$image);
-            }
-            rename($image_folder."thumbnail", $image_folder.$_POST["spec_id"]."/thumbnail");
-        }
-        if ($_GET["edit"]) {
-            $db->updateRows('specimen', $update, array("spec_id" => $update["spec_id"]));
-        } else {
-            $db->insertRow('specimen', $update);
-        }
-        if (!empty($db->error())) {
+    if ($_POST["submit-btn"] == "delete") {
+        # Delete from both found specimens and specimen table
+        $spec = array('spec_id' => Mysql::SQLValue($_POST["spec_id"], "text"));
+        $db->deleteRows('found_specimen', $spec);
+        $db->deleteRows('specimen', $spec);
+        if ($db->error()) {
             $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
         } else {
-            $msg = '<p class="alert alert-success">Specimen updated successfully !</p>' . " \n";
-            if (!$_GET["edit"]) {
-                $update_found["spec_id"] = $update["spec_id"];
-                $update_found["sample_id"] = Mysql::SQLValue($sample);
-                $update_found["last_update"] = "'" . $date . "'";
-                $update_found["count"] = Mysql::SQLValue(1);
-                $db->insertRow('found_specimen', $update_found);
-                //echo $db->getLastSQL();
-                unset($_SESSION['add-new-specimen']);
-                if ($db->error()) {
-                    $msg = '<p class="alert alert-success">Specimen added successfully and added to sample !</p>' . " \n";
+            delete_files($image_folder . $_POST["spec_id"]. "/");
+            $msg = '<p class="alert alert-success">Specimen deleted successfully</p>' . " \n";
+        }
+    } else {
+        $validator = Form::validate($form_name);
+        if ($validator->hasErrors()) {
+            $_SESSION['errors'][$form_name] = $validator->getAllErrors();
+        } else {
+            $type = trim($_POST["poll_spore"]);
+            $update["spec_id"] = Mysql::SQLValue($_POST["spec_id"], "text");
+            $update["family"] = Mysql::SQLValue($_POST["family"], "text");
+            $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
+            $update["species"] = Mysql::SQLValue($_POST["species"], "text");
+            $update["poll_spore"] = Mysql::SQLValue($type, "text");
+            $update["grain_arrangement"] = Mysql::SQLValue($_POST["grain_arrangement"], "text");
+            $update["grain_morphology"] = Mysql::SQLValue(implode(",", $_POST["grain_morphology_$type"]), "text"); // poll / spore
+            $update["polar_axis_length"] = Mysql::SQLValue($_POST["polar_axis_length"], "float");
+            $update["equatorial_axis_length"] = Mysql::SQLValue($_POST["equatorial_axis_length"], "float");
+            //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
+            //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
+            $update["equatorial_shape_minor"] = Mysql::SQLValue($_POST["equatorial_shape"], "text");
+            $update["polar_shape"] = Mysql::SQLValue(implode(",", $_POST["polar_shape"]), "text");
+            $update["surface_pattern"] = Mysql::SQLValue($_POST["surface_pattern"], "text");
+            $update["wall_thickness"] = Mysql::SQLValue($_POST["wall_thickness"], "float");
+            $update["wall_evenness"] = Mysql::SQLValue($_POST["wall_evenness"], "text");
+            $update["exine_type"] = Mysql::SQLValue($_POST["exine_type"], "text");
+            $update["colporus"] = Mysql::SQLValue($_POST["colporus"], "text");
+            $update["L_P"] = Mysql::SQLValue($_POST["L_P"], "float");
+            $update["L_E"] = Mysql::SQLValue($_POST["L_E"], "float");
+            $update["pore_protrusion"] = Mysql::SQLValue($_POST["pore_protrusion"], "text");
+            $update["pore_shape_e"] = Mysql::SQLValue($_POST["pore_shape_e"], "text");
+            $update["pore_shape_size"] = Mysql::SQLValue($_POST["pore_shape_size"], "text");
+            $update["pore_shape_p"] = Mysql::SQLValue($_POST["pore_shape_p"], "text");
+            $update["pore_margin"] = Mysql::SQLValue($_POST["pore_margin"], "text");
+            $update["colpus_sulcus_length_c"] = Mysql::SQLValue($_POST["colpus_sulcus_length_c_$type"], "float"); // poll / spore
+            $update["colpus_sulcus_shape"] = Mysql::SQLValue($_POST["colpus_sulcus_shape_$type"], "text"); // poll / spore
+            //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
+            $update["colpus_sulcus_margin"] = Mysql::SQLValue($_POST["colpus_sulcus_margin_$type"], "text"); // poll / spore
+            $update["apocolpium_width_e"] = Mysql::SQLValue($_POST["apocolpium_width_e"], "float");
+            //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
+            $update["trilete_scar_arm_length"] = Mysql::SQLValue($_POST["trilete_scar_arm_length"], "text");
+            $update["trilete_scar_shape"] = Mysql::SQLValue($_POST["trilete_scar_shape"], "text");
+            $update["p_sacci_size"] = Mysql::SQLValue($_POST["p_sacci_size"], "text");
+            $update["e_sacci_size"] = Mysql::SQLValue($_POST["e_sacci_size"], "text");
+            $update["morphology_notes"] = Mysql::SQLValue($_POST["morphology_notes"], "text");
+
+            if (!empty($_POST["uploaded-images"])) {
+                $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["spec_id"] . "/", "text");
+                $update["primary_image"] = Mysql::SQLValue($_POST["uploaded-images"][0], "text");
+                mkdir($image_folder . $_POST["spec_id"]);
+                foreach ($_POST["uploaded-images"] as $image) {
+                    //echo $image_folder.$image, $image_folder.$_POST["spec_id"]."/".$image;
+                    rename($image_folder . $image, $image_folder . $_POST["spec_id"] . "/" . $image);
+                }
+                rename($image_folder . "thumbnail", $image_folder . $_POST["spec_id"] . "/thumbnail");
+            }
+            if ($_GET["edit"]) {
+                $db->updateRows('specimen', $update, array("spec_id" => $update["spec_id"]));
+            } else {
+                $db->insertRow('specimen', $update);
+            }
+            if (!empty($db->error())) {
+                $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
+            } else {
+                $msg = '<p class="alert alert-success">Specimen updated successfully !</p>' . " \n";
+                if (!$_GET["edit"]) {
+                    $update_found["spec_id"] = $update["spec_id"];
+                    $update_found["sample_id"] = Mysql::SQLValue($sample);
+                    $update_found["last_update"] = "'" . $date . "'";
+                    $update_found["count"] = Mysql::SQLValue(1);
+                    $db->insertRow('found_specimen', $update_found);
+                    //echo $db->getLastSQL();
+                    unset($_SESSION['add-new-specimen']);
+                    if ($db->error()) {
+                        $msg = '<p class="alert alert-success">Specimen added successfully and added to sample !</p>' . " \n";
+                    }
                 }
             }
         }
@@ -122,43 +147,48 @@ if ($_GET["edit"]) {
     unset($_SESSION['add-new-specimen-edit']);
     $spec = trim($_GET["edit"]);
     $db->selectRows('specimen', array('spec_id' => Mysql::SQLValue($spec)));
-    $specimen = $db->recordsArray()[0];
-    $_SESSION[$form_name]["spec_id"] = $specimen["spec_id"];
-    $_SESSION[$form_name]["family"] = $specimen["family"];
-    $_SESSION[$form_name]["genus"] = $specimen["genus"];
-    $_SESSION[$form_name]["species"] = $specimen["species"];
-    $_SESSION[$form_name]["poll_spore"] = $specimen["poll_spore"];
-    $_SESSION[$form_name]["grain_arrangement"] = $specimen["grain_arrangement"];
-    $_SESSION[$form_name]["grain_morphology_".$specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
-    $_SESSION[$form_name]["polar_axis_length"] = $specimen["polar_axis_length"];
-    $_SESSION[$form_name]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
-    //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
-    //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
-    $_SESSION[$form_name]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
-    $_SESSION[$form_name]["polar_shape"] = explode(",", $specimen["polar_shape"]);
-    $_SESSION[$form_name]["surface_pattern"] = $specimen["surface_pattern"];
-    $_SESSION[$form_name]["wall_thickness"] = $specimen["wall_thickness"];
-    $_SESSION[$form_name]["wall_evenness"] = $specimen["wall_evenness"];
-    $_SESSION[$form_name]["exine_type"] = $specimen["exine_type"];
-    $_SESSION[$form_name]["colporus"] = $specimen["colporus"];
-    $_SESSION[$form_name]["L_P"] = $specimen["L_P"];
-    $_SESSION[$form_name]["L_E"] = $specimen["L_E"];
-    $_SESSION[$form_name]["pore_protrusion"] = $specimen["pore_protrusion"];
-    $_SESSION[$form_name]["pore_shape_e"] = $specimen["pore_shape_e"];
-    $_SESSION[$form_name]["pore_shape_size"] = $specimen["pore_shape_size"];
-    $_SESSION[$form_name]["pore_shape_p"] = $specimen["pore_shape_p"];
-    $_SESSION[$form_name]["pore_margin"] = $specimen["pore_margin"];
-    $_SESSION[$form_name]["colpus_sulcus_length_c_".$specimen["poll_spore"]] = $specimen["colpus_sulcus_length_c"]; // poll / spore
-    $_SESSION[$form_name]["colpus_sulcus_shape_".$specimen["poll_spore"]] = $specimen["colpus_sulcus_shape"]; // poll / spore
-    //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
-    $_SESSION[$form_name]["colpus_sulcus_margin_".$specimen["poll_spore"]] = $specimen["colpus_sulcus_margin"]; // poll / spore
-    $_SESSION[$form_name]["apocolpium_width_e"] = $specimen["apocolpium_width_e"];
-    //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
-    $_SESSION[$form_name]["trilete_scar_arm_length"] = $specimen["trilete_scar_arm_length"];
-    $_SESSION[$form_name]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
-    $_SESSION[$form_name]["p_sacci_size"] = $specimen["p_sacci_size"];
-    $_SESSION[$form_name]["e_sacci_size"] = $specimen["e_sacci_size"];
-    $_SESSION[$form_name]["morphology_notes"] = $specimen["morphology_notes"];
+    if ($db->rowCount() > 0) {
+        $specimen = $db->recordsArray()[0];
+        $_SESSION[$form_name]["spec_id"] = $specimen["spec_id"];
+        $_SESSION[$form_name]["family"] = $specimen["family"];
+        $_SESSION[$form_name]["genus"] = $specimen["genus"];
+        $_SESSION[$form_name]["species"] = $specimen["species"];
+        $_SESSION[$form_name]["poll_spore"] = $specimen["poll_spore"];
+        $_SESSION[$form_name]["grain_arrangement"] = $specimen["grain_arrangement"];
+        $_SESSION[$form_name]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
+        $_SESSION[$form_name]["polar_axis_length"] = $specimen["polar_axis_length"];
+        $_SESSION[$form_name]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
+        //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
+        //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$form_name]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
+        $_SESSION[$form_name]["polar_shape"] = explode(",", $specimen["polar_shape"]);
+        $_SESSION[$form_name]["surface_pattern"] = $specimen["surface_pattern"];
+        $_SESSION[$form_name]["wall_thickness"] = $specimen["wall_thickness"];
+        $_SESSION[$form_name]["wall_evenness"] = $specimen["wall_evenness"];
+        $_SESSION[$form_name]["exine_type"] = $specimen["exine_type"];
+        $_SESSION[$form_name]["colporus"] = $specimen["colporus"];
+        $_SESSION[$form_name]["L_P"] = $specimen["L_P"];
+        $_SESSION[$form_name]["L_E"] = $specimen["L_E"];
+        $_SESSION[$form_name]["pore_protrusion"] = $specimen["pore_protrusion"];
+        $_SESSION[$form_name]["pore_shape_e"] = $specimen["pore_shape_e"];
+        $_SESSION[$form_name]["pore_shape_size"] = $specimen["pore_shape_size"];
+        $_SESSION[$form_name]["pore_shape_p"] = $specimen["pore_shape_p"];
+        $_SESSION[$form_name]["pore_margin"] = $specimen["pore_margin"];
+        $_SESSION[$form_name]["colpus_sulcus_length_c_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_length_c"]; // poll / spore
+        $_SESSION[$form_name]["colpus_sulcus_shape_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_shape"]; // poll / spore
+        //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$form_name]["colpus_sulcus_margin_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_margin"]; // poll / spore
+        $_SESSION[$form_name]["apocolpium_width_e"] = $specimen["apocolpium_width_e"];
+        //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$form_name]["trilete_scar_arm_length"] = $specimen["trilete_scar_arm_length"];
+        $_SESSION[$form_name]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
+        $_SESSION[$form_name]["p_sacci_size"] = $specimen["p_sacci_size"];
+        $_SESSION[$form_name]["e_sacci_size"] = $specimen["e_sacci_size"];
+        $_SESSION[$form_name]["morphology_notes"] = $specimen["morphology_notes"];
+    } else {
+        $_GET["edit"] = null;
+        $form_name = 'add-new-specimen';
+    }
 }
 
 /* ==================================================
@@ -314,7 +344,7 @@ $form->addOption('polar_shape[]', 'inter-subangular',  'inter-subangular', '', '
 $form->addOption('polar_shape[]', 'rectangular (rhomboidal)',  'rectangular (rhomboidal)', '', '');
 $form->addOption('polar_shape[]', 'tubular',  'tubular', '', '');
 $form->addHelper('Multiple Choice', 'polar_shape[]');
-$form->addSelect('polar_shape[]', 'Polar shape ', 'class=select2, data-width=100%, multiple=multiple, required');
+$form->addSelect('polar_shape[]', 'Polar shape ', 'class=select2, data-width=100%, multiple=multiple');
 
 /*$form->startFieldset('Single image with labels');
 for ($i=0; $i < 10; $i++) {
@@ -326,18 +356,18 @@ $form->endFieldset();*/
 # 10. *Surface pattern
 $form->addOption('surface_pattern', '', 'Choose one ...', '', 'disabled, selected');
 $form->addOption('surface_pattern', 'psilate',  'psilate', '', '');
-$form->addOption('surface_pattern', 'granulate (rounded; <1 Measurement in (µm))',  'granulate (rounded; <1 Measurement in (µm))', '', '');
+$form->addOption('surface_pattern', 'granulate',  'granulate', '', '');
 $form->addOption('surface_pattern', 'reticulate',  'reticulate', '', '');
-$form->addOption('surface_pattern', 'baculate (length >1 Measurement in (µm); width <1 Measurement in (µm))',  'baculate (length >1 Measurement in (µm); width <1 Measurement in (µm))', '', '');
+$form->addOption('surface_pattern', 'baculate',  'baculate', '', '');
 $form->addOption('surface_pattern', 'clavate',  'clavate', '', '');
 $form->addOption('surface_pattern', 'gemmate',  'gemmate', '', '');
 $form->addOption('surface_pattern', 'echinate',  'echinate', '', '');
-$form->addOption('surface_pattern', 'fossulate (elongate, irregular)',  'fossulate (elongate, irregular)', '', '');
-$form->addOption('surface_pattern', 'foveolate (>1 Measurement in (µm))',  'foveolate (>1 Measurement in (µm))', '', '');
-$form->addOption('surface_pattern', 'perforate (<1 Measurement in (µm))',  'perforate (<1 Measurement in (µm))', '', '');
-$form->addOption('surface_pattern', 'rugulate (elongate, irregular >1Measurement in (µm))',  'rugulate (elongate, irregular >1Measurement in (µm))', '', '');
-$form->addOption('surface_pattern', 'striate (parallel)',  'striate (parallel)', '', '');
-$form->addSelect('surface_pattern', 'Surface pattern ', 'class=select2, data-width=100%, required');
+$form->addOption('surface_pattern', 'fossulate',  'fossulate', '', '');
+$form->addOption('surface_pattern', 'foveolate',  'foveolate', '', '');
+$form->addOption('surface_pattern', 'perforate',  'perforate', '', '');
+$form->addOption('surface_pattern', 'rugulate',  'rugulate', '', '');
+$form->addOption('surface_pattern', 'striate',  'striate', '', '');
+$form->addSelect('surface_pattern', 'Surface pattern ', 'class=select2, data-width=100%');
 
 $form->endFieldset();
 
@@ -532,7 +562,7 @@ $form->endFieldset();
 # Images
 #######################
 $form->startFieldset('Images');
-$fileUpload_config = array(
+/*$fileUpload_config = array(
     'xml'                 => 'images',
     'uploader'            => 'imageFileUpload.php',
     'btn-text'            => 'Browse ...',
@@ -540,6 +570,56 @@ $fileUpload_config = array(
 );
 $form->addHelper('Primary image first. Accepted File Types : .jp[e]g, .png, .gif', 'uploaded-images[]');
 $form->addFileUpload('file', 'uploaded-images[]', '', 'Upload up to 10 images', '', $fileUpload_config);
+$form->endFieldset();*/
+
+
+$current_file = ''; // default empty
+
+if ($_GET["edit"]) {
+    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["edit"].'/';
+
+    $dir = new DirectoryIterator($current_file_path);
+    foreach ($dir as $fileinfo) {
+        if (!$fileinfo->isDot()) {
+            $current_file_name = $fileinfo->getFilename();
+            if ($current_file_name != "thumbnail") {
+                if (file_exists($current_file_path . $current_file_name)) {
+                    $current_file_size = filesize($current_file_path . $current_file_name);
+                    $current_file_type = mime_content_type($current_file_path . $current_file_name);
+                    $current_file[] = array(
+                        'name' => $current_file_name,
+                        'size' => $current_file_size,
+                        'type' => $current_file_type,
+                        'file' => '/phpformbuilder/images/uploads/Penis/' . $current_file_name, // url of the file
+                        'data' => array(
+                            'listProps' => array(
+                                'file' => $current_file_name
+                            )
+                        )
+                    );
+                }
+            }
+        }
+    }
+}
+$fileUpload_config = array(
+    'xml'           => 'image-upload', // the thumbs directories must exist
+    'uploader'      => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php
+    'upload_dir'    => '../../../../images/uploads/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
+    'limit'         => 10, // max. number of files
+    'file_max_size' => 3, // each file's maximal size in MB {null, Number}
+    'extensions'    => ['jpg', 'jpeg', 'png'],
+    'thumbnails'    => true,
+    'editor'        => true,
+    'width'         => 960,
+    'height'        => 720,
+    'crop'          => false,
+    'debug'         => true
+);
+
+$form->startFieldset('Prefilled upload with existing image');
+$form->addHelper('Primary image first. Accepted File Types : Accepted File Types : .jp[e]g, .png, .gif', 'uploaded-images', 'after');
+$form->addFileUpload('file', 'uploaded-images', '', 'Upload up to 10 images', '', $fileUpload_config, $current_file[0]);
 $form->endFieldset();
 
 #######################
@@ -553,8 +633,11 @@ $form->endFieldset();
 #######################
 # Clear/Save
 #######################
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning', 'my-btn-group'); // !!!!!!!!!!
-$form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+if ($_GET["edit"]) {
+    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this specimen? Note: it will also be deleted from any samples it is connected to.\')', 'my-btn-group');
+}
+$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
 
 // Custom radio & checkbox css

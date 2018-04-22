@@ -9,7 +9,7 @@ use phpformbuilder\Validator\Validator;
 /**
  * Form Class
  *
- * @version 3.3
+ * @version 3.4
  * @author Gilles Migliori - gilles.migliori@gmail.com
  *
  */
@@ -59,6 +59,8 @@ class Form
         'horizontalElementCol'         => 'col-sm-8',
         'inlineCheckboxLabelClass'     => 'checkbox-inline',
         'inlineRadioLabelClass'        => 'radio-inline',
+        'inlineCheckboxWrapper'        => '',
+        'inlineRadioWrapper'           => '',
         'inputGroupAddonClass'         => 'input-group-addon',
         'btnGroupClass'                => 'btn-group',
         'requiredMark'                 => '<sup class="text-danger">* </sup>',
@@ -83,12 +85,12 @@ class Form
         'centeredButtonWrapper'        => '<div class="form-group text-center"></div>',
         'centerButtons'                => false,
         'wrapElementsIntoLabels'       => false,
-        'wrapCheckboxesIntoLabels'     => true,
-        'wrapRadiobtnsIntoLabels'      => true,
+        'wrapCheckboxesIntoLabels'     => false,
+        'wrapRadiobtnsIntoLabels'      => false,
         'elementsClass'                => 'form-control',
         'wrapperErrorClass'            => '',
         'elementsErrorClass'           => 'is-invalid',
-        'textErrorClass'               => 'invalid-feedback d-flex',
+        'textErrorClass'               => 'invalid-feedback',
         'verticalLabelWrapper'         => false,
         'verticalLabelClass'           => 'form-control-label',
         'verticalCheckboxLabelClass'   => 'form-check-label',
@@ -100,7 +102,9 @@ class Form
         'horizontalElementCol'         => 'col-sm-8',
         'inlineCheckboxLabelClass'     => 'form-check-label',
         'inlineRadioLabelClass'        => 'form-check-label',
-        'inputGroupAddonClass'         => 'input-group-addon',
+        'inlineCheckboxWrapper'        => '<div class="form-check form-check-inline"></div>',
+        'inlineRadioWrapper'           => '<div class="form-check form-check-inline"></div>',
+        'inputGroupAddonClass'         => '',
         'btnGroupClass'                => 'btn-group',
         'requiredMark'                 => '<sup class="text-danger">* </sup>',
         'openDomReady'                 => 'jQuery(document).ready(function($) {',
@@ -137,6 +141,8 @@ class Form
         'horizontalElementCol'         => 'col-sm-8',
         'inlineCheckboxLabelClass'     => 'checkbox-inline',
         'inlineRadioLabelClass'        => 'radio-inline',
+        'inlineCheckboxWrapper'        => '',
+        'inlineRadioWrapper'           => '',
         'inputGroupAddonClass'         => '',
         'btnGroupClass'                => 'btn-group',
         'requiredMark'                 => '<sup class="text-danger">* </sup>',
@@ -174,6 +180,8 @@ class Form
         'horizontalElementCol'         => 'small-8 columns',
         'inlineCheckboxLabelClass'     => 'checkbox-inline',
         'inlineRadioLabelClass'        => 'radio-inline',
+        'inlineCheckboxWrapper'        => '',
+        'inlineRadioWrapper'           => '',
         'inputGroupAddonClass'         => '',
         'btnGroupClass'                => 'button-group',
         'requiredMark'                 => '<sup style="color:red">* </sup>',
@@ -275,7 +283,7 @@ class Form
         // set framework options
         if ($framework == 'bs3') {
             $this->options = $this->bs3_options;
-        } else if ($framework == 'bs4') {
+        } elseif ($framework == 'bs4') {
             $this->options = $this->bs4_options;
             if ($layout == 'horizontal') {
                 $this->options['elementsWrapper']       = '<div class="form-group row justify-content-end"></div>';
@@ -315,14 +323,18 @@ class Form
             $this->registerErrors();
             unset($_SESSION['errors'][$form_ID]);
         }
-        $this->elements_start_wrapper = $this->defineWrapper($this->options['elementsWrapper'], 'start');
-        $this->elements_end_wrapper   = $this->defineWrapper($this->options['elementsWrapper'], 'end');
-        $this->checkbox_start_wrapper = $this->defineWrapper($this->options['checkboxWrapper'], 'start');
-        $this->checkbox_end_wrapper   = $this->defineWrapper($this->options['checkboxWrapper'], 'end');
-        $this->helper_start_wrapper   = $this->defineWrapper($this->options['helperWrapper'], 'start');
-        $this->helper_end_wrapper     = $this->defineWrapper($this->options['helperWrapper'], 'end');
-        $this->radio_start_wrapper    = $this->defineWrapper($this->options['radioWrapper'], 'start');
-        $this->radio_end_wrapper      = $this->defineWrapper($this->options['radioWrapper'], 'end');
+        $this->checkbox_end_wrapper          = $this->defineWrapper($this->options['checkboxWrapper'], 'end');
+        $this->checkbox_start_wrapper        = $this->defineWrapper($this->options['checkboxWrapper'], 'start');
+        $this->elements_end_wrapper          = $this->defineWrapper($this->options['elementsWrapper'], 'end');
+        $this->elements_start_wrapper        = $this->defineWrapper($this->options['elementsWrapper'], 'start');
+        $this->helper_end_wrapper            = $this->defineWrapper($this->options['helperWrapper'], 'end');
+        $this->helper_start_wrapper          = $this->defineWrapper($this->options['helperWrapper'], 'start');
+        $this->inline_checkbox_end_wrapper   = $this->defineWrapper($this->options['inlineCheckboxWrapper'], 'end');
+        $this->inline_checkbox_start_wrapper = $this->defineWrapper($this->options['inlineCheckboxWrapper'], 'start');
+        $this->inline_radio_end_wrapper      = $this->defineWrapper($this->options['inlineRadioWrapper'], 'end');
+        $this->inline_radio_start_wrapper    = $this->defineWrapper($this->options['inlineRadioWrapper'], 'start');
+        $this->radio_end_wrapper             = $this->defineWrapper($this->options['radioWrapper'], 'end');
+        $this->radio_start_wrapper           = $this->defineWrapper($this->options['radioWrapper'], 'start');
         if ($this->options['centerButtons'] === true) {
             $this->button_start_wrapper   = $this->defineWrapper($this->options['centeredButtonWrapper'], 'start');
             $this->button_end_wrapper     = $this->defineWrapper($this->options['centeredButtonWrapper'], 'end');
@@ -374,7 +386,7 @@ class Form
      */
     public function setOptions($user_options = array())
     {
-        $formClassOptions = array('ajax', 'formInlineClass', 'formHorizontalClass', 'formVerticalClass', 'elementsWrapper', 'checkboxWrapper', 'radioWrapper', 'helperWrapper', 'buttonWrapper', 'centeredButtonWrapper', 'centerButtons', 'wrapElementsIntoLabels', 'wrapCheckboxesIntoLabels', 'wrapRadiobtnsIntoLabels', 'elementsClass', 'wrapperErrorClass', 'elementsErrorClass', 'textErrorClass', 'verticalLabelWrapper', 'verticalLabelClass', 'verticalCheckboxLabelClass', 'verticalRadioLabelClass', 'horizontalLabelWrapper', 'horizontalLabelClass', 'horizontalLabelCol', 'horizontalOffsetCol', 'horizontalElementCol', 'inlineCheckboxLabelClass', 'inlineRadioLabelClass', 'inputGroupAddonClass', 'btnGroupClass', 'requiredMark', 'openDomReady', 'closeDomReady');
+        $formClassOptions = array('ajax', 'formInlineClass', 'formHorizontalClass', 'formVerticalClass', 'elementsWrapper', 'checkboxWrapper', 'radioWrapper', 'helperWrapper', 'buttonWrapper', 'centeredButtonWrapper', 'centerButtons', 'wrapElementsIntoLabels', 'wrapCheckboxesIntoLabels', 'wrapRadiobtnsIntoLabels', 'elementsClass', 'wrapperErrorClass', 'elementsErrorClass', 'textErrorClass', 'verticalLabelWrapper', 'verticalLabelClass', 'verticalCheckboxLabelClass', 'verticalRadioLabelClass', 'horizontalLabelWrapper', 'horizontalLabelClass', 'horizontalLabelCol', 'horizontalOffsetCol', 'horizontalElementCol', 'inlineCheckboxLabelClass', 'inlineRadioLabelClass', 'inlineCheckboxWrapper', 'inlineRadioWrapper', 'inputGroupAddonClass', 'btnGroupClass', 'requiredMark', 'openDomReady', 'closeDomReady');
         foreach ($user_options as $key => $value) {
             if (in_array($key, $formClassOptions)) {
                 $this->options[$key] = $value;
@@ -387,6 +399,12 @@ class Form
                 } elseif ($key == 'checkboxWrapper') {
                     $this->checkbox_start_wrapper = $this->defineWrapper($this->options['checkboxWrapper'], 'start');
                     $this->checkbox_end_wrapper   = $this->defineWrapper($this->options['checkboxWrapper'], 'end');
+                } elseif ($key == 'inlineCheckboxWrapper') {
+                    $this->inline_checkbox_start_wrapper = $this->defineWrapper($this->options['inlineCheckboxWrapper'], 'start');
+                    $this->inline_checkbox_end_wrapper   = $this->defineWrapper($this->options['inlineCheckboxWrapper'], 'end');
+                } elseif ($key == 'inlineRadioWrapper') {
+                    $this->inline_radio_start_wrapper = $this->defineWrapper($this->options['inlineRadioWrapper'], 'start');
+                    $this->inline_radio_end_wrapper   = $this->defineWrapper($this->options['inlineRadioWrapper'], 'end');
                 } elseif ($key == 'helperWrapper') {
                     $this->helper_start_wrapper = $this->defineWrapper($this->options['helperWrapper'], 'start');
                     $this->helper_end_wrapper   = $this->defineWrapper($this->options['helperWrapper'], 'end');
@@ -452,15 +470,15 @@ class Form
                 $element_col = str_replace('--', '-', $element_col);
 
                 // if negative, => "col" without number (auto-width)
-                if($label_col_number < 0) {
+                if ($label_col_number < 0) {
                     $label_col = 'col';
-                    if(!empty($breakpoint)) {
+                    if (!empty($breakpoint)) {
                         $label_col .= '-' . $breakpoint;
                     }
                 }
-                if($field_col_number < 0) {
+                if ($field_col_number < 0) {
                     $element_col = 'col';
-                    if(!empty($breakpoint)) {
+                    if (!empty($breakpoint)) {
                         $element_col .= '-' . $breakpoint;
                     }
                 }
@@ -656,7 +674,7 @@ class Form
             }
 
             // input
-            $start_col .= $this->getElementCol('start', $label, 'input'); // col-sm-8
+            $start_col .= $this->getElementCol('start', 'input', $label); // col-sm-8
             $element .= $this->getErrorInputWrapper($name, $label, 'start'); // has-error
             $element .= $this->getHtmlElementContent($name, 'before', 'outside_wrapper');
             if (isset($this->input_wrapper[$name])) {
@@ -671,7 +689,7 @@ class Form
             $element .= $this->getHtmlElementContent($name, 'after', 'outside_wrapper');
             $element .= $this->getErrorInputWrapper($name, $label, 'end'); // end has-error
             $element .= $this->getError($name);
-            $end_col .= $this->getElementCol('end', $label, 'input'); // end col-sm-8
+            $end_col .= $this->getElementCol('end', 'input', $label); // end col-sm-8
             $end_wrapper .= $this->addErrorWrapper($name, 'end');
             $end_wrapper .= $this->setInputGroup($name, 'end', 'elementsWrapper'); // end form-group
 
@@ -684,13 +702,193 @@ class Form
     }
 
     /**
+     * Creates an input with fileuploader plugin.
+     *
+     * The fileuploader plugin generates complete html, js and css code.
+     * You'll just have to call printIncludes('css') and printIncludes('js')
+     * where you wants to put your css/js codes (generaly in <head> and just before </body>).
+     *
+     * @param string $type              The type of the input, usualy 'file'
+     * @param string $name              The upload field name.
+     *                                  Use an array (ex : name[]) to allow multiple files upload
+     * @param string $value             (Optional) The input default value
+     * @param string $label             (Optional) The input label
+     * @param string $attr              (Optional) Can be any HTML input attribute or js event.
+     *                                  attributes must be listed separated with commas.
+     *                                  If you don't specify any ID as attr, the ID will be the name of the input.
+     *                                  Example : class=my-class,placeholder=My Text,onclick=alert(\'clicked\');.
+     * @param array  $fileUpload_config An associative array containing :
+     *                                  'xml'           [string]       => (Optional) The xml node where your plugin code is
+     *                                                                    in plugins-config/fileuploader.xml
+     *                                                                    Default: 'default'
+     *                                  'uploader'      [string]       => (Optional) The PHP uploader file in phpformbuilder/plugins/fileuploader/[xml-node-name]/php/
+     *                                                                    Default: 'ajax_upload_file.php'
+     *                                  'upload_dir'    [string]       => (Optional) the directory to upload the files.
+     *                                                                    Relative to phpformbuilder/plugins/fileuploader/default/php/ajax_upload_file.php
+                                                                          Default: '../../../../../file-uploads/' ( = [project root]/file-uploads)
+     *                                  'limit'         [null|Number]  => (Optional) The max number of files to upload
+     *                                                                    Default: 1
+     *                                  'extensions'    [null|array]   => (Optional) Allowed extensions or file types
+     *                                                                    example: ['jpg', 'jpeg', 'png', 'audio/mp3', 'text/plain']
+     *                                                                    Default: ['jpg', 'jpeg', 'png', 'gif']
+     *                                  'fileMaxSize'   [null|Number]  => (Optional) Each file's maximal size in MB,
+     *                                                                    Default: 5
+     *                                  'thumbnails'    [Boolean]      => (Optional) Defines Wether if the uploader creates thumbnails or not.
+     *                                                                    Thumbnails paths and sizing is done in the plugin php uploader.
+     *                                                                    Default: false
+     *                                  'editor'        [Boolean]      => (Optional)  Allows the user to crop/rotate the uploaded image
+     *                                                                    Default: false
+     *                                  'width'         [null|Number]  => (Optional) The uploaded image maximum width in px
+     *                                                                    Default: null
+     *                                  'height'        [null|Number]  => (Optional) The uploaded image maximum height in px
+     *                                                                    Default: null
+     *                                  'crop'          [Boolean]      => (Optional) Defines Wether if the uploader crops the uploaded image or not.
+     *                                                                    Default: false
+     *                                  'debug'         [Boolean]      => (Optional) log the result in the browser's console
+     *                                                                    and shows an error text on the page if the uploader fails to parse the json result.
+     *                                                                    Default: false
+     * @return $this
+     *
+     */
+    public function addFileUpload($type, $name, $value = '', $label = '', $attr = '', $fileUpload_config = '', $current_file = '')
+    {
+        $this->has_file = true;
+        $attr           = $this->getAttributes($attr); // returns linearised attributes (with ID)
+        $array_values   = $this->getID($name, $attr); // if $attr contains no ID, field ID will be $name.
+        $attr           = $array_values['attributs']; // if $attr contains an ID, we remove it.
+        $attr           = $this->addElementClass($name, $attr);
+        $value          = $this->getValue($name, $value);
+        $start_wrapper  = '';
+        $end_wrapper    = '';
+        $start_label    = '';
+        $end_label      = '';
+        $start_col      = '';
+        $end_col        = '';
+        $element        = '';
+        $index          = 0;
+
+        // set uploader index
+        if (in_array('fileuploader', $this->js_plugins)) {
+            $count = count($this->js_plugins);
+            for ($i=0; $i < $count; $i++) {
+                if ($this->js_plugins == 'fileuploader') {
+                    $index ++;
+                }
+            }
+        }
+
+        /* hidden field which will be posted in JSON with the uploaded file names. */
+        $attr .= ' data-fileuploader-listInput="' . $name . '"';
+
+        /* adding plugin */
+
+        $default_config = array(
+            'xml'           => 'default',
+            'uploader'      => 'ajax_upload_file.php',
+            'upload_dir'    => '../../../../../file-uploads/',
+            'limit'         => 1,
+            'extensions'    => ['jpg', 'jpeg', 'png', 'gif'],
+            'file_max_size' => 5,
+            'thumbnails'    => false,
+            'editor'        => false,
+            'width'         => null,
+            'height'        => null,
+            'crop'          => false,
+            'debug'         => false
+        );
+
+        $fileUpload_config = array_merge($default_config, $fileUpload_config);
+
+        // replace boolean values for javascript
+        $bool = array('thumbnails', 'editor', 'crop', 'debug');
+        foreach ($bool as $b) {
+            if ($fileUpload_config[$b] === true) {
+                $fileUpload_config[$b] = 'true';
+            } else {
+                $fileUpload_config[$b] = 'false';
+            }
+        }
+
+        if (is_array($fileUpload_config['extensions'])) {
+            $fileUpload_config['extensions'] = "['" . implode("', '", $fileUpload_config['extensions']) . "']";
+        }
+        $xml_replacements = array(
+            '%limit%'       => $fileUpload_config['limit'],
+            '%uploader%'    => $fileUpload_config['uploader'],
+            '%uploadDir%'   => $fileUpload_config['upload_dir'],
+            '%extensions%'  => $fileUpload_config['extensions'],
+            '%fileMaxSize%' => $fileUpload_config['file_max_size'],
+            '%thumbnails%'  => $fileUpload_config['thumbnails'],
+            '%editor%'      => $fileUpload_config['editor'],
+            '%debug%'       => $fileUpload_config['debug'],
+            '%width%'       => $fileUpload_config['width'],
+            '%height%'      => $fileUpload_config['height'],
+            '%crop%'        => $fileUpload_config['crop'],
+            '%index%'       => $index,
+            '%PLUGINS_URL%' => $this->plugins_url
+        );
+        $this->addPlugin('fileuploader', '#uploader-' . $name, $fileUpload_config['xml'], $xml_replacements);
+
+        // form-group wrapper
+        $start_wrapper = $this->setInputGroup($name, 'start', 'elementsWrapper');
+        $start_wrapper .= $this->addErrorWrapper($name, 'start');
+
+        // label
+        if ($this->options['verticalLabelWrapper'] === true) {
+            $start_label  .= $this->getLabelCol('start');
+        }
+        if (!empty($label)) {
+            $start_label .= '<label for="uploader-' . $name . '"' . $this->getLabelClass('fileinput') . '>';
+            if (in_array(str_replace('[]', '', $name), array_keys($this->error_fields))) {
+                $start_label .= '<span class="' . $this->options['textErrorClass'] . '">' . $this->getRequired($label, $attr) . '</span>';
+            } else {
+                $start_label .=$this->getRequired($label, $attr);
+            }
+            $end_label = '</label>';
+        }
+        if ($this->options['verticalLabelWrapper'] === true) {
+            $end_label   .= $this->getLabelCol('end');
+        }
+
+        // input
+        $start_col .= $this->getElementCol('start', 'input', $label); // col-sm-8
+        $element .= $this->getErrorInputWrapper($name, $label, 'start'); // has-error
+        $element .= $this->getHtmlElementContent($name, 'before', 'outside_wrapper');
+        if (isset($this->input_wrapper[$name])) {
+            $element .= $this->defineWrapper($this->input_wrapper[$name], 'start'); // input-group
+        }
+        $element .= $this->getHtmlElementContent($name, 'before', 'inside_wrapper');
+        $current_file_json_data = '';
+        if (!empty($current_file) && is_array($current_file)) {
+            $current_file_json_data = ' data-fileuploader-files=\'[' . json_encode($current_file) . ']\'';
+        }
+        $element .= '<input type="file" name="uploader-' . $name . '" id="uploader-' . $name . '"' . $attr . $current_file_json_data . '>';
+        $element .= $this->getHtmlElementContent($name, 'after', 'inside_wrapper');
+        if (isset($this->input_wrapper[$name])) {
+            $element .= $this->defineWrapper($this->input_wrapper[$name], 'end'); // end input-group
+        }
+        $element .= $this->getHtmlElementContent($name, 'after', 'outside_wrapper');
+        $element .= $this->getErrorInputWrapper($name, $label, 'end'); // end has-error
+        $element .= $this->getError($name);
+        $end_col .= $this->getElementCol('end', 'input', $label); // end col-sm-8
+        $end_wrapper .= $this->addErrorWrapper($name, 'end');
+        $end_wrapper .= $this->setInputGroup($name, 'end', 'elementsWrapper'); // end form-group
+        // output
+        $this->html .= $this->outputElement($start_wrapper, $end_wrapper, $start_label, $end_label, $start_col, $end_col, $element, $this->options['wrapElementsIntoLabels']);
+        $this->registerField($name, $attr);
+
+        return $this;
+    }
+
+    /**
      * Creates an input with fileupload plugin.
+     * DEPRECATED
      *
      * The fileupload plugin generates complete html, js and css code.
      * You'll just have to call printIncludes('css') and printIncludes('js')
      * where you wants to put your css/js codes (generaly in <head> and just before </body>).
      *
-     * @param string $type              The node of the plugins-config/fileupload.xml file where is your code.
+     * @param string $type              The node of the plugins-config/jquery-fileupload.xml file where is your code.
      *                                  For example : 'default' or 'images'
      * @param string $name              The upload field name.
      *                                  Use an array (ex : name[]) to allow multiple files upload
@@ -702,7 +900,7 @@ class Form
      *                                  Example : class=my-class,placeholder=My Text,onclick=alert(\'clicked\');.
      * @param array  $fileUpload_config (Optional) An associative array containing :
      *                                  'xml'                 => The xml node where your plugin code is
-     *                                  in plugins-config/fileupload.xml,
+     *                                  in plugins-config/jquery-fileupload.xml,
      *                                  'uploader'            => The php uploader file in
      *                                  plugins/jQuery-File-Upload-9.5.8/server/php/ folder
      *                                  'btn-text'            => The text of the upload button,
@@ -710,7 +908,7 @@ class Form
      * @return $this
      *
      */
-    public function addFileUpload($type, $name, $value = '', $label = '', $attr = '', $fileUpload_config = '')
+    public function addJqueryFileUpload($type, $name, $value = '', $label = '', $attr = '', $fileUpload_config = '')
     {
         $this->has_file = true;
         $attr           = $this->getAttributes($attr); // returns linearised attributes (with ID)
@@ -749,7 +947,7 @@ class Form
             $uploaderId = $name;
         }
         $xml_replacements = array('%uploader%' => $fileUpload_config['uploader'], '%max-number-of-files%' => $fileUpload_config['max-number-of-files'], '%PLUGINS_DIR%' => $this->plugins_url, '%file-input%' => $name, '%uploader-id%' => $uploaderId);
-        $this->addPlugin('fileupload', '#' . $this->form_ID, $fileUpload_config['xml'], $xml_replacements);
+        $this->addPlugin('jquery-fileupload', '#' . $this->form_ID, $fileUpload_config['xml'], $xml_replacements);
         $start_wrapper = $this->elements_start_wrapper;
         if ($this->options['verticalLabelWrapper'] === true) {
             $start_label  .= $this->getLabelCol('start');
@@ -766,7 +964,7 @@ class Form
         if ($this->options['verticalLabelWrapper'] === true) {
             $end_label   .= $this->getLabelCol('end');
         }
-        $element = $this->getElementCol('start', $label, 'input');
+        $element = $this->getElementCol('start', 'input', $label);
         if (isset($this->input_wrapper[$name])) {
             $element .= $this->defineWrapper($this->input_wrapper[$name], 'start');
         }
@@ -774,16 +972,16 @@ class Form
 
         /* getting html_code from xml */
 
-        if (file_exists(dirname(__FILE__) . '/plugins-config-custom/fileupload.xml')) {
+        if (file_exists(dirname(__FILE__) . '/plugins-config-custom/jquery-fileupload.xml')) {
             // if custom config xml file
-            $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config-custom/fileupload.xml');
+            $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config-custom/jquery-fileupload.xml');
 
             // if node doesn't exist, fallback to default xml
             if (!isset($xml->{$fileUpload_config['xml']}->html_code)) {
-                $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config/fileupload.xml');
+                $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config/jquery-fileupload.xml');
             }
         } else {
-            $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config/fileupload.xml');
+            $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config/jquery-fileupload.xml');
         }
         $html_code = $xml->{$fileUpload_config['xml']}->html_code;
         $search    = array('`%input_name%`', '`%btn-text%`');
@@ -793,7 +991,7 @@ class Form
         if (isset($this->input_wrapper[$name])) {
             $element .= $this->defineWrapper($this->input_wrapper[$name], 'end');
         }
-        $element .= $this->getElementCol('end', $label, 'input');
+        $element .= $this->getElementCol('end', 'input', $label);
         $end_wrapper = $this->elements_end_wrapper;
         // output
         $this->html .= $this->outputElement($start_wrapper, $end_wrapper, $start_label, $end_label, $start_col, $end_col, $element, $this->options['wrapElementsIntoLabels']);
@@ -845,14 +1043,14 @@ class Form
         if ($this->options['verticalLabelWrapper'] === true) {
             $end_label   .= $this->getLabelCol('end');
         }
-        $start_col .= $this->getElementCol('start', $label, 'textarea');
+        $start_col .= $this->getElementCol('start', 'textarea', $label);
         $element .= $this->getErrorInputWrapper($name, $label, 'start');
         $element .= $this->getHtmlElementContent($name, 'before');
         $element .= '<textarea id="' . $id . '" name="' . $name . '" ' . $attr . '>' . $value . '</textarea>';
         $element .= $this->getHtmlElementContent($name, 'after');
         $element .= $this->getError($name);
         $element .= $this->getErrorInputWrapper($name, $label, 'end');
-        $end_col .= $this->getElementCol('end', $label, 'textarea');
+        $end_col .= $this->getElementCol('end', 'textarea', $label);
         $end_wrapper = $this->addErrorWrapper($name, 'end');
         $end_wrapper .= $this->setInputGroup($name, 'end', 'elementsWrapper'); // end form-group
         $this->html .= $this->outputElement($start_wrapper, $end_wrapper, $start_label, $end_label, $start_col, $end_col, $element, $this->options['wrapElementsIntoLabels']);
@@ -941,7 +1139,7 @@ class Form
         if ($this->options['verticalLabelWrapper'] === true) {
             $end_label   .= $this->getLabelCol('end');
         }
-        $start_col .= $this->getElementCol('start', $label, 'select');
+        $start_col .= $this->getElementCol('start', 'select', $label);
         $element .= $this->getErrorInputWrapper($select_name, $label, 'start');
         $element .= $this->getHtmlElementContent($select_name, 'before', 'outside_wrapper');
         if (isset($this->input_wrapper[$select_name])) {
@@ -991,7 +1189,7 @@ class Form
         $element .= $this->getHtmlElementContent($select_name, 'after', 'outside_wrapper');
         $element .= $this->getErrorInputWrapper($select_name, $label, 'end');
         $element .= $this->getError($select_name);
-        $end_col .= $this->getElementCol('end', $label, 'select');
+        $end_col .= $this->getElementCol('end', 'select', $label);
         $end_wrapper = $this->addErrorWrapper($select_name, 'end');
         $end_wrapper .= $this->setInputGroup($select_name, 'end', 'elementsWrapper'); // end form-group
         if (preg_match('`selectpicker`', $attr)) {
@@ -1123,7 +1321,7 @@ class Form
         if ($this->options['verticalLabelWrapper'] === true) {
             $end_label   .= $this->getLabelCol('end');
         }
-        $start_col .= $this->getElementCol('start', $label, 'select');
+        $start_col .= $this->getElementCol('start', 'select', $label);
         $element .= $this->getErrorInputWrapper($select_name, $label, 'start');
         $element .= $this->getHtmlElementContent($select_name, 'before');
         $element .= '<select name="' . $select_name . '" id="' . $id . '" class="' . $class . '"' . $live_search . $attr . '>';
@@ -1146,7 +1344,7 @@ class Form
         $element .= $this->getHtmlElementContent($select_name, 'after');
         $element .= $this->getError($select_name);
         $element .= $this->getErrorInputWrapper($select_name, $label, 'end');
-        $end_col .= $this->getElementCol('end', $label, 'select');
+        $end_col .= $this->getElementCol('end', 'select', $label);
         $end_wrapper = $this->addErrorWrapper($select_name, 'end');
         $end_wrapper .= $this->setInputGroup($select_name, 'end', 'elementsWrapper'); // end form-group
 
@@ -1238,7 +1436,7 @@ class Form
         if (preg_match('`required`', $attr)) {
             $required = ' required';
         }
-        $start_col .= $this->getElementCol('start', $label, 'radio');
+        $start_col .= $this->getElementCol('start', 'radio', $label);
         $element .= $this->getErrorInputWrapper($group_name, $label, 'start');
         $element .= $this->getHtmlElementContent($group_name, 'before');
         if (isset($this->input_wrapper[$group_name])) {
@@ -1250,13 +1448,15 @@ class Form
             $radio_input         = '';
             if (!empty($this->options['radioWrapper']) && $inline !== true) {
                 $element .= $this->radio_start_wrapper;
+            } elseif (!empty($this->options['inlineRadioWrapper']) && $inline === true) {
+                $element .= $this->inline_radio_start_wrapper;
             }
             $radio_label  = $this->radio[$group_name]['label'][$i];
             $radio_value  = $this->radio[$group_name]['value'][$i];
             $radio_attr   = $this->getAttributes($this->radio[$group_name]['attr'][$i]); // returns linearised attributes (with ID)
             if ($this->framework == 'material') {
                 $radio_attr = $this->addClass('with-gap', $radio_attr);
-            } else if ($this->framework == 'bs4') {
+            } elseif ($this->framework == 'bs4') {
                 $radio_attr = $this->addClass('form-check-input', $radio_attr);
             }
             $radio_start_label .= '<label for="' . $group_name . '_' . $i . '" ' . $this->getLabelClass('radio', $inline) . '>';
@@ -1284,6 +1484,8 @@ class Form
                 } else {
                     $element .= '<br>';
                 }
+            } elseif (!empty($this->options['inlineRadioWrapper'])) {
+                $element .= $this->inline_radio_end_wrapper;
             }
         }
         if (isset($this->input_wrapper[$group_name])) {
@@ -1292,7 +1494,7 @@ class Form
         $element .= $this->getHtmlElementContent($group_name, 'after');
         $element .= $this->getError($group_name);
         $element .= $this->getErrorInputWrapper($group_name, $label, 'end');
-        $end_col .= $this->getElementCol('end', $label, 'radio');
+        $end_col .= $this->getElementCol('end', 'radio', $label);
         $end_wrapper = $this->addErrorWrapper($group_name, 'end');
         $end_wrapper .= $this->setInputGroup($group_name, 'end', 'elementsWrapper'); // end form-group
         $this->html .= $this->outputElement($start_wrapper, $end_wrapper, $start_label, $end_label, $start_col, $end_col, $element, false);
@@ -1378,7 +1580,7 @@ class Form
                 }
             }
         }
-        $start_col .= $this->getElementCol('start', $label, 'checkbox');
+        $start_col .= $this->getElementCol('start', 'checkbox', $label);
         $element .= $this->getErrorInputWrapper($group_name, $label, 'start');
         $element .= $this->getHtmlElementContent($group_name, 'before');
         for ($i=0; $i < count($this->checkbox[$group_name]['label']); $i++) {
@@ -1387,6 +1589,8 @@ class Form
             $checkbox_input         = '';
             if (!empty($this->options['checkboxWrapper']) && $inline !== true) {
                 $element .= $this->checkbox_start_wrapper;
+            } elseif (!empty($this->options['inlineCheckboxWrapper']) && $inline === true) {
+                $element .= $this->inline_checkbox_start_wrapper;
             }
             $checkbox_label = $this->checkbox[$group_name]['label'][$i];
             $checkbox_value = $this->checkbox[$group_name]['value'][$i];
@@ -1407,13 +1611,15 @@ class Form
             }
             if (!empty($this->options['checkboxWrapper']) && $inline !== true) {
                 $element .= $this->checkbox_end_wrapper;
+            } elseif (!empty($this->options['inlineCheckboxWrapper']) && $inline === true) {
+                $element .= $this->inline_checkbox_end_wrapper;
             }
         }
         $element .= $this->getHtmlElementContent($group_name, 'after');
         $element .= $this->getError($group_name);
         $element .= $this->getErrorInputWrapper($group_name, $label, 'end');
 
-        $end_col .= $this->getElementCol('end', $label, 'checkbox');
+        $end_col .= $this->getElementCol('end', 'checkbox', $label);
         $end_wrapper = $this->addErrorWrapper($group_name, 'end');
         $end_wrapper .= $this->setInputGroup($group_name, 'end', 'elementsWrapper'); // end form-group
         $this->html .= $this->outputElement($start_wrapper, $end_wrapper, $start_label, $end_label, $start_col, $end_col, $element, false);
@@ -1454,7 +1660,7 @@ class Form
 
         /* Automagically add Ladda plugin */
 
-        if(preg_match('`ladda-button`', $attr)) {
+        if (preg_match('`ladda-button`', $attr)) {
             $this->addPlugin('ladda', '.ladda-button');
             // $text = '<span class="ladda-label">' . $text . '</span>';
         }
@@ -1509,7 +1715,7 @@ class Form
         if ($this->options['verticalLabelWrapper'] === true) {
             $end_label   .= $this->getLabelCol('end');
         }
-        $start_col .= $this->getElementCol('start', $label, 'button');
+        $start_col .= $this->getElementCol('start', 'button', $label);
         if (!empty($this->options['btnGroupClass']) && $btn_alone === false) {
             $element .= '<div class="' . $this->options['btnGroupClass'] . '">';
         }
@@ -1539,7 +1745,7 @@ class Form
         if (!empty($this->options['btnGroupClass']) && $btn_alone === false) {
             $element .= '</div>';
         }
-        $end_col .= $this->getElementCol('end', $label, 'button');
+        $end_col .= $this->getElementCol('end', 'button', $label);
         $end_wrapper .= $this->setInputGroup($btn_name, 'end', 'buttonWrapper');
         $this->html .= $this->outputElement($start_wrapper, $end_wrapper, $start_label, $end_label, $start_col, $end_col, $element, false);
 
@@ -1594,13 +1800,13 @@ class Form
     public function addRecaptcha($sitekey, $recaptcha_id = 'recaptcha', $center = false)
     {
         $start_wrapper = $this->setInputGroup('', 'start', 'elementsWrapper');
-        $start_col     = $this->getElementCol('start', '', 'recaptcha');
-        $end_col       = $this->getElementCol('end', '', 'recaptcha');
+        $start_col     = $this->getElementCol('start', 'recaptcha');
+        $end_col       = $this->getElementCol('end', 'recaptcha');
         $end_wrapper   = $this->setInputGroup('', 'end', 'elementsWrapper');
         $this->addHtml($start_wrapper);
         $this->addHtml($start_col);
         $center_style = '';
-        if($center === true) {
+        if ($center === true) {
              $center_style = 'style="text-align:center;"';
         }
         $this->addHtml('<div class="recaptcha-wrapper"' . $center_style . '><div id="' . $recaptcha_id . '" class="g-recaptcha" data-sitekey="' . $sitekey . '"></div></div>');
@@ -1625,7 +1831,7 @@ class Form
         });
         scaleCaptcha();
     }, 200);
-}</script>';
+};</script>';
         $this->addPlugin('recaptcha', '#' . $recaptcha_id . '', 'default');
 
         return $this;
@@ -1645,12 +1851,15 @@ class Form
         } elseif ($this->framework == 'material') {
             $icon_html = $this->addClass('prefix', $icon_html);
         }
-        if (!empty($this->options['inputGroupAddonClass'])) {
-            $el = 'div';
-            if($this->framework == 'bs4') {
-                $el = 'span';
+        if ($this->framework == 'bs4') {
+            if ($pos == 'before') {
+                $input_group_addon_class = 'input-group-prepend';
+            } else {
+                $input_group_addon_class = 'input-group-append';
             }
-            $this->addHtml('<' . $el . ' class="' . $this->options['inputGroupAddonClass'] . '">' . $icon_html . '</' . $el . '>', $input_name, $pos);
+            $this->addHtml('<div class="' . $input_group_addon_class . '"><span class="input-group-text">' . $icon_html . '</span></div>', $input_name, $pos);
+        } elseif (!empty($this->options['inputGroupAddonClass'])) {
+            $this->addHtml('<div class="' . $this->options['inputGroupAddonClass'] . '">' . $icon_html . '</div>', $input_name, $pos);
         } else {
             $this->addHtml($icon_html, $input_name, $pos);
         }
@@ -1767,17 +1976,27 @@ class Form
      */
     public function addPlugin($plugin_name, $selector, $js_content = 'default', $js_replacements = '')
     {
+        $keep_original_selector_plugins = array('modal', 'popover');
+
+        if (!in_array($plugin_name, $keep_original_selector_plugins)) {
+            // add the form id to selector
+            if (!preg_match('`' . $this->form_ID . '`', $selector) && !preg_match('`form`', $selector)) {
+                $selector = '#' . $this->form_ID . ' ' . $selector;
+            }
+        }
         if ($plugin_name == 'icheck' && $this->framework == 'material') {
             $this->buildErrorMsg('ICHECK PLUGIN + MATERIAL<br>iCheck plugin cannot be used with Material plugin.');
-        } else if ($plugin_name == 'nice-check' && $this->framework == 'material') {
+        } elseif ($plugin_name == 'select2' && $this->framework == 'material') {
+            $this->buildErrorMsg('SELECT2 PLUGIN + MATERIAL<br>select2 plugin cannot be used with Material plugin.');
+        } elseif ($plugin_name == 'nice-check' && $this->framework == 'material') {
             $this->buildErrorMsg('NICE-CHECK PLUGIN + MATERIAL<br>nice-check plugin cannot be used with Material plugin.');
-        } else if ($plugin_name == 'bootstrap-select' && $this->framework == 'bs4') {
+        } elseif ($plugin_name == 'bootstrap-select' && $this->framework == 'bs4') {
             $this->buildErrorMsg('BOOTSTRAP SELECT PLUGIN + BOOTSTRAP 4<br>Bootstrap Select plugin cannot be used with Bootstrap 4.<br>Use <em>select2</em> instead.');
         }
         if (!in_array($plugin_name, $this->js_plugins)) {
             $this->js_plugins[] = $plugin_name;
         }
-        if(!isset($this->js_fields[$plugin_name]) || !in_array($selector, $this->js_fields[$plugin_name])) {
+        if (!isset($this->js_fields[$plugin_name]) || !in_array($selector, $this->js_fields[$plugin_name])) {
             $this->js_fields[$plugin_name][]       = $selector;
             $this->js_content[$plugin_name][]      = $js_content;
             $this->js_replacements[$plugin_name][] = $js_replacements;
@@ -1877,13 +2096,16 @@ class Form
             if ($this->framework == 'bs4') {
                 $inline_style .= '@media (min-width: 576px) {';
                 $inline_style .= '    .col-form-label ~ div[class*="col"] {';
-                $inline_style .= '        padding-top: calc(.5rem - 1px * 2); /* col-form-label padding */';
+                $inline_style .= '        padding-top: 8px; /* col-form-label padding */';
+                $inline_style .= '    }';
+                $inline_style .= '    .col-form-label ~ div[class*="col"] .select2-container {';
+                $inline_style .= '        margin-top: -0.5rem;';
                 $inline_style .= '    }';
                 $inline_style .= '    input[type="radio"] ~ .check {';
-                $inline_style .= '        top: 2px;';
+                $inline_style .= '        top: 0;';
                 $inline_style .= '    }';
                 $inline_style .= '    input[type="checkbox"] ~ .check {';
-                $inline_style .= '        top: 3px;';
+                $inline_style .= '        top: 0;';
                 $inline_style .= '    }';
                 $inline_style .= '}';
                 $inline_style .= '.form-check-input {';
@@ -1898,10 +2120,13 @@ class Form
                     $inline_style .= '    font-size: 14px;';
                     $inline_style .= '}';
                 }
-            }
-
-            // Foundation specific css
-            else if ($this->framework == 'foundation') {
+                if (in_array('icheck', $this->js_plugins)) {
+                    $inline_style .= 'div[class*="icheckbox_"], div[class*="iradio_"] {';
+                    $inline_style .= '    margin: 0 10px 0 20px;';
+                    $inline_style .= '}';
+                }
+            } elseif ($this->framework == 'foundation') {
+                // Foundation specific css
                 $inline_style .= '.bootstrap-select {';
                 $inline_style .= '    margin-bottom: 14px;';
                 $inline_style .= '}';
@@ -1955,10 +2180,8 @@ class Form
                 $inline_style .= '.intl-tel-input {';
                 $inline_style .= '    margin-bottom: 1rem !important;';
                 $inline_style .= '}';
-            }
-
-            // Material specific css
-            else if ($this->framework == 'material') {
+            } elseif ($this->framework == 'material') {
+                // Material specific css
                 $inline_style .= '.form-horizontal .bootstrap-select.btn-group {';
                 $inline_style .= '    margin-top: 0;';
                 $inline_style .= '}';
@@ -2319,33 +2542,30 @@ class Form
         $html .= $this->form_end_wrapper;
 
         // add Recaptcha js callback function
-        if(!empty($this->recaptcha_js_callback)) {
+        if (!empty($this->recaptcha_js_callback)) {
             $html .= $this->recaptcha_js_callback;
         }
 
         if ($debug == true) {
-
-            // beautify html
-            $html = $this->cleanHtmlOutput($html);
+            $html = $this->cleanHtmlOutput($html); // beautify html
         }
 
-        // if ajax option enabled
-        if($this->options['ajax'] === true) {
-            if($_SERVER["REQUEST_METHOD"] !== "POST") {
-                $cssfiles = preg_replace( "/\r|\n/", "", $this->printIncludes('css', false, false));
-                $jsfiles  = preg_replace( "/\r|\n/", "", $this->printIncludes('js', false, false));
+        if ($this->options['ajax'] === true) { // if ajax option enabled
+            if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+                $cssfiles = preg_replace("/\r|\n/", "", $this->printIncludes('css', false, false));
+                $jsfiles  = preg_replace("/\r|\n/", "", $this->printIncludes('js', false, false));
+                $html .= $jsfiles;
             }
-            $html .= $jsfiles;
 
             // script to submit with ajax
             $script = '<script>' . "\n";
             $script .= '    jQuery(document).ready(function () {' . "\n";
-            if($_SERVER["REQUEST_METHOD"] !== "POST") {
-            $script .= '        jQuery("head").append(\'' . $cssfiles . '\');' . "\n";
+            if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+                $script .= '        jQuery("head").append(\'' . $cssfiles . '\');' . "\n";
             }
             $script .= '        var $form       = jQuery("#' . $this->form_ID . '");' . "\n";
             $script .= '        var submitEvent = "submit";' . "\n";
-            $script .= '        if(typeof(FormValidation) != "undefined") {' . "\n";
+            $script .= '        if (typeof(FormValidation) != "undefined") {' . "\n";
             $script .= '            submitEvent = "success.form.fv";' . "\n";
             $script .= '        }' . "\n";
             $script .= '        $form.on(submitEvent, function (e) {' . "\n";
@@ -2599,7 +2819,7 @@ class Form
 
             // add token to filter
             foreach ($values as $key => $value) {
-                if(preg_match('`-token$`', $key) || preg_match('`submit-btn$`', $key)) {
+                if (preg_match('`-token$`', $key) || preg_match('`submit-btn$`', $key)) {
                     $filter[] = $key;
                 }
             }
@@ -2621,15 +2841,14 @@ class Form
             if (file_exists($html_template_custom_path)) {
                 $template_error_msg = '';
                 $debug_msg = '';
-
                 // try to load html template in email-templates-custom dir
-                if (!$html = file_get_contents($html_template_custom_path)) {
+                if (($html = file_get_contents($html_template_custom_path)) === false) {
                     $template_error_msg = 'Html template file doesn\'t exists';
                     $debug_msg          = $html_template_custom_path;
                 }
             } elseif (file_exists($html_template_path)) {
                 // try to load html template in email-templates dir
-                if (!$html = file_get_contents($html_template_path)) {
+                if (($html = file_get_contents($html_template_path)) === false) {
                     $template_error_msg = 'Html template file doesn\'t exists';
                     $debug_msg          = $html_template_path;
                 }
@@ -2642,13 +2861,13 @@ class Form
 
             if (file_exists($css_template_custom_path) && empty($template_error_msg)) {
                 // try to load css template in email-templates-custom dir
-                if (!$css = file_get_contents($css_template_custom_path)) {
+                if (($css = file_get_contents($css_template_custom_path)) === false) {
                     $template_error_msg = 'CSS template file doesn\'t exists';
                     $debug_msg          = $css_template_custom_path;
                 }
             } elseif (file_exists($css_template_path) && empty($template_error_msg)) {
                 // try to load css template in email-templates dir
-                if (!$css = file_get_contents($css_template_path)) {
+                if (($css = file_get_contents($css_template_path)) === false) {
                     $template_error_msg = 'CSS template file doesn\'t exists';
                     $debug_msg          = $css_template_path;
                 }
@@ -2694,7 +2913,7 @@ class Form
                         $email_table .= '</tr>';
                     } else {
                         foreach ($value as $key_array => $value_array) {
-                            if(!is_array($value_array)) {
+                            if (!is_array($value_array)) {
                                 $email_table .= '<tr>';
                                 $email_table .= '<th class="inner">' . ucfirst($key) . ' ' . ($key_array + 1) . ': ' . '</th>';
                                 $email_table .= '<td class="inner">' . $value_array . '</td>';
@@ -2729,21 +2948,24 @@ class Form
 
             /* custom replacements in css */
 
-            foreach ($custom_replacements as $key => $value) {
-                if (!in_array(mb_strtolower($key), $filter) && !is_array($value)) {
-                    $css = str_replace('{' . $key . '}', $value, $css);
+            if (!empty($css)) {
+                foreach ($custom_replacements as $key => $value) {
+                    if (!in_array(mb_strtolower($key), $filter) && !is_array($value)) {
+                        $css = str_replace('{' . $key . '}', $value, $css);
+                    }
                 }
-            }
 
-            $emogrifier = new \Pelago\Emogrifier();
-            $emogrifier->addExcludedSelector('br');
-            $emogrifier->enableCssToHtmlMapping();
-            $emogrifier->setHtml($html);
-            $emogrifier->setCss($css);
-            $mergedHtml = $emogrifier->emogrify();
+                $emogrifier = new \Pelago\Emogrifier();
+                $emogrifier->addExcludedSelector('br');
+                $emogrifier->enableCssToHtmlMapping();
+                $emogrifier->setHtml($html);
+                $emogrifier->setCss($css);
+                $mergedHtml = $emogrifier->emogrify();
+            } else {
+                $mergedHtml = $html;
+            }
             HTMLFilter($mergedHtml, '', false);
         } catch (\Exception $e) { //Catch all content errors
-
             return $e->getMessage();
         }
         $mail->msgHTML($mergedHtml, dirname(__FILE__), true);
@@ -2756,7 +2978,6 @@ class Form
                 return $sent_message;
             }
         } else {
-
             return $sent_message;
         }
     }
@@ -2874,13 +3095,13 @@ class Form
             if ($wrapper == 'elementsWrapper') {
                 $start_wrapper = $this->elements_start_wrapper;
                 $end_wrapper   = $this->elements_end_wrapper;
-            } else if ($wrapper == 'checkboxWrapper') {
+            } elseif ($wrapper == 'checkboxWrapper') {
                 $start_wrapper = $this->checkbox_start_wrapper;
                 $end_wrapper   = $this->checkbox_end_wrapper;
-            } else if ($wrapper == 'radioWrapper') {
+            } elseif ($wrapper == 'radioWrapper') {
                 $start_wrapper = $this->radio_start_wrapper;
                 $end_wrapper   = $this->radio_end_wrapper;
-            } else if ($wrapper == 'buttonWrapper') {
+            } elseif ($wrapper == 'buttonWrapper') {
                 $start_wrapper = $this->button_start_wrapper;
                 $end_wrapper   = $this->button_end_wrapper;
             }
@@ -3337,9 +3558,9 @@ class Form
             $array_values['id'] = preg_replace('`\[\]`', '', $name); // if $name is an array, we delete '[]'
             $array_values['attributs'] = '';
         } else {
-            if (preg_match('` id="([a-zA-Z0-9_-]+)"`', $attr, $out)) {
+            if (preg_match('`id="([a-zA-Z0-9_-]+)"`', $attr, $out)) {
                 $array_values['id'] = $out[1];
-                $array_values['attributs'] = preg_replace('` id="([a-zA-Z0-9_-]+)"`', '', $attr);
+                $array_values['attributs'] = preg_replace('`id="([a-zA-Z0-9_-]+)"`', '', $attr);
             } else {
                 $array_values['id'] = preg_replace('`\[\]`', '', $name);
                 $array_values['attributs'] = $attr;
@@ -3384,8 +3605,7 @@ class Form
             $new_class =  'class="' . $out[1] . ' ' . $newclassname . '"';
 
             return preg_replace('`class="([^"]+)"`', $new_class, $attr);
-        } else { /* if $attr contains no class we add elementClass */
-
+        } else { // if $attr contains no class we add elementClass
             return $attr . ' class="' . $newclassname . '"';
         }
     }
@@ -3460,7 +3680,7 @@ class Form
         } elseif ($element == 'radio') {
             if ($inline === true && !empty($this->options['inlineRadioLabelClass'])) {
                 return ' class="' . $this->options['inlineRadioLabelClass'] . '"';
-            } else if ($inline === false && !empty($this->options['verticalRadioLabelClass'])) {
+            } elseif ($inline === false && !empty($this->options['verticalRadioLabelClass'])) {
                 return ' class="' . $this->options['verticalRadioLabelClass'] . '"';
             } else {
                 return '';
@@ -3468,7 +3688,7 @@ class Form
         } elseif ($element == 'checkbox') {
             if ($inline === true && !empty($this->options['inlineCheckboxLabelClass'])) {
                 return ' class="' . $this->options['inlineCheckboxLabelClass'] . '"';
-            } else if ($inline === false && !empty($this->options['verticalCheckboxLabelClass'])) {
+            } elseif ($inline === false && !empty($this->options['verticalCheckboxLabelClass'])) {
                 return ' class="' . $this->options['verticalCheckboxLabelClass'] . '"';
             } else {
                 return '';
@@ -3488,14 +3708,12 @@ class Form
             if ($pos == 'start') {
                 return '<div class="' . $this->options['horizontalLabelCol'] . '">';
             } else { // end
-
                 return '</div>';
             }
         } elseif ($this->layout == 'vertical' && !empty($this->options['verticalLabelClass'])) {
             if ($pos == 'start') {
                 return '<div class="' . $this->options['verticalLabelClass'] . '">';
             } else { // end
-
                 return '</div>';
             }
         } else {
@@ -3511,7 +3729,7 @@ class Form
     * @param string $field_type input|textarea|select|radio|checkbox|button|recaptcha
     * @return string The html code of the element wrapper.
     */
-    protected function getElementCol($pos, $label = '', $field_type)
+    protected function getElementCol($pos, $field_type, $label = '')
     {
         if ($this->layout == 'horizontal' && !empty($this->options['horizontalElementCol'])) {
             if ($pos == 'start') {
@@ -3521,7 +3739,6 @@ class Form
                     return '<div class="' . $this->options['horizontalElementCol'] . '">';
                 }
             } else { // end
-
                 return '</div>';
             }
         } elseif ($this->framework == 'foundation' && ($field_type == 'radio' || $field_type == 'checkbox' || $field_type == 'button' || $field_type == 'recaptcha')) {
@@ -3529,7 +3746,6 @@ class Form
                 // foundation checkboxes, radio & button need column wrapper - in both horizontal & vertical forms
                 return '<div class="' . $this->options['horizontalElementCol'] . '">';
             } else { // end
-
                 return '</div>';
             }
         } else {
@@ -3656,7 +3872,7 @@ class Form
                 } else {
                     $xml = simplexml_load_file(dirname(__FILE__) . '/plugins-config/' . $plugin_name . '.xml');
                 }
-                if ($plugin_name == 'fileupload') { // fileupload
+                if ($plugin_name == 'jquery-fileupload') { // fileupload
                     $this->fileupload_js_code .= preg_replace('`%selector%`', $selector, $xml->$js_content->js_code);
                 } elseif ($plugin_name == 'recaptcha') {
                     $recaptcha_js .= preg_replace('`%selector%`', $selector, $xml->$js_content->js_code);
@@ -3665,7 +3881,7 @@ class Form
                 }
                 if (is_array($js_replacements)) {
                     foreach ($js_replacements as $key => $value) {
-                        if ($plugin_name == 'fileupload') { // fileupload
+                        if ($plugin_name == 'jquery-fileupload') { // fileupload
                             $this->fileupload_js_code = preg_replace('`' . $key . '`', $value, $this->fileupload_js_code);
                         } elseif ($plugin_name == 'recaptcha') {
                             $recaptcha_js = preg_replace('`' . $key . '`', $value, $recaptcha_js);

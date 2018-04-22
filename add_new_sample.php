@@ -30,29 +30,42 @@ $db = new Mysql();
 ============================================= */
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
-    $validator = Form::validate($form_name);
-
-    if ($validator->hasErrors()) {
-        $_SESSION['errors'][$form_name] = $validator->getAllErrors();
-    } else {
-
-        $update["core_id"] = Mysql::SQLValue($core);
-        $update["sample_id"] = Mysql::SQLValue($_POST["sample_id"]);
-        $update["analyst_first_name"] = Mysql::SQLValue($_POST["first_name"]);
-        $update["analyst_last_name"] = Mysql::SQLValue($_POST["last_name"]);
-        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-        $update["modelled_age"] = Mysql::SQLValue($_POST["modelled_age"]);
-
-        if ($_GET["edit"]) {
-            $db->updateRows('samples', $update, array("sample_id" => $update["sample_id"], 'core_id' => Mysql::SQLValue($core)));
+    if ($_POST["submit-btn"] == "delete") {
+        # Delete from both found specimens and samples table
+        $sample = array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text"));
+        $db->deleteRows('found_specimen', $sample);
+        $db->deleteRows('samples', $sample);
+        if ($db->error()) {
+            $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
         } else {
-            $db->insertRow('samples', $update);
+            $msg = '<p class="alert alert-success">Sample deleted successfully</p>' . " \n";
+            header("Location: index.php");
         }
+    } else {
+        $validator = Form::validate($form_name);
 
-        if (!empty($db->error())) {
-            $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
+        if ($validator->hasErrors()) {
+            $_SESSION['errors'][$form_name] = $validator->getAllErrors();
         } else {
-            $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
+
+            $update["core_id"] = Mysql::SQLValue($core);
+            $update["sample_id"] = Mysql::SQLValue($_POST["sample_id"]);
+            $update["analyst_first_name"] = Mysql::SQLValue($_POST["first_name"]);
+            $update["analyst_last_name"] = Mysql::SQLValue($_POST["last_name"]);
+            $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+            $update["modelled_age"] = Mysql::SQLValue($_POST["modelled_age"]);
+
+            if ($_GET["edit"]) {
+                $db->updateRows('samples', $update, array("sample_id" => $update["sample_id"], 'core_id' => Mysql::SQLValue($core)));
+            } else {
+                $db->insertRow('samples', $update);
+            }
+
+            if (!empty($db->error())) {
+                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
+            } else {
+                $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
+            }
         }
     }
 }
@@ -102,7 +115,10 @@ $form->addInput('number', 'modelled_age', '', 'Modelled Age');
 #######################
 # Clear/Save
 #######################
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning', 'my-btn-group');
+$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+if ($_GET["edit"]) {
+    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this sample?\')', 'my-btn-group');
+}
 $form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
 

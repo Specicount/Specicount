@@ -20,6 +20,8 @@ $project = $_GET["project"];
 $core = $_GET["core"];
 $sample = $_GET["sample"];
 
+// TODO plant_function_type
+
 /* =============================================
     validation if posted
 ============================================= */
@@ -28,28 +30,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
 
-        $db->selectRows('found_specimen', array('sample_id' => Mysql::SQLValue($sample)));
+        $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id = ".Mysql::SQLValue($sample));
         $specimen_data = $db->recordsArray();
         // open the "output" stream
         // see http://www.php.net/manual/en/wrappers.php.php#refsect2-wrappers.php-unknown-unknown-unknown-descriptioq
         $f = fopen('php://output', 'w');
-        fputcsv($f, array("Specimen ID", "Count"), ",");
+        fputcsv($f, array("Specimen", "Family", "Genus", "Species", "Plan Function Type", "Count"), ",");
         foreach ($specimen_data as $spec) {
-            fputcsv($f, array($spec["spec_id"], $spec["count"]), ",");
+            fputcsv($f, array($spec["spec_id"], $spec["family"], $spec["genus"], $spec["species"], $spec["plant_function_type"], $spec["count"]), ",");
         }
         header("Refresh:0");
         exit;
     } else {
 
-        $validator = Form::validate('add-new-sample');
 
         $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample)), null, null, true, 1);
         $sample_data = $db->recordsArray()[0];
 
-        if ($validator->hasErrors()) {
-            $_SESSION['errors']['user-form'] = $validator->getAllErrors();
-        } else if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) { // Was last updated by this device
-
+        if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) { // Was last updated by this device
             $error = false;
             $sub_post = array_slice($_POST, 4);
             foreach ($sub_post as $specimen => $count) {
@@ -136,7 +134,7 @@ $form->addHtml("<input type=\"hidden\" name=\"last_edit\" value=\"".$sample_data
 # Clear/Save
 #######################
 $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save append" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('button', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onClick=window.location.reload()', 'my-btn-group');
+$form->addBtn('button', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
 $form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
 $form->addBtn('submit', 'submit-btn', "reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
@@ -219,6 +217,12 @@ require_once "add_form_html.php";
 ?>
 <script>
 
+    function reload(){
+        if (confirm('Are you sure you want to reset the sample?')) {
+            window.location.reload();
+        }
+    }
+
     function updateCounter(spec_id){
         document.getElementById(spec_id+"_counter").innerHTML = document.getElementById(spec_id).value;
     }
@@ -230,7 +234,7 @@ require_once "add_form_html.php";
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
-        var key = e.keyCode ? e.keyCode : e.which;
+        let key = e.keyCode ? e.keyCode : e.which;
 
         <?php
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys

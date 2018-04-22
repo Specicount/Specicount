@@ -27,28 +27,38 @@ $db = new Mysql();
 ============================================= */
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
-    // create validator & auto-validate required fields
-    $validator = Form::validate($form_name);
-
-    if ($validator->hasErrors()) {
-        $_SESSION['errors'][$form_name] = $validator->getAllErrors();
-    } else {
-
-        $update["project_name"] = Mysql::SQLValue($_POST["project_name"]);
-        $update["biorealm"] = Mysql::SQLValue($_POST["biorealm"]);
-        $update["country"] = Mysql::SQLValue($_POST["country"]);
-        $update["region"] = Mysql::SQLValue($_POST["region"]);
-
-        if ($_GET["edit"]) {
-            $db->updateRows('projects', $update, array("project_name" => $update["project_name"]));
+    if ($_POST["submit-btn"] == "delete") {
+        # Delete from both cores table
+        $db->deleteRows('projects', array("project_name" => Mysql::SQLValue($_POST["project_name"], "text")));
+        if ($db->error()) {
+            $msg = '<p class="alert alert-danger">Could not delete core, please make sure all cores are deleted inside</p>' . "\n";
         } else {
-            $db->insertRow('projects', $update);
+            $msg = '<p class="alert alert-success">Project deleted successfully !</p>' . " \n";
+            header("Location: index.php");
         }
+    } else {
+        $validator = Form::validate($form_name);
 
-        if (!empty($db->error())) {
-            $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
+        if ($validator->hasErrors()) {
+            $_SESSION['errors'][$form_name] = $validator->getAllErrors();
         } else {
-            $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
+
+            $update["project_name"] = Mysql::SQLValue($_POST["project_name"]);
+            $update["biorealm"] = Mysql::SQLValue($_POST["biorealm"]);
+            $update["country"] = Mysql::SQLValue($_POST["country"]);
+            $update["region"] = Mysql::SQLValue($_POST["region"]);
+
+            if ($_GET["edit"]) {
+                $db->updateRows('projects', $update, array("project_name" => $update["project_name"]));
+            } else {
+                $db->insertRow('projects', $update);
+            }
+
+            if (!empty($db->error())) {
+                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
+            } else {
+                $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
+            }
         }
     }
 }
@@ -100,7 +110,10 @@ $form->endFieldset();
 #######################
 # Clear/Save
 #######################
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning', 'my-btn-group');
+$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+if ($_GET["edit"]) {
+    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
+}
 $form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
 

@@ -18,8 +18,6 @@ require 'UploadHandler.php';
  * to restrict file types, replace gif|jpe?g|png by the type(s) you want
 */
 
-//mkdir("/var/www/html/phpformbuilder/images/uploads/thumbnail");
-
 $options = array(
     'upload_dir'        => rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . '/phpformbuilder/images/uploads/',
     'upload_url'        => '/phpformbuilder/images/uploads/', // relative path to your form or absolute path without host
