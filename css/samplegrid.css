@@ -76,13 +76,17 @@
     padding: 4px 5px 5px 4px;
 }
 
+/* Button size */
+.overlay *[class*="-btn"] {
+    width: calc(40px + 0.25vw);
+    height: calc(40px + 0.25vw);
+}
+
 /* Close button top right */
 .overlay .close-btn {
     position: absolute;
     top: 0;
-    right: 4px;
-    width: calc(40px + 0.25vw);
-    height: calc(40px + 0.25vw);
+    right: 3px;
 }
 
 /* Edit button bottom left */
@@ -90,30 +94,34 @@
     position: absolute;
     bottom: 0;
     left: 2px;
-    width: calc(40px + 0.25vw);
-    height: calc(40px + 0.25vw);
 }
 
 /* Info button bottom right */
-.overlay .info-btn {
+.overlay .del-btn {
     position: absolute;
     bottom: 1px;
     right: 2px;
-    width: calc(40px + 0.25vw);
-    height: calc(40px + 0.25vw);
 }
 
-/* Green button */
-.overlay button {
+/* Delete button */
+.overlay .info-btn {
+    position: absolute;
+    top: 50%;
+    right: 3px;
+    transform: translate(0, -50%);
+}
+
+/* Add to sample or add to count button */
+.overlay .add-btn {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80%;
     height: 45px;
-
 }
 
+/* Add to count button */
 .overlay button[name*="count"] {
     border-radius: 50%;
     width: calc(60px + 1vw);
