@@ -178,21 +178,19 @@ if($db->rowCount() > 0) {
 
     foreach ($specs as $specimen) {
         $image = $specimen["image_folder"].$specimen["primary_image"];
-        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="specimen-container cell"');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'" class="specimen-container cell"');
         if (is_file($image)) {
             $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["spec_id"].'/'.$specimen["primary_image"].'\');"');
         }
         $form->addHtml('>');
-        $form->addHtml('<div class="counter">
-                                <p id="'.$specimen["spec_id"].'_counter">' . $specimen["count"] . '</p>
-                              </div>');
-        $form->addHtml('<div class="overlay">');
-        $form->addHtml('<a href="#"><span><i class="fas fa-window-close close-btn"></i></span></a>');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'_counter" class="counter"><p id="'.$specimen["spec_id"].'_counter_text">' . $specimen["count"] . '</p></div>');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'_overlay" class="overlay">');
+        $form->addHtml('<a href="#"><span><i id="'.$specimen["spec_id"].'_close" class="fas fa-window-close close-btn"></i></span></a>');
         $form->addHtml('<text>ID: ' . $specimen["spec_id"] . '</text>
             <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>
             <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
         $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\');updateCounter(\''.$specimen["spec_id"].'\')');
-        $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
+        $form->addInput('number', $specimen["spec_id"].'_input', $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
         $form->addHtml('</div>');
         $form->addHtml('</div>');
 
@@ -221,14 +219,14 @@ require_once "add_form_html.php";
     }
 
     function updateCounter(spec_id){
-        document.getElementById(spec_id+"_counter").innerHTML = document.getElementById(spec_id).value;
+        document.getElementById(spec_id+"_counter_text").innerHTML = document.getElementById(spec_id+"_input").value;
     }
     function add(spec_id) {
-        document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) + 1;
+        document.getElementById(spec_id+"_input").value = parseFloat(document.getElementById(spec_id+"_input").value) + 1;
     }
 
     function subtract(spec_id){
-        document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
+        document.getElementById(spec_id+"_input").value = parseFloat(document.getElementById(spec_id+"_input").value) - 1;
     }
     window.onkeyup = function(e) {
         var key = e.keyCode ? e.keyCode : e.which;
@@ -248,33 +246,32 @@ require_once "add_form_html.php";
 
 
     $(document).ready(function() {
-
-
         // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
         // If mouse intends to hover over specimen
         $(".specimen-container").hoverIntent(
         function() {
-            var current_overlay = $(".overlay[style*='block']");
-            fadeOutOverlay(current_overlay.parent());
-
-            $(this).children(".overlay").fadeIn(200);
-            $(this).children(".counter").fadeOut(200);
+            var spec_id = $(this).attr('id');
+            fadeInOverlay(spec_id);
         },
         function() {
-            fadeOutOverlay($(this));
+            var spec_id = $(this).attr('id');
+            fadeOutOverlay(spec_id);
         });
 
-        //Takes
-        function fadeOutOverlay(specimen_container) {
-            specimen_container.find(".overlay").fadeOut(200);
-            var counter = specimen_container.find(".counter");
-            counter.fadeIn(200);
+        function fadeInOverlay(spec_id) {
+            $("#"+spec_id+"_overlay").fadeIn(200);
+            $("#"+spec_id+"_counter").fadeOut(200);
         }
 
+        function fadeOutOverlay(spec_id) {
+            $("#"+spec_id+"_overlay").fadeOut(200);
+            $("#"+spec_id+"_counter").fadeIn(200);
+        }
 
         //If close button on overlay clicked
-        $(".overlay .close-btn").click(function(){
-            fadeOutOverlay($(this).parent().parent().parent().parent());
+        $(".overlay .close-btn").click(function() {
+            var spec_id = $(this).attr('id').split("_")[0];
+            fadeOutOverlay(spec_id);
         })
     });
 </script>
