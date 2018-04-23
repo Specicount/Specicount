@@ -187,9 +187,7 @@ if($db->rowCount() > 0) {
                                 <p id="'.$specimen["spec_id"].'_counter">' . $specimen["count"] . '</p>
                               </div>');
         $form->addHtml('<div class="overlay">');
-        $form->addHtml('<a href="#">
-                                <span><i class="fas fa-window-close close-btn"></i></span>
-                             </a>');
+        $form->addHtml('<a href="#"><span><i class="fas fa-window-close close-btn"></i></span></a>');
         $form->addHtml('<text>ID: ' . $specimen["spec_id"] . '</text>
             <a href="add_new_specimen.php?project='.$project.'&core='.$core.'&sample='.$sample.'&edit='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>
             <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
