@@ -575,7 +575,8 @@ $form->endFieldset();*/
 
 $current_file = ''; // default empty
 
-if ($_GET["edit"]) {
+// NOT WORKING ATM
+/*if ($_GET["edit"]) {
     $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["edit"].'/';
 
     $dir = new DirectoryIterator($current_file_path);
@@ -601,7 +602,7 @@ if ($_GET["edit"]) {
             }
         }
     }
-}
+}*/
 $fileUpload_config = array(
     'xml'           => 'image-upload', // the thumbs directories must exist
     'uploader'      => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php

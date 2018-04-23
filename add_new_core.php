@@ -31,7 +31,7 @@ if ($_GET["edit"]) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     if ($_POST["submit-btn"] == "delete") {
         # Delete from both cores table
-        $db->deleteRows('cores', array("core_id" => Mysql::SQLValue($_POST["core_id"], "text")));
+        $db->deleteRows('cores', array("core_id" => Mysql::SQLValue($_POST["core_id"], "text"), "project_name" => Mysql::SQLValue($project, "text")));
         if ($db->error()) {
             $msg = '<p class="alert alert-danger">Could not delete core, please make sure all samples are deleted inside</p>' . "\n";
         } else {

@@ -32,9 +32,8 @@ $db = new Mysql();
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     if ($_POST["submit-btn"] == "delete") {
         # Delete from both found specimens and samples table
-        $sample = array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text"));
-        $db->deleteRows('found_specimen', $sample);
-        $db->deleteRows('samples', $sample);
+        $db->deleteRows('found_specimen', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text")));
+        $db->deleteRows('samples', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text"), "core_id" => Mysql::SQLValue($core, "text")));
         if ($db->error()) {
             $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
         } else {

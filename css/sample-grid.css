@@ -1,0 +1,117 @@
+
+
+
+
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,0.8);
+    vertical-align: middle;
+    text-align: center;
+    display:none;
+    /*
+    -webkit-transition: all 0.2s ease-in-out 0s;
+    -moz-transition: all 0.2s ease-in-out 0s;
+    -ms-transition: all 0.2s ease-in-out 0s;
+    transition: all 0.2s ease-in-out 0s;
+
+    opacity: 0;
+    visibility: hidden;
+    */
+}
+
+/*
+.specimen-container:hover .overlay, .specimen-container:active .overlay {
+    opacity: 1;
+    visibility: visible;
+
+}
+*/
+
+text {
+    font-weight: bold;
+    padding: 4px 5px 5px 4px;
+}
+
+p {
+    font-weight: bold;
+    padding: 0px 5px;
+    margin-left: -1px;
+}
+
+.counter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: max-content;
+    height: 27px;
+    background-color: rgba(255,255,255,0.9);
+    border: 2px solid grey;
+}
+
+.overlay .close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(1.3vw + 18px);
+    height: calc(1.3vw + 18px);
+}
+
+.overlay .edit-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: calc(1.3vw + 18px);
+    height: calc(1.3vw + 18px);
+}
+
+.overlay .info-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: calc(1.3vw + 18px);
+    height: calc(1.3vw + 18px);
+}
+
+.overlay text {
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    margin-top: -2%;
+    font-size: calc(0.9vw + 10px);
+}
+
+
+.overlay .fa-plus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2.5vw;
+    height: 2.5vw;
+}
+
+.overlay button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    width: 5vw;
+    height: 5vw;
+}
+
+.overlay input {
+    margin: 0;
+    position: absolute;
+    width: 75px;
+    left: 50%;
+    bottom: 5%;
+    transform: translate(-50%, 5%);
+    font-weight: bold;
+}

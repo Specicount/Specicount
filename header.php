@@ -20,3 +20,4 @@
 <link rel="stylesheet" href="css/fontawesome.min.css">
 <link rel="stylesheet" href="css/bsadmin.css">
 <link rel="stylesheet" href="css/flexbin.css">
+<link rel="stylesheet" href="css/sample-grid.css">
