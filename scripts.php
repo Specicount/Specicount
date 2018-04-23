@@ -18,6 +18,12 @@ $(document).ready(function() {
             fadeOutOverlay(spec_id);
         });
 
+    //If close button on overlay clicked
+    $(".overlay .close-btn").click(function() {
+        var spec_id = $(this).attr('id').split("_")[0];
+        fadeOutOverlay(spec_id);
+    });
+
     function fadeInOverlay(spec_id) {
         $("#"+spec_id+"_overlay").fadeIn(200);
         $("#"+spec_id+"_counter").fadeOut(200);
@@ -27,10 +33,5 @@ $(document).ready(function() {
         $("#"+spec_id+"_overlay").fadeOut(200);
         $("#"+spec_id+"_counter").fadeIn(200);
     }
-
-    //If close button on overlay clicked
-    $(".overlay .close-btn").click(function() {
-        var spec_id = $(this).attr('id').split("_")[0];
-        fadeOutOverlay(spec_id);
-    })
+});
 </script>
