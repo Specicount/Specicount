@@ -169,7 +169,6 @@ $form->addHtml('</div>');
 $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id=".Mysql::SQLValue($sample)." ORDER BY `order` DESC");
 $specs = array();
 $specs = $db->recordsArray();
-$form->addHtml("<div>");
 
 if($db->rowCount() > 0) {
 
@@ -179,7 +178,7 @@ if($db->rowCount() > 0) {
 
     foreach ($specs as $specimen) {
         $image = $specimen["image_folder"].$specimen["primary_image"];
-        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="flex-container specimen-container">');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="specimen-container">');
         if (is_file($image)) {
             $form->addHtml('<img src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/'.$specimen["primary_image"].'">');
         }
@@ -198,7 +197,7 @@ if($db->rowCount() > 0) {
         $form->addHtml('</div>');
 
     }
-    $form->addHtml('</div><br><br>');
+    $form->addHtml('<br><br>');
 
 
 
