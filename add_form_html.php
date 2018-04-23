@@ -62,8 +62,7 @@ require_once "navbar.php"; // Add Side Nav Bar
 </div>
 <?php
 require_once "scripts.php"; // Get scripts
-?>
-<?php
+
 if (is_array($form)) {
     foreach ($form as $f) {
         $f->printIncludes('js');
