@@ -1,7 +1,36 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid .cell {
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: block;
+    flex-grow: 1;
+    height: 200px;
+}
 
 
+/*
+@media screen and (min-width: 600px) {
+    .grid .cell {
+        width: calc(100% / 3);
+    }
+}
 
+@media screen and (min-width: 1000px) {
+    .grid .cell {
+        width: calc(100% / 4);
+    }
+}
 
+@media screen and (min-width: 1400px) {
+    .grid .cell {
+        width: calc(100% / 5);
+    }
+}
+*/
 
 
 .overlay {

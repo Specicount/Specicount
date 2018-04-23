@@ -174,14 +174,15 @@ if($db->rowCount() > 0) {
 
     $form->addHtml('<hr>');
 
-    $form->addHtml('<div class="flexbin flexbin-margin">');
+    $form->addHtml('<div class="grid">');
 
     foreach ($specs as $specimen) {
         $image = $specimen["image_folder"].$specimen["primary_image"];
-        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="specimen-container">');
+        $form->addHtml('<div id="'.$specimen["spec_id"].'_container" class="specimen-container cell"');
         if (is_file($image)) {
-            $form->addHtml('<img src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/'.$specimen["primary_image"].'">');
+            $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["spec_id"].'/'.$specimen["primary_image"].'\');"');
         }
+        $form->addHtml('>');
         $form->addHtml('<div class="counter">
                                 <p id="'.$specimen["spec_id"].'_counter">' . $specimen["count"] . '</p>
                               </div>');
@@ -192,12 +193,11 @@ if($db->rowCount() > 0) {
             <a href="specimen_details.php?spec_id='.$specimen["spec_id"].'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
         $form->addBtn('button', $specimen["spec_id"].'_add', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\');updateCounter(\''.$specimen["spec_id"].'\')');
         $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
-
         $form->addHtml('</div>');
         $form->addHtml('</div>');
 
     }
-    $form->addHtml('<br><br>');
+    $form->addHtml('</div><br><br>');
 
 
 
