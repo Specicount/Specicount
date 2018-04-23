@@ -19,4 +19,4 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/fontawesome.min.css">
 <link rel="stylesheet" href="css/bsadmin.css">
-<link rel="stylesheet" href="css/sample-grid.css">
+<link rel="stylesheet" href="css/samplegrid.css">
