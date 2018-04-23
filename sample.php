@@ -174,7 +174,7 @@ if($db->rowCount() > 0) {
 
     $form->addHtml('<hr>');
 
-    $form->addHtml('<div class="grid">');
+    $form->addHtml('<div class="square-grid">');
 
     foreach ($specs as $specimen) {
         $image = $specimen["image_folder"].$specimen["primary_image"];

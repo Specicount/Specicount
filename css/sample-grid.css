@@ -1,47 +1,50 @@
-.grid {
+/* Makes the images wrap to a new line */
+.square-grid {
     display: flex;
     flex-wrap: wrap;
 }
 
-.grid .cell {
+/* Makes the background image stretch to fit the cell
+   This should not crop perfectly square images */
+.square-grid .cell {
     background-repeat: no-repeat;
-    background-size: contain;
-    display: block;
-    flex-grow: 1;
-    height: 200px;
+    background-size: cover;
+    width:100%;
+    margin-right:0px;
+    margin-bottom: 0px;
 }
 
-
-/*
-@media screen and (min-width: 600px) {
-    .grid .cell {
-        width: calc(100% / 3);
-    }
+/* Makes the height of the cell = width */
+.square-grid .cell:before {
+    padding-top: 100%;
+    content: "";
+    float: left;
 }
 
-@media screen and (min-width: 1000px) {
-    .grid .cell {
-        width: calc(100% / 4);
-    }
-}
-
-@media screen and (min-width: 1400px) {
-    .grid .cell {
-        width: calc(100% / 5);
-    }
-}
-*/
-
-
-.overlay {
+/* Small box top left of image */
+.counter {
     position: absolute;
-    top: 0;
-    left: 0;
+    width: max-content;
+    height: 27px;
+    background-color: rgba(255,255,255,0.9);
+    border: 2px solid grey;
+}
+
+/* Text inside counter */
+.counter p {
+    font-weight: bold;
+    padding: 0px 5px;
+    margin-left: -1px;
+}
+
+
+/* White overlay when you hover over image */
+.overlay {
+    position: relative;
+    top: -16px;
     height: 100%;
     width: 100%;
     background-color: rgba(255,255,255,0.8);
-    vertical-align: middle;
-    text-align: center;
     display:none;
     /*
     -webkit-transition: all 0.2s ease-in-out 0s;
@@ -62,79 +65,66 @@
 }
 */
 
-text {
-    font-weight: bold;
-    padding: 4px 5px 5px 4px;
-}
-
-p {
-    font-weight: bold;
-    padding: 0px 5px;
-    margin-left: -1px;
-}
-
-.counter {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: max-content;
-    height: 27px;
-    background-color: rgba(255,255,255,0.9);
-    border: 2px solid grey;
-}
-
-.overlay .close-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: calc(1.3vw + 18px);
-    height: calc(1.3vw + 18px);
-}
-
-.overlay .edit-btn {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: calc(1.3vw + 18px);
-    height: calc(1.3vw + 18px);
-}
-
-.overlay .info-btn {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: calc(1.3vw + 18px);
-    height: calc(1.3vw + 18px);
-}
-
+/* ID: specimen text */
 .overlay text {
     position: absolute;
     top: 1%;
     left: 1%;
     margin-top: -2%;
-    font-size: calc(0.9vw + 10px);
+    font-size: calc(20px + 0.2vw);
+    font-weight: bold;
+    padding: 4px 5px 5px 4px;
 }
 
-
-.overlay .fa-plus {
+/* Close button top right */
+.overlay .close-btn {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 2.5vw;
-    height: 2.5vw;
+    top: 0;
+    right: 4px;
+    width: calc(40px + 0.25vw);
+    height: calc(40px + 0.25vw);
 }
 
+/* Edit button bottom left */
+.overlay .edit-btn {
+    position: absolute;
+    bottom: 0;
+    left: 2px;
+    width: calc(40px + 0.25vw);
+    height: calc(40px + 0.25vw);
+}
+
+/* Info button bottom right */
+.overlay .info-btn {
+    position: absolute;
+    bottom: 1px;
+    right: 2px;
+    width: calc(40px + 0.25vw);
+    height: calc(40px + 0.25vw);
+}
+
+/* Green circle */
 .overlay button {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    width: 5vw;
-    height: 5vw;
+    width: calc(60px + 1vw);
+    height: calc(60px + 1vw);
 }
 
+/* Plus symbol inside green circle */
+.overlay .fa-plus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(30px + 0.5vw);
+    height: calc(30px + 0.5vw);
+}
+
+/* Count input */
 .overlay input {
     margin: 0;
     position: absolute;
@@ -143,4 +133,41 @@ p {
     bottom: 5%;
     transform: translate(-50%, 5%);
     font-weight: bold;
+}
+
+/* How many images to display per row */
+@media screen and (min-width: 400px) {
+    .square-grid .cell {
+        width: calc(100% / 2);
+    }
+}
+
+@media screen and (min-width: 700px) {
+    .square-grid .cell {
+        width: calc(100% / 3);
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .square-grid .cell {
+        width: calc(100% / 3);
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .square-grid .cell {
+        width: calc(100% / 4);
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    .square-grid .cell {
+        width: calc(100% / 5);
+    }
+}
+
+@media screen and (min-width: 1500px) {
+    .square-grid .cell {
+        width: calc(100% / 6);
+    }
 }
