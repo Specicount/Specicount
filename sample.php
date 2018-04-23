@@ -234,7 +234,7 @@ require_once "add_form_html.php";
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
-        let key = e.keyCode ? e.keyCode : e.which;
+        var key = e.keyCode ? e.keyCode : e.which;
 
         <?php
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
@@ -257,7 +257,7 @@ require_once "add_form_html.php";
         // If mouse intends to hover over specimen
         $(".specimen-container").hoverIntent(
         function() {
-            let current_overlay = $(".overlay[style*='block']");
+            var current_overlay = $(".overlay[style*='block']");
             fadeOutOverlay(current_overlay.parent());
 
             $(this).children(".overlay").fadeIn(200);
@@ -270,7 +270,7 @@ require_once "add_form_html.php";
         //Takes
         function fadeOutOverlay(specimen_container) {
             specimen_container.find(".overlay").fadeOut(200);
-            let counter = specimen_container.find(".counter");
+            var counter = specimen_container.find(".counter");
             counter.fadeIn(200);
         }
 
