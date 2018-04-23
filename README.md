@@ -91,7 +91,7 @@ Will meet in person if everyone is available, otherwise over google hangouts wit
 
 In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive, among other artifacts, you will find:
 
-* [Project Requirements](https://drive.google.com/open?id=1ftBVNch_Gn8EKxaUfufyif1UBm1UDPIrzac4ghlxoBo)
+* [Project Requirements](https://docs.google.com/document/d/1VQodepOPWlWnqtI98cRpWtkr-1ItXrvFqXwEWw4I0pU/edit?usp=sharing)
 * [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
 * [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
 * [Teamwork Processes](https://drive.google.com/open?id=15SU2-uzkVhSpzMk53GWEpBvZ7E_-LrMdUV15Q6smaxw)
