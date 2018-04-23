@@ -10,7 +10,9 @@
 
 # <a name='project_brief'></a> 1. Project Brief
 
-ANU researchers in the fields of ecology/palaeoecology are currently using a system of analysing pollen in environmental samples that is cumbersome and largely paper-based. The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. We will accomplish this objective through the creation of a web application that would replace the paper-based step in the current workflow.
+ANU researchers in the fields of ecology/palaeoecology are currently using a system of analysing pollen in environmental samples that is cumbersome and largely paper-based. 
+The objective of this project is to digitise the data capture methods of our client to help simplify their workload and increase productivity. 
+We will accomplish this objective through the creation of a web application that would replace the paper-based step in the current workflow.
 
 # <a name='project_background'></a> 2. Project Background
 
@@ -34,7 +36,7 @@ programs to discover trends and publish to other participants within the project
 
 The objective of the project is to digitise the data capture methods currently used to reduce the Clients' workload and increase productivity. This includes the
 ability to have a portable application that captures, sorts and organises the data to be exported to the graphing software used within the wider project community.
-Although the initial scope is purely for the prototype to be used in the Clients' research project , the vision of the Clients is to produce a polymorphic application that can be used
+Although the initial scope is purely for the prototype to be used in the Clients' research project, the vision of the Clients is to produce a polymorphic application that can be used
 in the wider research community for multiple data capture senarios, eliminating the need for paper-based methods in the forthcoming digital age.
 
 # <a name='team'></a> 4. Team
@@ -91,9 +93,9 @@ Will meet in person if everyone is available, otherwise over google hangouts wit
 
 In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive, among other artifacts, you will find:
 
-* [Project Requirements](https://drive.google.com/open?id=1ftBVNch_Gn8EKxaUfufyif1UBm1UDPIrzac4ghlxoBo)
+* [Project Requirements](https://docs.google.com/document/d/1VQodepOPWlWnqtI98cRpWtkr-1ItXrvFqXwEWw4I0pU/edit?usp=sharing)
 * [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
-* [Decisions Paper](https://drive.google.com/open?id=1DIFqrwdOS_LxKv6dQf-K3lS_ug0d0Ht9zrMX1lpNHkA)
+* [Decisions Paper](https://docs.google.com/document/d/1R91LbLCLSgVWpTFey-ABHFUF7yNpx6J5hhXeN9ZDj4g/edit?usp=sharing)
 * [Teamwork Processes](https://drive.google.com/open?id=15SU2-uzkVhSpzMk53GWEpBvZ7E_-LrMdUV15Q6smaxw)
 * [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
 * [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
@@ -106,7 +108,7 @@ On GitLab you can find our:
 # <a name='the_website'></a> 8. The Website
 
 We currently hosting the website on:
-* A server in Matthew's house - This is used for development and where we push live changes immediately.
+* A testing server in Matthew's house - This is used for development and where we push live changes immediately.
 * A virtual machine located on campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
 (Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 
