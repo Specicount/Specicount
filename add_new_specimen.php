@@ -105,6 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
             $update["trilete_scar_shape"] = Mysql::SQLValue($_POST["trilete_scar_shape"], "text");
             $update["p_sacci_size"] = Mysql::SQLValue($_POST["p_sacci_size"], "text");
             $update["e_sacci_size"] = Mysql::SQLValue($_POST["e_sacci_size"], "text");
+            $update["plant_function_type"] = Mysql::SQLValue(implode(",", $_POST["plant_function_type"]), "text");
             $update["morphology_notes"] = Mysql::SQLValue($_POST["morphology_notes"], "text");
 
             if (!empty($_POST["uploaded-images"])) {
@@ -184,6 +185,7 @@ if ($_GET["edit"]) {
         $_SESSION[$form_name]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
         $_SESSION[$form_name]["p_sacci_size"] = $specimen["p_sacci_size"];
         $_SESSION[$form_name]["e_sacci_size"] = $specimen["e_sacci_size"];
+        $_SESSION[$form_name]["plant_function_type"] = explode(",", $specimen["plant_function_type"]);
         $_SESSION[$form_name]["morphology_notes"] = $specimen["morphology_notes"];
     } else {
         $_GET["edit"] = null;
@@ -559,6 +561,20 @@ $form->endDependentFields();*/
 $form->endFieldset();
 
 #######################
+# Plan Functional Group
+#######################
+$form->startFieldset('Plan Functional Group');
+$form->addOption('plant_function_type[]', 'Tree/Shrub (Gymnosperm) (TRSH Gym)',  'Tree/Shrub (Gymnosperm) (TRSH Gym)', '', '');
+$form->addOption('plant_function_type[]', 'Tree/Shrub (Angiosperm) (TRSH An)',  'Tree/Shrub (Angiosperm) (TRSH An)', '', '');
+$form->addOption('plant_function_type[]', 'Liana (L)',  'Liana (L)', '', '');
+$form->addOption('plant_function_type[]', 'Herb (Dry) (HERB D)',  'Herb (Dry) (HERB D)', '', '');
+$form->addOption('plant_function_type[]', 'Herb (Wet) (HERB W)',  'Herb (Wet) (HERB W)', '', '');
+$form->addOption('plant_function_type[]', 'Pteridophyte (PTER)',  'Pteridophyte (PTER)', '', '');
+$form->addHelper('Multiple Choice', 'plant_function_type[]');
+$form->addSelect('plant_function_type[]', 'Plan Function Type ', 'class=select2, data-width=100%, multiple=multiple');
+$form->endFieldset();
+
+#######################
 # Images
 #######################
 $form->startFieldset('Images');
@@ -618,7 +634,6 @@ $fileUpload_config = array(
     'debug'         => true
 );
 
-$form->startFieldset('Prefilled upload with existing image');
 $form->addHelper('Primary image first. Accepted File Types : Accepted File Types : .jp[e]g, .png, .gif', 'uploaded-images', 'after');
 $form->addFileUpload('file', 'uploaded-images', '', 'Upload up to 10 images', '', $fileUpload_config, $current_file[0]);
 $form->endFieldset();
@@ -634,7 +649,6 @@ $form->endFieldset();
 #######################
 # Clear/Save
 #######################
-
 $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {

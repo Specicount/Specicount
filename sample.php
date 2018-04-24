@@ -238,7 +238,7 @@ require_once "add_form_html.php";
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
-        var key = e.keyCode ? e.keyCode : e.which;
+        let key = e.keyCode ? e.keyCode : e.which;
         <?php
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
         $i = 0;

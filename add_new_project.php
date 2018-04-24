@@ -92,8 +92,19 @@ if ($_GET["edit"]) {
     $form->addInput('text', 'project_name', '', '', 'required'); // Need to have warning for code
 }
 $form->setCols(0, 6);
+
 $form->addHelper('Biorealm', 'biorealm');
-$form->addInput('text', 'biorealm', '', '', '');
+$form->addOption('biorealm', '',  'Choose one ...', '', 'disabled, selected');
+$form->addOption('biorealm', 'Nearctic',  'Nearctic', '', '');
+$form->addOption('biorealm', 'Palearctic',  'Palearctic', '', '');
+$form->addOption('biorealm', 'Afrotropic',  'Afrotropic', '', '');
+$form->addOption('biorealm', 'Indomalaya',  'Indomalaya', '', '');
+$form->addOption('biorealm', 'Australasia',  'Australasia', '', '');
+$form->addOption('biorealm', 'Neotropic',  'Neotropic', '', '');
+$form->addOption('biorealm', 'Oceania',  'Oceania', '', '');
+$form->addOption('biorealm', 'Antarctic',  'Antarctic', '', '');
+$form->addSelect('biorealm', '', 'class=select2, data-width=100%');
+
 $form->setCols(6, 6);
 
 $form->setCols(6, 6);
@@ -110,11 +121,11 @@ $form->endFieldset();
 #######################
 # Clear/Save
 #######################
+$form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {
     $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
 }
-$form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
 
 // jQuery validation
