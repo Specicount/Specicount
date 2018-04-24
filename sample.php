@@ -20,9 +20,6 @@ $project = $_GET["project"];
 $core = $_GET["core"];
 $sample = $_GET["sample"];
 
-// TODO plant_function_type
-// Plan Functional Group
-
 /* =============================================
     validation if posted
 ============================================= */
@@ -43,11 +40,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         header("Refresh:0");
         exit;
     } else if ($_POST['delete-from-sample']) {
-        $db->deleteRows('found_specimen', array('spec_id' => Mysql::SQLValue($_POST['delete-from-sample'])));
+        $specimen = trim(base64_decode(str_replace("-", "=", $_POST['delete-from-sample'])));
+        $db->deleteRows('found_specimen', array('spec_id' => Mysql::SQLValue($specimen)));
         if($db->error()) {
-            $msg = '<p class="alert alert-danger">'.$_POST['delete-from-sample'].' could not be deleted !</p>' . " \n";
+            $msg = '<p class="alert alert-danger">'.$specimen.' could not be deleted !</p>' . " \n";
         } else {
-            $msg = '<p class="alert alert-success">'.$_POST['delete-from-sample'].' deleted successfully !</p>' . " \n";
+            $msg = '<p class="alert alert-success">'.$specimen.' deleted successfully !</p>' . " \n";
         }
     } else {
 
@@ -200,7 +198,7 @@ if($db->rowCount() > 0) {
         $form->addHtml('<a href="specimen_details.php?spec_id='.$specimen_name.'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
         $form->addHtml('<a href="#"><span><i id="'.$specimen["spec_id"].'_close" class="fas fa-window-close close-btn"></i></span></a>');
         $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success add-btn, data-style=zoom-in, onclick=add(\''.$specimen["spec_id"].'\');updateCounter(\''.$specimen["spec_id"].'\')');
-        $form->addBtn('submit', 'delete-from-sample', $specimen["spec_id"], ' <i class="fa fa-trash"></i>', 'class=btn btn-danger ladda-button del-btn, data-style=zoom-in, onclick=confirm(\'Are you sure you want to delete this specimen from the sample?\')');
+        $form->addBtn('submit', 'delete-from-sample', $specimen["spec_id"], ' <i class="fa fa-trash"></i>', 'class=btn btn-danger del-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
         $form->addInput('number', $specimen["spec_id"], $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen["spec_id"].'\')');
         $form->addHtml('</div>');
         $form->addHtml('</div>');
@@ -240,7 +238,7 @@ require_once "add_form_html.php";
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
-        var key = e.keyCode ? e.keyCode : e.which;
+        let key = e.keyCode ? e.keyCode : e.which;
         <?php
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
         $i = 0;

@@ -58,6 +58,7 @@ $names["trilete_scar_arm_length"] = "Trilete scar arm length";
 $names["trilete_scar_shape"] = "Trilete scar shape";
 $names["p_sacci_size"] = "P sacci size";
 $names["e_sacci_size"] = "E sacci size";
+$names["plant_function_type"] = "Plan Function Type";
 $names["morphology_notes"] = "Morphology Notes";
 
 
