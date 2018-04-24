@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS specimen (
   poll_spore VARCHAR (10),
   grain_arrangement VARCHAR (45),
   grain_morphology VARCHAR (200),
-  plant_function_type VARCHAR (60),
+  plant_function_type VARCHAR (60)
   polar_axis_length DECIMAL(19,1),
   equatorial_axis_length DECIMAL(19,1),
   size VARCHAR (45),-- ***determined*** 6 (integer)
