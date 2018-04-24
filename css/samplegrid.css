@@ -1,3 +1,9 @@
+/* Fix retarded scrollbar jumping */
+html {
+    width: 100vw;
+    overflow-x: hidden;
+}
+
 /* Makes the images wrap to a new line */
 .square-grid {
     display: flex;
