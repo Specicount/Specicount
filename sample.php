@@ -21,7 +21,6 @@ $core = $_GET["core"];
 $sample = $_GET["sample"];
 
 // TODO plant_function_type
-// TODO fix ID's (so they don't have illegal characters)
 
 /* =============================================
     validation if posted
