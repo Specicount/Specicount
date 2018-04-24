@@ -10,11 +10,11 @@ $(document).ready(function() {
     // If mouse intends to hover over specimen
     $(".specimen-container").hoverIntent(
         function() {
-            var spec_id = $(this).attr('id');
+            var spec_id = $(this).attr('id').split("_")[0];
             fadeInOverlay(spec_id);
         },
         function() {
-            var spec_id = $(this).attr('id');
+            var spec_id = $(this).attr('id').split("_")[0];
             fadeOutOverlay(spec_id);
         });
 
