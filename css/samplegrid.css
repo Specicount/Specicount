@@ -41,7 +41,7 @@
 /* White overlay when you hover over image */
 .overlay {
     position: relative;
-    top: -16px;
+    top: 0;
     height: 100%;
     width: 100%;
     background-color: rgba(255,255,255,0.8);
@@ -87,6 +87,13 @@
     position: absolute;
     top: 0;
     right: 3px;
+}
+
+/* All buttons are contained in an anchor element.
+   This needed to be set so that the ID text didn't
+   stop you from pressing the close button */
+.overlay a {
+    display: inline-block;
 }
 
 /* Edit button bottom left */
