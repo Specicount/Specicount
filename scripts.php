@@ -33,5 +33,9 @@ $(document).ready(function() {
         $("#"+spec_id+"_overlay").fadeOut(200);
         $("#"+spec_id+"_counter").fadeIn(200);
     }
+
+    $("p.alert").click(function() {
+        $(this).fadeOut(200);
+    });
 });
 </script>
