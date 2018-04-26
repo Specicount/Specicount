@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         if($db->error()) {
             $msg = '<p class="alert alert-danger">'.$specimen.' could not be deleted !</p>' . " \n";
         } else {
-            $msg = '<p class="alert alert-success">'.$specimen.' deleted successfully !</p>' . " \n";
+            $msg = '<p class="alert alert-success">'.$specimen.' deleted from sample successfully !</p>' . " \n";
         }
     } else {
 
@@ -238,6 +238,7 @@ require_once "add_form_html.php";
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
+        // noinspection JSAnnotator
         let key = e.keyCode ? e.keyCode : e.which;
         <?php
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
