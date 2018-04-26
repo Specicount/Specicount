@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
         # Delete from both cores table
         $db->deleteRows('projects', array("project_name" => Mysql::SQLValue($_POST["project_name"], "text")));
         if ($db->error()) {
-            $msg = '<p class="alert alert-danger">Could not delete core, please make sure all cores are deleted inside</p>' . "\n";
+            $msg = '<p class="alert alert-danger">Could not delete project, please make sure all cores are deleted inside</p>' . "\n";
         } else {
             $msg = '<p class="alert alert-success">Project deleted successfully !</p>' . " \n";
             header("Location: index.php");
