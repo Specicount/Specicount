@@ -151,7 +151,7 @@ html {
     height: calc(30px + 0.5vw);
 }
 
-/* Count input */
+/* Specimen count input */
 .overlay input {
     margin: 0;
     position: absolute;
@@ -162,7 +162,8 @@ html {
     font-weight: bold;
 }
 
-/* How many images to display per row */
+/* How many images to display per row.
+   Also makes sure counter doesn't extend past its specimen container */
 @media screen and (min-width: 300px) {
     .square-grid .cell {
         width: calc(100% / 1);
