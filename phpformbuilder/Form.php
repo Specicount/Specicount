@@ -860,11 +860,22 @@ class Form
         $element .= $this->getHtmlElementContent($name, 'before', 'inside_wrapper');
         $current_file_json_data = '';
         if (!empty($current_file) && is_array($current_file)) {
-            $current_file_json_data = ' data-fileuploader-files=\'[' . json_encode($current_file) . ']\'';
+            if (isset($current_file[0])) {
+                // if several files passed as array
+                $json = '';
+                foreach ($current_file as $cf) {
+                    $json .= json_encode($cf) . ',';
+                }
+                $current_file = rtrim($json, ',');
+            } else {
+                $current_file = json_encode($current_file);
+            }
+            $current_file_json_data = ' data-fileuploader-files=\'[' . $current_file . ']\'';
         }
         $element .= '<input type="file" name="uploader-' . $name . '" id="uploader-' . $name . '"' . $attr . $current_file_json_data . '>';
         $element .= $this->getHtmlElementContent($name, 'after', 'inside_wrapper');
         if (isset($this->input_wrapper[$name])) {
+            $element .= $this->getError($name, true);
             $element .= $this->defineWrapper($this->input_wrapper[$name], 'end'); // end input-group
         }
         $element .= $this->getHtmlElementContent($name, 'after', 'outside_wrapper');

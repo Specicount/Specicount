@@ -25,6 +25,7 @@ if (!empty($_GET["sample"])) {
         <ul class="list-unstyled">
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>
+            <li><a href="add_new_specimen.php"><i class="fa fa-plus"></i> Add New Specimen</a></li>
 
             <li>
                 <?php

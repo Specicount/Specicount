@@ -1,3 +1,11 @@
+/* Fix retarded scrollbar jumping */
+
+    html {
+        width: 100vw;
+        overflow-x: hidden;
+    }
+
+
 /* Makes the images wrap to a new line */
 .square-grid {
     display: flex;
@@ -26,13 +34,10 @@
     position: absolute;
     background-color: rgba(255,255,255,0.9);
     border: 2px solid grey;
-    max-width: max-content;
 }
-
 
 /* Text inside counter */
 .counter p {
-    display: table;
     font-weight: bold;
     padding: 0px 5px;
     margin-bottom: 0;
@@ -42,9 +47,7 @@
 /* White overlay when you hover over image */
 .overlay {
     position: relative;
-    top: 0;
     height: 100%;
-    width: 100%;
     background-color: rgba(255,255,255,0.8);
     display:none;
     /*
@@ -159,27 +162,39 @@
 }
 
 /* How many images to display per row */
-@media screen and (min-width: 400px) {
+@media screen and (min-width: 300px) {
+    .square-grid .cell {
+        width: calc(100% / 1);
+    }
+    .counter {
+        max-width: calc(100% / 1);
+    }
+}
+
+@media screen and (min-width: 600px) {
     .square-grid .cell {
         width: calc(100% / 2);
     }
-}
-
-@media screen and (min-width: 700px) {
-    .square-grid .cell {
-        width: calc(100% / 3);
+    .counter {
+        max-width: calc(100% / 2 - 8px);
     }
 }
 
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 800px) {
     .square-grid .cell {
         width: calc(100% / 3);
     }
+    .counter {
+        max-width: calc(100% / 3 - 8px);
+    }
 }
 
-@media screen and (min-width: 1100px) {
+@media screen and (min-width: 1000px) {
     .square-grid .cell {
         width: calc(100% / 4);
+    }
+    .counter {
+        max-width: calc(100% / 4 - 8px);
     }
 }
 
@@ -187,10 +202,16 @@
     .square-grid .cell {
         width: calc(100% / 5);
     }
+    .counter {
+        max-width: calc(100% / 5 - 8px);
+    }
 }
 
 @media screen and (min-width: 1500px) {
     .square-grid .cell {
         width: calc(100% / 6);
+    }
+    .counter {
+        max-width: calc(100% / 6 - 8px);
     }
 }

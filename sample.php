@@ -24,16 +24,24 @@ $sample = $_GET["sample"];
     validation if posted
 ============================================= */
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sample') === true) {
+
+    $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), 'project_name' => Mysql::SQLValue($project)), null, null, true, 1);
+    $sample_data = $db->recordsArray()[0];
+
     if($_POST["submit-btn"] == "export") {
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
 
-        $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id = ".Mysql::SQLValue($sample));
+        $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id = ".Mysql::SQLValue($sample)." ORDER BY `count` DESC");
         $specimen_data = $db->recordsArray();
+
         // open the "output" stream
         // see http://www.php.net/manual/en/wrappers.php.php#refsect2-wrappers.php-unknown-unknown-unknown-descriptioq
         $f = fopen('php://output', 'w');
         fputcsv($f, array("Specimen", "Family", "Genus", "Species", "Plan Function Type", "Count"), ",");
+        fputcsv($f, array("Lycopodium", "", "", "", "", $sample_data["lycopodium"]), ",");
+        fputcsv($f, array("Charcoal", "", "", "", "", $sample_data["charcoal"]), ",");
+
         foreach ($specimen_data as $spec) {
             fputcsv($f, array($spec["spec_id"], $spec["family"], $spec["genus"], $spec["species"], $spec["plant_function_type"], $spec["count"]), ",");
         }
@@ -45,13 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         if($db->error()) {
             $msg = '<p class="alert alert-danger">'.$specimen.' could not be deleted !</p>' . " \n";
         } else {
-            $msg = '<p class="alert alert-success">'.$specimen.' deleted successfully !</p>' . " \n";
+            $msg = '<p class="alert alert-success">'.$specimen.' deleted from sample successfully !</p>' . " \n";
         }
     } else {
-
-        $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample)), null, null, true, 1);
-        $sample_data = $db->recordsArray()[0];
-
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) { // Was last updated by this device
             $error = false;
             $sub_post = array_slice($_POST, 4);
@@ -64,7 +68,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
                     $update["last_update"] = "'" . $date . "'";
                     $update["count"] = Mysql::SQLValue($count);
 
-                    $db->updateRows('found_specimen', $update, array("sample_id" => Mysql::SQLValue($sample), "spec_id" => Mysql::SQLValue($specimen)));
+                    $db->updateRows('found_specimen', $update, array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core),
+                        'project_name' => Mysql::SQLValue($project), "spec_id" => Mysql::SQLValue($specimen)));
                     if (!empty($db->error())) $error = true;
                 } else {
                     if ($specimen == "last_edit") {
@@ -98,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
 }
 
 # Get sample data
-$db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample)), null, null, true, 1);
+$db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), 'project_name' => Mysql::SQLValue($project)), null, null, true, 1);
 $sample_data = $db->recordsArray()[0];
 if ($db->error()){
     $msg = '<p class="alert alert-danger">Sample data not found</p>' . "\n";
@@ -238,6 +243,7 @@ require_once "add_form_html.php";
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
     window.onkeyup = function(e) {
+        // noinspection JSAnnotator
         let key = e.keyCode ? e.keyCode : e.which;
         <?php
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys

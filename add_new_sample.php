@@ -33,7 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
     if ($_POST["submit-btn"] == "delete") {
         # Delete from both found specimens and samples table
         $db->deleteRows('found_specimen', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text")));
-        $db->deleteRows('samples', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text"), "core_id" => Mysql::SQLValue($core, "text")));
+        $db->deleteRows('samples', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text"), "core_id" => Mysql::SQLValue($core, "text"),
+            'project_name' => Mysql::SQLValue($project, "text")));
         if ($db->error()) {
             $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
         } else {
@@ -47,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
             $_SESSION['errors'][$form_name] = $validator->getAllErrors();
         } else {
 
+            $update["project_name"] = Mysql::SQLValue($project);
             $update["core_id"] = Mysql::SQLValue($core);
             $update["sample_id"] = Mysql::SQLValue($_POST["sample_id"]);
             $update["analyst_first_name"] = Mysql::SQLValue($_POST["first_name"]);

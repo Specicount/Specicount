@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS cores (
 CREATE TABLE IF NOT EXISTS samples (
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
+  project_name VARCHAR (150) NOT NULL,
   analyst_first_name VARCHAR (60) NOT NULL,
   analyst_last_name VARCHAR (60) NOT NULL,
   start_date DATE NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS samples (
   charcoal INT (11),
   last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
-  PRIMARY KEY (sample_id, core_id),
+  PRIMARY KEY (sample_id, core_id, project_name),
   FOREIGN KEY (core_id) REFERENCES cores(core_id)
 );
 
@@ -82,7 +83,7 @@ CREATE TABLE IF NOT EXISTS specimen (
   trilete_scar_shape VARCHAR (45),
   p_sacci_size DECIMAL(19,1),
   e_sacci_size DECIMAL(19,1),
-  plant_function_type VARCHAR (60),
+  plant_function_type VARCHAR (200),
   morphology_notes VARCHAR (600),
   image_folder VARCHAR(200),
   primary_image VARCHAR(100)
@@ -110,11 +111,13 @@ CREATE TABLE IF NOT EXISTS tags (
 -- It also shows the date it was last found.
 CREATE TABLE IF NOT EXISTS found_specimen (
   sample_id VARCHAR (45) NOT NULL,
+  core_id VARCHAR (45) NOT NULL,
+  project_name VARCHAR (150) NOT NULL,
   spec_id VARCHAR (45) NOT NULL,
   order INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
-  PRIMARY KEY (sample_id, spec_id),
+  PRIMARY KEY (sample_id, spec_id, core_id, project_name),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (spec_id) REFERENCES specimen(spec_id)
 );

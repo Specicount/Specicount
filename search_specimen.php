@@ -33,6 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
         $specimen = trim(base64_decode(str_replace("-", "=", $_POST["add-to-sample"])));
         $update["spec_id"] = Mysql::SQLValue($specimen);
         $update["sample_id"] = Mysql::SQLValue($sample);
+        $update["core_id"] = Mysql::SQLValue($core);
+        $update["project_name"] = Mysql::SQLValue($project);
         $update["last_update"] = "'" . $date . "'";
         $update["count"] = Mysql::SQLValue(1);
         $db->insertRow('found_specimen', $update);

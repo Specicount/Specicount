@@ -28,10 +28,19 @@ function delete_files($target) {
     start session and include form class
 ============================================= */
 
+
+/*error_reporting(E_ALL);
+ini_set('display_errors', 1);*/
+
 session_start();
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
 require_once 'phpformbuilder/database/Mysql.php';
+
+function extract_name($file) {
+    $file_array = explode("/", $file);
+    return empty($file_array[1]) ? $file_array[0] : $file_array[1];
+}
 
 $project = $_GET["project"];
 $core = $_GET["core"];
@@ -110,13 +119,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
 
             if (!empty($_POST["uploaded-images"])) {
                 $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["spec_id"] . "/", "text");
-                $update["primary_image"] = Mysql::SQLValue($_POST["uploaded-images"][0], "text");
                 mkdir($image_folder . $_POST["spec_id"]);
-                foreach ($_POST["uploaded-images"] as $image) {
+                $uploaded_images = json_decode($_POST["uploaded-images"], true);
+                $update["primary_image"] = Mysql::SQLValue(extract_name($uploaded_images[0]["file"]), "text");
+                foreach ($uploaded_images as $image) {
+                    $image = extract_name($image["file"]);
                     //echo $image_folder.$image, $image_folder.$_POST["spec_id"]."/".$image;
                     rename($image_folder . $image, $image_folder . $_POST["spec_id"] . "/" . $image);
                 }
-                rename($image_folder . "thumbnail", $image_folder . $_POST["spec_id"] . "/thumbnail");
             }
             if ($_GET["edit"]) {
                 $db->updateRows('specimen', $update, array("spec_id" => $update["spec_id"]));
@@ -130,6 +140,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
                 if (!$_GET["edit"]) {
                     $update_found["spec_id"] = $update["spec_id"];
                     $update_found["sample_id"] = Mysql::SQLValue($sample);
+                    $update_found["core_id"] = Mysql::SQLValue($core);
+                    $update_found["project_name"] = Mysql::SQLValue($project);
                     $update_found["last_update"] = "'" . $date . "'";
                     $update_found["count"] = Mysql::SQLValue(1);
                     $db->insertRow('found_specimen', $update_found);
@@ -578,47 +590,7 @@ $form->endFieldset();
 # Images
 #######################
 $form->startFieldset('Images');
-/*$fileUpload_config = array(
-    'xml'                 => 'images',
-    'uploader'            => 'imageFileUpload.php',
-    'btn-text'            => 'Browse ...',
-    'max-number-of-files' => 10
-);
-$form->addHelper('Primary image first. Accepted File Types : .jp[e]g, .png, .gif', 'uploaded-images[]');
-$form->addFileUpload('file', 'uploaded-images[]', '', 'Upload up to 10 images', '', $fileUpload_config);
-$form->endFieldset();*/
-
-
-$current_file = ''; // default empty
-
-// NOT WORKING ATM
-/*if ($_GET["edit"]) {
-    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["edit"].'/';
-
-    $dir = new DirectoryIterator($current_file_path);
-    foreach ($dir as $fileinfo) {
-        if (!$fileinfo->isDot()) {
-            $current_file_name = $fileinfo->getFilename();
-            if ($current_file_name != "thumbnail") {
-                if (file_exists($current_file_path . $current_file_name)) {
-                    $current_file_size = filesize($current_file_path . $current_file_name);
-                    $current_file_type = mime_content_type($current_file_path . $current_file_name);
-                    $current_file[] = array(
-                        'name' => $current_file_name,
-                        'size' => $current_file_size,
-                        'type' => $current_file_type,
-                        'file' => '/phpformbuilder/images/uploads/Penis/' . $current_file_name, // url of the file
-                        'data' => array(
-                            'listProps' => array(
-                                'file' => $current_file_name
-                            )
-                        )
-                    );
-                }
-            }
-        }
-    }
-}*/
+$current_file = array(); // default empty
 $fileUpload_config = array(
     'xml'           => 'image-upload', // the thumbs directories must exist
     'uploader'      => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php
@@ -634,8 +606,55 @@ $fileUpload_config = array(
     'debug'         => true
 );
 
+
+// NOT WORKING ATM
+if ($_GET["edit"]) {
+    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["edit"].'/';
+    if (file_exists($current_file_path)) {
+        $dir = new DirectoryIterator($current_file_path);
+        foreach ($dir as $fileinfo) {
+            if (!$fileinfo->isDot()) {
+                $current_file_name = $fileinfo->getFilename();
+                if ($current_file_name != "thumbnail") {
+                    if (file_exists($current_file_path . $current_file_name)) {
+                        $current_file_size = filesize($current_file_path . $current_file_name);
+                        $current_file_type = mime_content_type($current_file_path . $current_file_name);
+                        $current_file[] = array(
+                            'name' => $current_file_name,
+                            'size' => $current_file_size,
+                            'type' => $current_file_type,
+                            'file' => '/phpformbuilder/images/uploads/' . $_GET["edit"] . "/" . $current_file_name, // url of the file
+                            'data' => array(
+                                'listProps' => array(
+                                    'file' => $current_file_name
+                                )
+                            )
+                        );
+                    }
+                }
+            }
+        }
+
+
+        $fileUpload_config = array(
+            'xml' => 'image-upload', // the thumbs directories must exist
+            'uploader' => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php
+            'upload_dir' => '../../../../images/uploads/' . $_GET["edit"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
+            'limit' => 10, // max. number of files
+            'file_max_size' => 3, // each file's maximal size in MB {null, Number}
+            'extensions' => ['jpg', 'jpeg', 'png'],
+            'thumbnails' => true,
+            'editor' => true,
+            'width' => 960,
+            'height' => 720,
+            'crop' => false,
+            'debug' => true
+        );
+    }
+}
+
 $form->addHelper('Primary image first. Accepted File Types : Accepted File Types : .jp[e]g, .png, .gif', 'uploaded-images', 'after');
-$form->addFileUpload('file', 'uploaded-images', '', 'Upload up to 10 images', '', $fileUpload_config, $current_file[0]);
+$form->addFileUpload('file', 'uploaded-images', '', 'Upload up to 10 images', '', $fileUpload_config, $current_file);
 $form->endFieldset();
 
 #######################
