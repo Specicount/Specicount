@@ -11,15 +11,6 @@
     font-size: 20px;
 }
 
-/* Caret/arrow rotation on sidebar dropdown buttons */
-.sidebar a[aria-expanded="true"]::before {
-    transform: rotate(180deg);
-}
-
-.sidebar a::before, .sidebar a.collapsed::before {
-    transform: rotate(-90deg);
-}
-
 .sidebar {
     min-width: 250px;
     max-width: 250px;
@@ -32,7 +23,7 @@
     background: rgba(0, 0, 0, .25);
 }
 
-/* all list elements including projects */
+/* All list elements including projects */
 .sidebar ul a {
     display: block;
     padding: 12px 16px;
@@ -54,7 +45,7 @@
     position: relative;
 }
 .sidebar [data-toggle="collapse"]:before {
-    content: "\f0d7";
+    content: "\f0da";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     position: absolute;
@@ -64,7 +55,7 @@
     background: rgba(0, 0, 0, .25);
 }
 .sidebar [aria-expanded="true"]:before {
-    content: "\f0d8";
+    content: "\f0d7";
 }
 .sidebar.toggled {
     margin-left: -250px;

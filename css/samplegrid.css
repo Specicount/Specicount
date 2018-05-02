@@ -1,10 +1,8 @@
 /* Fix retarded scrollbar jumping */
-
-    html {
-        width: 100vw;
-        overflow-x: hidden;
-    }
-
+html {
+    width: 100vw;
+    overflow-x: hidden;
+}
 
 /* Makes the images wrap to a new line */
 .square-grid {
@@ -34,10 +32,13 @@
     position: absolute;
     background-color: rgba(255,255,255,0.9);
     border: 2px solid grey;
+    max-width: max-content;
 }
+
 
 /* Text inside counter */
 .counter p {
+    display: table;
     font-weight: bold;
     padding: 0px 5px;
     margin-bottom: 0;
@@ -150,7 +151,7 @@
     height: calc(30px + 0.5vw);
 }
 
-/* Count input */
+/* Specimen count input */
 .overlay input {
     margin: 0;
     position: absolute;
@@ -161,7 +162,8 @@
     font-weight: bold;
 }
 
-/* How many images to display per row */
+/* How many images to display per row.
+   Also makes sure counter doesn't extend past its specimen container */
 @media screen and (min-width: 300px) {
     .square-grid .cell {
         width: calc(100% / 1);
