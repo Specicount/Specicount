@@ -110,9 +110,11 @@ On GitLab you can find our:
 We currently hosting the website on:
 * A testing server in Matthew's house - This is used for development and where we push live changes immediately.
 * A virtual machine located on campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
-(Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 
-**We have currently closed access to our prototype due to official testing starting soon. We hope to have something up for you soon. :)**
+You can view and play around with our current prototype at [http://seprojgrp2b.anu.edu.au](http://seprojgrp2b.anu.edu.au).
+We only ask that you **don't delete anything**, thank you!
+
+(Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 
 The project is housed on an Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing). You can view the [source code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/) on GitLab.
 
