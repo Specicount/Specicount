@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS concentration_curve (
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
   project_name VARCHAR (150) NOT NULL,
-  PRIMARY KEY (con_id, sample_id, core_id, project_name),
+  PRIMARY KEY (unique_spec, sample_id, core_id, project_name),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (core_id) REFERENCES cores (core_id),
   FOREIGN KEY (project_name) REFERENCES projects(project_name)

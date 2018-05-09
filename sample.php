@@ -7,6 +7,9 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
@@ -116,11 +119,13 @@ if ($db->error()){
 
 $form = new Form('add-new-found-sample', 'vertical', 'class=mb-5, novalidate', 'bs4');
 
+
 #######################
 # Sample grid
 #######################
 $form->addHtml("<input type=\"hidden\" name=\"last_edit\" value=\"".$sample_data["last_edit"]."\">");
-
+$form->addHtml("<div class='row'>");
+$form->addHtml("<div class='col-sm'>");
 #######################
 # Clear/Save
 #######################
@@ -157,6 +162,13 @@ $form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="t
 $form->addHtml("</td></tr></table>");
 $form->addHtml('</div>');
 
+$form->addHtml("</div><div class='col-sm'>");
+
+$form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
+
+$form->addHtml("</div></div>");
+
+
 $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id=".Mysql::SQLValue($sample)." ORDER BY `order` DESC");
 $specs = array();
 $specs = $db->recordsArray();
@@ -176,6 +188,7 @@ if($db->rowCount() > 0) {
             $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen_name.'/'.$specimen["primary_image"].'\');"');
         }
         $form->addHtml('>');
+        //$form->addHtml('<div id="'.$specimen["spec_id"].'_imageblur" class="imageblur" style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen_name.'/'.$specimen["primary_image"].'\');"></div>');
         $form->addHtml('<div id="'.$specimen["spec_id"].'_counter" class="counter"><p id="'.$specimen["spec_id"].'_counter_text">' . $specimen["count"] . '</p></div>');
         $form->addHtml('<div id="'.$specimen["spec_id"].'_overlay" class="overlay">');
         $form->addHtml('<text>ID: ' . $specimen_name . '</text>');
@@ -200,6 +213,7 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 
 $title = "$project > $core > $sample > Sample Count";
 require_once "add_form_html.php";
+require_once "concentration.php";
 ?>
 <script>
 

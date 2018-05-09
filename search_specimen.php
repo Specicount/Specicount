@@ -46,6 +46,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
             }
 
         } else {
+            # Do concentration curve
+            $update_curve["sample_id"] = Mysql::SQLValue($sample);
+            $update_curve["core_id"] = Mysql::SQLValue($core);
+            $update_curve["project_name"] = Mysql::SQLValue($project);
+            $db->query("SELECT SUM(count) as total FROM found_specimen WHERE sample_id = ".$update_curve["sample_id"]." AND core_id = ".$update_curve["core_id"]." AND project_name = ".$update_curve["project_name"]);
+            $tally_count = $db->recordsArray()[0]["total"];
+            $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
+            $db->query("SELECT COUNT(*) as amount FROM found_specimen WHERE sample_id = ".$update_curve["sample_id"]." AND core_id = ".$update_curve["core_id"]." AND project_name = ".$update_curve["project_name"]);
+            $unique_spec = $db->recordsArray()[0]["amount"];
+            $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
+            $db->insertRow('concentration_curve', $update_curve);
             $msg = '<p class="alert alert-success">Successfully added: '.$update["spec_id"].' to the sample !</p>' . " \n";
         }
     }
