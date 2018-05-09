@@ -1,5 +1,7 @@
 -- CREATE DATABASE BioBase;
 
+-- TODO add foreign keys to server
+
 CREATE TABLE IF NOT EXISTS users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(30) NOT NULL,
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS samples (
   last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
   PRIMARY KEY (sample_id, core_id, project_name),
-  FOREIGN KEY (core_id) REFERENCES cores(core_id)
+  FOREIGN KEY (core_id) REFERENCES cores(core_id),
+  FOREIGN KEY (project_name) REFERENCES projects(project_name)
 );
 
 CREATE TABLE IF NOT EXISTS specimen (
@@ -56,7 +59,9 @@ CREATE TABLE IF NOT EXISTS specimen (
   grain_arrangement VARCHAR (45),
   grain_morphology VARCHAR (200),
   polar_axis_length DECIMAL(19,1),
+  polar_axis_n INT (11),
   equatorial_axis_length DECIMAL(19,1),
+  equatorial_axis_n INT (11),
   size VARCHAR (45),-- ***determined*** 6 (integer)
   equatorial_shape_major VARCHAR (45),-- ***determined*** 7 character
   equatorial_shape_minor VARCHAR (45) DEFAULT 'rounded',
@@ -117,7 +122,22 @@ CREATE TABLE IF NOT EXISTS found_specimen (
   order INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
-  PRIMARY KEY (sample_id, spec_id, core_id, project_name),
+  PRIMARY KEY (spec_id, sample_id, core_id, project_name),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
+  FOREIGN KEY (core_id) REFERENCES cores (core_id),
+  FOREIGN KEY (project_name) REFERENCES projects(project_name)
   FOREIGN KEY (spec_id) REFERENCES specimen(spec_id)
+);
+
+-- This contains the data for the concentration curve
+CREATE TABLE IF NOT EXISTS concentration_curve (
+  tally_count INT (11) NOT NULL, -- X axis
+  unique_spec INT (11) NOT NULL, -- Y axis
+  sample_id VARCHAR (45) NOT NULL,
+  core_id VARCHAR (45) NOT NULL,
+  project_name VARCHAR (150) NOT NULL,
+  PRIMARY KEY (con_id, sample_id, core_id, project_name),
+  FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
+  FOREIGN KEY (core_id) REFERENCES cores (core_id),
+  FOREIGN KEY (project_name) REFERENCES projects(project_name)
 );

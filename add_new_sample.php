@@ -28,7 +28,6 @@ $db = new Mysql();
 /* =============================================
     validation if posted
 ============================================= */
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     if ($_POST["submit-btn"] == "delete") {
         # Delete from both found specimens and samples table
@@ -43,11 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
         }
     } else {
         $validator = Form::validate($form_name);
-
         if ($validator->hasErrors()) {
             $_SESSION['errors'][$form_name] = $validator->getAllErrors();
         } else {
-
             $update["project_name"] = Mysql::SQLValue($project);
             $update["core_id"] = Mysql::SQLValue($core);
             $update["sample_id"] = Mysql::SQLValue($_POST["sample_id"]);

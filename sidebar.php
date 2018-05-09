@@ -18,7 +18,7 @@ if (!empty($_GET["sample"])) {
         </ul>
     </nav>
     <?php
-// Project Side Bar (Needs to be updated dynamically)
+// Project Side Bar (Needs to be updated dynamically from DB)
 } else {
     ?>
     <nav class="sidebar bg-dark">

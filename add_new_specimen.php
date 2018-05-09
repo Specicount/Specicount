@@ -28,10 +28,6 @@ function delete_files($target) {
     start session and include form class
 ============================================= */
 
-
-/*error_reporting(E_ALL);
-ini_set('display_errors', 1);*/
-
 session_start();
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
@@ -87,7 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
             $update["grain_arrangement"] = Mysql::SQLValue($_POST["grain_arrangement"], "text");
             $update["grain_morphology"] = Mysql::SQLValue(implode(",", $_POST["grain_morphology_$type"]), "text"); // poll / spore
             $update["polar_axis_length"] = Mysql::SQLValue($_POST["polar_axis_length"], "float");
+            $update["polar_axis_n"] = Mysql::SQLValue($_POST["polar_axis_n"], "float");
             $update["equatorial_axis_length"] = Mysql::SQLValue($_POST["equatorial_axis_length"], "float");
+            $update["equatorial_axis_n"] = Mysql::SQLValue($_POST["equatorial_axis_n"], "float");
             //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
             //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
             $update["equatorial_shape_minor"] = Mysql::SQLValue($_POST["equatorial_shape"], "text");
@@ -137,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
                 $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
             } else {
                 $msg = '<p class="alert alert-success">Specimen updated successfully !</p>' . " \n";
-                if (!$_GET["edit"]) {
+                if (!$_GET["edit"] && $sample) {
                     $update_found["spec_id"] = $update["spec_id"];
                     $update_found["sample_id"] = Mysql::SQLValue($sample);
                     $update_found["core_id"] = Mysql::SQLValue($core);
@@ -150,6 +148,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
                     if ($db->error()) {
                         $msg = '<p class="alert alert-success">Specimen added successfully and added to sample !</p>' . " \n";
                     }
+                } else {
+                    $msg = '<p class="alert alert-success">Specimen added successfully</p>' . " \n";
                 }
             }
         }
@@ -170,7 +170,9 @@ if ($_GET["edit"]) {
         $_SESSION[$form_name]["grain_arrangement"] = $specimen["grain_arrangement"];
         $_SESSION[$form_name]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
         $_SESSION[$form_name]["polar_axis_length"] = $specimen["polar_axis_length"];
+        $_SESSION[$form_name]["polar_axis_n"] = $specimen["polar_axis_n"];
         $_SESSION[$form_name]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
+        $_SESSION[$form_name]["equatorial_axis_n"] = $specimen["equatorial_axis_n"];
         //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
         //$_SESSION[$form_name]["***determined***"] = $specimen["***determined***"];
         $_SESSION[$form_name]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
@@ -325,10 +327,35 @@ $form->endFieldset();
 $form->startFieldset('Shape & Size');
 
 # 4. & 5. Lengths
-$form->addHelper('Measurement in (µm)', 'polar_axis_length');
-$form->addInput('number', 'polar_axis_length', '', 'Polar axis length ', '');
-$form->addHelper('Measurement in (µm)', 'equatorial_axis_length');
-$form->addInput('number', 'equatorial_axis_length', '', 'Equatorial axis length ', '');
+# Polar
+$form->setCols(4, 4);
+$form->groupInputs('polar_axis_length', 'polar_axis_n');
+$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'polar_axis_length');
+$form->addInput('number', 'polar_axis_length', '', 'Polar axis length ', 'readonly="readonly"');
+$form->addHelper('Number of measurements', 'polar_axis_length');
+$form->addHelper('Number of measurements', 'polar_axis_n');
+$form->addInput('number', 'polar_axis_n', '', '', 'readonly="readonly"');
+
+$form->groupInputs('polar_axis_input', 'polar_axis_button');
+$form->addHelper('Input in (µm)', 'polar_axis_input');
+$form->addInput('number', 'polar_axis_input', '', '', '');
+$form->addBtn('button', 'polar_axis_button', "merge", 'Merge with average <i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=merge_polar()', '');
+$form->setCols(4, 8);
+
+# Equatorial
+$form->setCols(4, 4);
+$form->groupInputs('equatorial_axis_length', 'equatorial_axis_n');
+$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'equatorial_axis_length');
+$form->addInput('number', 'equatorial_axis_length', '', 'Equatorial axis length ', 'readonly="readonly"');
+$form->addHelper('Number of measurements', 'equatorial_axis_length');
+$form->addHelper('Number of measurements', 'equatorial_axis_n');
+$form->addInput('number', 'equatorial_axis_n', '', '', 'readonly="readonly"');
+
+$form->groupInputs('equatorial_axis_input', 'equatorial_axis_button');
+$form->addHelper('Input in (µm)', 'equatorial_axis_input');
+$form->addInput('number', 'equatorial_axis_input', '', '', '');
+$form->addBtn('button', 'equatorial_axis_button', "merge", 'Merge with average <i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=merge_equatorial()', '');
+$form->setCols(4, 8);
 
 # 6 & 7 can be determined
 
@@ -684,3 +711,29 @@ $form->addPlugin('formvalidation', '#add-new', 'bs4');
 
 $title = $name;
 require_once "add_form_html.php";
+?>
+<script>
+    function merge_polar (){
+        if (!document.getElementById("polar_axis_n").value || !document.getElementById("polar_axis_length").value) {
+            n_value = 0;
+            current_total = 0;
+        } else {
+            n_value = parseFloat(document.getElementById("polar_axis_n").value);
+            current_total = parseFloat(document.getElementById("polar_axis_length").value) * n_value;
+        }
+        document.getElementById("polar_axis_length").value = (current_total + parseFloat(document.getElementById("polar_axis_input").value)) / (n_value + 1);
+        document.getElementById("polar_axis_n").value = n_value + 1;
+    }
+
+    function merge_equatorial (){
+        if (!document.getElementById("equatorial_axis_n").value || !document.getElementById("polar_axis_length").value) {
+            n_value = 0;
+            current_total = 0;
+        } else {
+            n_value = parseFloat(document.getElementById("equatorial_axis_n").value);
+            current_total = parseFloat(document.getElementById("equatorial_axis_length").value) * n_value;
+        }
+        document.getElementById("equatorial_axis_length").value = (current_total + parseFloat(document.getElementById("equatorial_axis_input").value)) / (n_value + 1);
+        document.getElementById("equatorial_axis_n").value = n_value + 1;
+    }
+</script>

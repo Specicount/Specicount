@@ -35,8 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         $db->query("SELECT * FROM found_specimen JOIN specimen USING(spec_id) WHERE sample_id = ".Mysql::SQLValue($sample)." ORDER BY `count` DESC");
         $specimen_data = $db->recordsArray();
 
-        // open the "output" stream
-        // see http://www.php.net/manual/en/wrappers.php.php#refsect2-wrappers.php-unknown-unknown-unknown-descriptioq
+        // Create a PHP output stream for the user to download
         $f = fopen('php://output', 'w');
         fputcsv($f, array("Specimen", "Family", "Genus", "Species", "Plan Function Type", "Count"), ",");
         fputcsv($f, array("Lycopodium", "", "", "", "", $sample_data["lycopodium"]), ",");
@@ -45,6 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         foreach ($specimen_data as $spec) {
             fputcsv($f, array($spec["spec_id"], $spec["family"], $spec["genus"], $spec["species"], $spec["plant_function_type"], $spec["count"]), ",");
         }
+
+        // Refresh page back to what it was before
         header("Refresh:0");
         exit;
     } else if ($_POST['delete-from-sample']) {
@@ -115,30 +116,9 @@ if ($db->error()){
 
 $form = new Form('add-new-found-sample', 'vertical', 'class=mb-5, novalidate', 'bs4');
 
-
-
-
-//$spec = $specimen["sample_id"];
-/*$form->setCols(0, 4);
-
-$form->groupInputs('test1', 'test2', 'test3');
-//$form->addHtml("<p style='text-align: center'>Spec ID: SPI1</p>");
-//$form->addHtml("<p style='text-align: center'>Spec ID: SPI2</p>");
-$form->addInput('number', 'test2', '', '', 'required');
-//$form->addHtml("<p style='text-align: center'>Spec ID: SPI3</p>");
-$form->addInput('number', 'test3', '', '', 'required');
-$form->setCols(4, 8);*/
-
-//$qry = "SELECT * FROM BioBase.found_specimen WHERE sample_id = '$sample'";
-//$db->selectRows('found_specimen', array('sample_id' => Mysql::SQLValue($sample)), null, "order", false);
-
-
-
 #######################
 # Sample grid
 #######################
-
-
 $form->addHtml("<input type=\"hidden\" name=\"last_edit\" value=\"".$sample_data["last_edit"]."\">");
 
 #######################
@@ -223,25 +203,30 @@ require_once "add_form_html.php";
 ?>
 <script>
 
+    // Undo changes for the sample (only if not previously saved)
     function reload(){
         if (confirm('Are you sure you want to reset the sample?')) {
             window.location.reload();
         }
     }
 
-    // Note: the html input element has id=spec_id
+    // Update counter text on hover
     function updateCounter(spec_id){
 
         document.getElementById(spec_id+"_counter_text").innerHTML = document.getElementById(spec_id).value;
     }
 
+    // Add to counter
     function add(spec_id) {
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) + 1;
     }
 
+    // Subtract from counter
     function subtract(spec_id){
         document.getElementById(spec_id).value = parseFloat(document.getElementById(spec_id).value) - 1;
     }
+
+    // Enable key presses for counter
     window.onkeyup = function(e) {
         // noinspection JSAnnotator
         let key = e.keyCode ? e.keyCode : e.which;
