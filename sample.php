@@ -162,9 +162,9 @@ $form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="t
 $form->addHtml("</td></tr></table>");
 $form->addHtml('</div>');
 
-$form->addHtml("</div><div id='chart_container' class='col-sm' style='height:325px; margin-top: -30px'>");
+$form->addHtml("</div><div class='col-sm'>");
 
-$form->addHtml("<div style='height: 325px; width: 400px; float:right' id=\"chart_div\"></div><br/>");
+$form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
 
 $form->addHtml("</div></div>");
 
