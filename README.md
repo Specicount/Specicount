@@ -45,10 +45,13 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 | **Name** | **Email** | **Roles** |
 | --- | --- | -- |
-| Paige Brown | u6048298@anu.edu.au | <ul><li>Team Leader</li><li>Testing Lead</li><li>Front-End Lead Developer</li></ul> |
+| Paige Brown | paige.brown@anu.edu.au | <ul><li>Team Leader</li><li>Testing Lead</li><li>Front-End Lead Developer</li></ul> |
 | Alex Niven | u5801168@anu.edu.au | <ul><li>Communications Lead</li><li>Front-End Developer</li><li>Repository Control</li></ul> |
 | Elliott Wagener | u6053577@anu.edu.au | <ul><li>Front-End Developer</li><li>Back-End Developer</li><li>Repository Control</li></ul> |
 | Matthew Knill | u6052043@anu.edu.au | <ul><li>Back-End Lead Developer</li></ul> |
+| Kavan Lu | u6051623@anu.edu.au | <ul><li></li></ul> |
+| Jack Sekoranja | u6049302@anu.edu.au | <ul><li></li></ul> |
+| Zibo Wang | u5720483@anu.edu.au | <ul><li></li></ul> |
 
 #### Role Descriptions
 
@@ -70,7 +73,7 @@ in the wider research community for multiple data capture senarios, eliminating 
     * Wants a streamlined data capture process to assist in:
         * her own research 
         * the teaching of her students in the lab
-* Elliott, Matthew, Alex, Paige - Project Team
+* Paige, Alex, Elliott, Matthew, Jack, Kavan, Zibo - Project Team
     * Want to produce a useful/valuable product
 
 ##### Potential Stakeholders
@@ -82,12 +85,11 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 ##### Client Meetings
 We aim for weekly meetings but frequency also depends on necessity.
-* 2pm-4pm every Tuesday (with the exception of Week 8, where we will be running testing on students in another timeslot)
+* Time TBC
 
 ##### Team Meetings
 Will meet in person if everyone is available, otherwise over google hangouts with screenshare.
-* 1pm-2pm every Tuesday (used as debrief for any work performed over weekend and establishing agenda for client meeting)
-* 12pm-1:30pm every Thursday (used as debrief from tutorial and planning time for work until following Tuesday)
+* Time TBC
 
 # <a name='documents_and_links'></a> 7. Documents and Links
 
