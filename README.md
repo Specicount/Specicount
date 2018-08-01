@@ -45,13 +45,13 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 | **Name** | **Email** | **Roles** |
 | --- | --- | -- |
-| Paige Brown | paige.brown@anu.edu.au | <ul><li>Team Leader</li><li>Testing Lead</li><li>Front-End Lead Developer</li></ul> |
-| Alex Niven | u5801168@anu.edu.au | <ul><li>Communications Lead</li><li>Front-End Developer</li><li>Repository Control</li></ul> |
-| Elliott Wagener | u6053577@anu.edu.au | <ul><li>Front-End Developer</li><li>Back-End Developer</li><li>Repository Control</li></ul> |
-| Matthew Knill | u6052043@anu.edu.au | <ul><li>Back-End Lead Developer</li></ul> |
-| Kavan Lu | u6051623@anu.edu.au | <ul><li></li></ul> |
-| Jack Sekoranja | u6049302@anu.edu.au | <ul><li></li></ul> |
-| Zibo Wang | u5720483@anu.edu.au | <ul><li></li></ul> |
+| Paige Brown | paige.brown@anu.edu.au | <ul><li>BioCount Lead</li><li>Communications</li><li>Documentation Lead</li></ul> |
+| Alex Niven | u5801168@anu.edu.au | <ul><li>APSA Lead</li><li>Communications</li></ul> |
+| Elliott Wagener | u6053577@anu.edu.au | <ul><li>APSA Developer</li></ul> |
+| Matthew Knill | u6052043@anu.edu.au | <ul><li>BioCount Developer</li></ul> |
+| Kavan Lu | u6051623@anu.edu.au | <ul><li>BioCount Developer</li></ul> |
+| Jack Sekoranja | u6049302@anu.edu.au | <ul><li>APSA Developer</li></ul> |
+| Zibo Wang | u5720483@anu.edu.au | <ul><li>BioCount Developer</li></ul> |
 
 #### Role Descriptions
 
