@@ -45,51 +45,52 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 | **Name** | **Email** | **Roles** |
 | --- | --- | -- |
-| Paige Brown | paige.brown@anu.edu.au | <ul><li>BioCount Lead</li><li>Communications</li><li>Documentation Lead</li></ul> |
-| Alex Niven | u5801168@anu.edu.au | <ul><li>APSA Lead</li><li>Communications</li></ul> |
-| Elliott Wagener | u6053577@anu.edu.au | <ul><li>APSA Developer</li></ul> |
-| Matthew Knill | u6052043@anu.edu.au | <ul><li>BioCount Developer</li></ul> |
-| Kavan Lu | u6051623@anu.edu.au | <ul><li>BioCount Developer</li></ul> |
-| Jack Sekoranja | u6049302@anu.edu.au | <ul><li>APSA Developer</li></ul> |
-| Zibo Wang | u5720483@anu.edu.au | <ul><li>BioCount Developer</li></ul> |
+| Paige Brown | paige.brown@anu.edu.au | <ul><li>BioCount Team Lead</li><li>Communications Specialist</li><li>Documentation Lead</li></ul> |
+| Matthew Knill | u6052043@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
+| Kavan Lu | u6051623@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
+| Zibo Wang | u5720483@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
+| Alex Niven | u5801168@anu.edu.au | <ul><li>APSA Team Lead</li><li>Communications Specialist</li></ul> |
+| Elliott Wagener | u6053577@anu.edu.au | <ul><li>APSA Team Developer</li></ul> |
+| Jack Sekoranja | u6049302@anu.edu.au | <ul><li>APSA Team Developer</li><li>Management Assistant</li></ul> |
 
 #### Role Descriptions
 
-* *Team Leader* - Responsible for assigning tasks, motivating others and looking for ways to keep the project moving forward. The Team Leader should be involved with whatever work is currently happening and should, in general, adopt a greater workload than everybody else. The Team Leader is also responsible for any downfalls the project experiences during their leadership. This role will be rotated between the team members throught the course of the project and should be assigned to whoever has the expertise needed for the current phase of the project.
-* *Communications Lead* - Responsible for any communication between Clients, Project group, Shadow group and other Stakeholders. Leads presentations.
-* *Back-End Lead Developer* - The back-end developer that makes executive decisions on hardware, software and other functional design choices. Also shoulders a fairly hefty coding workload.
-* *Back-End Developer* - Responsible for developing the core website functionality. This includes server creation and administration, database design and coding a basic website template.
-* *Front-End Lead Developer* - The front-end developer that makes executive decisions on UI design choices. Expresses the vision for our project through mock sketches of potential website layouts.
-* *Front-End Developer* - Responsible for UI design and ensuring responsiveness across devices. Will refine the HTML and CSS produced by the back-end developers.
-* *Repository Control* - Responsible for creating, updating and organising documents on our repository.
-* *Testing Lead* - Responsible for gathering feedback from testers and passing those evaluations on to the rest of the team.
+* *Team Lead* - Leading the sub-teams, Team Leads will be responsible for assigning tasks, motivating others and looking for ways to keep their project moving forward. The Team Lead should be involved with whatever work is currently happening. The Team Lead is also responsible for any downfalls the project experiences during their leadership.
+* *Communications Specialist* - Communications Specialists are responsible for any communication between Clients, Project group, Shadow group and other Stakeholders. They will also lead presentations when necessary.
+* *Management Assistant* - Management Assistants are responsible for aiding the team leads with increasing productivity within the team, and providing direct feedback to the Team Leads.
+* *Documentation Lead* - The Documentation Lead are responsible for ensuring published & released documents are held to the expectations of the team.
+* *Team Developer* - The Team Developers are responsible for assisting Team Leads in their specific projects. This includes back-end and front-end work where required.
 
 # <a name='stakeholders'></a> 5. Stakeholders
 
 * Dr Rebecca Hamilton - Client
-    * Wants a streamlined data capture process to assist in her research
+    * Wishes to see a streamlined data capture process to assist in her current and future research
 * Dr Janelle Stevenson - Research Project Primary Investigator, Client
-    * Wants the research project to succeed
-    * Wants a streamlined data capture process to assist in:
+    * Wishes to see the research project succeed
+    * Wishes to see a streamlined data capture process to assist in:
         * her own research 
         * the teaching of her students in the lab
+* Dr Ulrike Proske - Client
+    * Wishes to see APSA returned to its former usability
+    * Wishes to see APSA be 'future proofed' based on team recommendations
 * Paige, Alex, Elliott, Matthew, Jack, Kavan, Zibo - Project Team
-    * Want to produce a useful/valuable product
+    * Wish to produce a useful/valuable product
 
 ##### Potential Stakeholders
 
 * The broader scientific community
-    * Can adapt our project/application for their needs
+    * Possible adoption of our application for their needs
+    * Increased use of the APSA website as a reference database
 
 # <a name='meetings_schedule'></a> 6. Meetings Schedule
 
 ##### Client Meetings
-We aim for weekly meetings but frequency also depends on necessity.
-* Time TBC
+We aim for weekly meetings, although frequency may depend on necessity.
+* Time - 12pm Thursdays
 
 ##### Team Meetings
-Will meet in person if everyone is available, otherwise over google hangouts with screenshare.
-* Time TBC
+In-person meetings are preferred by the team, although they will be trialing Microsoft Teams for online meetings.
+* Time - 12pm Wednesdays
 
 # <a name='documents_and_links'></a> 7. Documents and Links
 
@@ -111,7 +112,6 @@ On GitLab you can find our:
 # <a name='the_website'></a> 8. The Website
 
 We currently hosting the website on:
-* A testing server in Matthew's house - This is used for development and where we push live changes immediately.
 * A virtual machine located on campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
 
 You can view and play around with our current prototype at [http://seprojgrp2b.anu.edu.au](http://seprojgrp2b.anu.edu.au).
