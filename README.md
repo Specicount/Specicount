@@ -94,16 +94,16 @@ In-person meetings are preferred by the team, although they will be trialing Mic
 
 # <a name='documents_and_links'></a> 7. Documents and Links
 
-In our [Google Drive](https://drive.google.com/drive/folders/1NtZnSBfYSL7HTTw22KDkBG8jVAyGYxVk?usp=sharing) drive, among other artifacts, you will find:
+In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPTnVEgKWPhOLoYgx?usp=sharing) drive, among other artifacts, you will find:
 
-* [Project Requirements](https://docs.google.com/document/d/1VQodepOPWlWnqtI98cRpWtkr-1ItXrvFqXwEWw4I0pU/edit?usp=sharing)
-* [Project Schedule](https://drive.google.com/open?id=1ID1GKUNeFbK464ZHezgaIlThHRqPW56Oaa72Fc969FU)
-* [Decisions Paper](https://docs.google.com/document/d/1R91LbLCLSgVWpTFey-ABHFUF7yNpx6J5hhXeN9ZDj4g/edit?usp=sharing)
-* [Teamwork Processes](https://drive.google.com/open?id=15SU2-uzkVhSpzMk53GWEpBvZ7E_-LrMdUV15Q6smaxw)
-* [Feedback Log](https://drive.google.com/open?id=1ZsLUJTWGBzVAvL2TszGYZBsk6M6Brr8CXYdV6KHY74w)
-* [Meetings](https://drive.google.com/open?id=1gdYW7Lwu172PD7DSFtA-25j5gLQkVGJn)
-* [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing)
-* [Database Design](https://drive.google.com/open?id=11WfqL32Xysvv5brx0RQadU2u5PD3nEhS)
+* [Project Requirements](https://docs.google.com/document/d/115KGVQwYhtEMleP7rEepZzgEWeQ1M9aRcb0ic8zY2yc/edit?usp=sharing)
+* [Project Schedule](https://docs.google.com/document/d/14GQnB148GisnAGT17ykqR8gI4GXcONIb8MDBXXVSzSo/edit?usp=sharing)
+* [Decisions Paper](https://docs.google.com/document/d/1gFgDK_EgetDZsNauIYRrImGhIKQwk-Kp5Vx-_jBXIoo/edit?usp=sharing)
+* [Teamwork Processes](https://docs.google.com/document/d/1G-T9GXdtyyxoaMnwY5RjtxSAWErB-U2dGpqbN8NYcTo/edit?usp=sharing)
+* [Feedback Log](https://docs.google.com/document/d/18pogwthw4jYylOjL7o7JrqS4WdTehgahTqEdHTzbNO0/edit?usp=sharing)
+* [Meetings](https://drive.google.com/drive/folders/1AXES9vnyGHSa6DJfrqXNPuLBWmhnbpQR?usp=sharing)
+* [Technical Documentation](https://drive.google.com/drive/folders/1T7oX-wEwgv4zsX9J0LcDOdeiuieK1ypQ?usp=sharing)
+* [Database Design](https://drive.google.com/drive/folders/1KsflTdEvIEjUWkwE2QUN4T5fb64jpjxH?usp=sharing)
 
 On GitLab you can find our:
 * [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
@@ -111,7 +111,7 @@ On GitLab you can find our:
 
 # <a name='the_website'></a> 8. The Website
 
-We currently hosting the website on:
+We are currently hosting the website on:
 * A virtual machine located on campus provided by ANU for student projects - This is used as the production server where the client and auditors can test the functionality of the site. We push changes from the development server to this server every time major changes are made.
 
 You can view and play around with our current prototype at [http://seprojgrp2b.anu.edu.au](http://seprojgrp2b.anu.edu.au).
