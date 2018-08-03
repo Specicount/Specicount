@@ -94,7 +94,7 @@ In-person meetings are preferred by the team, although they will be trialing Mic
 
 # <a name='documents_and_links'></a> 7. Documents and Links
 
-In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPTnVEgKWPhOLoYgx?usp=sharing) drive, among other artifacts, you will find:
+In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPTnVEgKWPhOLoYgx?usp=sharing) repository, among other artifacts, you will find:
 
 * [Project Requirements](https://docs.google.com/document/d/115KGVQwYhtEMleP7rEepZzgEWeQ1M9aRcb0ic8zY2yc/edit?usp=sharing)
 * [Project Schedule](https://docs.google.com/document/d/14GQnB148GisnAGT17ykqR8gI4GXcONIb8MDBXXVSzSo/edit?usp=sharing)
