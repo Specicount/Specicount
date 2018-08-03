@@ -32,12 +32,21 @@ to identify the pollen samples found, and record this. Once all items are record
 is then manually fed back into a Microsoft Excel spreadsheet and exported into graphing
 programs to discover trends and publish to other participants within the project.
 
+While bespoke image storage systems such as using "Flickr" exist, the ANU has been instrumental
+in providing a web-based reference for the pollen and spores found in the Australasian ecosystem.
+The Australasian Pollen and Spore Atlas (APSA) is partially populated from large on-site collection housed 
+at ANU, and gives researchers the chance to share knowledge without the hassle of travel.
+
+Although APSA exists, it has been unmoderated and has become unkept in the last 10 years.
+The ANU wishes to perform a re-launch of the website, encouraging greater use within and outside ANU.
+
 # <a name='project_description'></a> 3. Project Description
 
 The objective of the project is to digitise the data capture methods currently used to reduce the Clients' workload and increase productivity. This includes the
 ability to have a portable application that captures, sorts and organises the data to be exported to the graphing software used within the wider project community.
 Although the initial scope is purely for the prototype to be used in the Clients' research project, the vision of the Clients is to produce a polymorphic application that can be used
-in the wider research community for multiple data capture senarios, eliminating the need for paper-based methods in the forthcoming digital age.
+in the wider research community for multiple data capture senarios, eliminating the need for paper-based methods in the forthcoming digital age. Furthermore, integration with the APSA
+database is to be discussed and a feasibility study is to be performed for future developers.
 
 # <a name='team'></a> 4. Team
 
@@ -89,7 +98,7 @@ We aim for weekly meetings, although frequency may depend on necessity.
 * Time - 12pm Thursdays
 
 ##### Team Meetings
-In-person meetings are preferred by the team, although they will be trialing Microsoft Teams for online meetings.
+In-person meetings are preferred by the team, although we will be trialing Skype for Business for online meetings.
 * Time - 12pm Wednesdays
 
 # <a name='documents_and_links'></a> 7. Documents and Links
@@ -102,12 +111,15 @@ In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPT
 * [Teamwork Processes](https://docs.google.com/document/d/1G-T9GXdtyyxoaMnwY5RjtxSAWErB-U2dGpqbN8NYcTo/edit?usp=sharing)
 * [Feedback Log](https://docs.google.com/document/d/18pogwthw4jYylOjL7o7JrqS4WdTehgahTqEdHTzbNO0/edit?usp=sharing)
 * [Meetings](https://drive.google.com/drive/folders/1AXES9vnyGHSa6DJfrqXNPuLBWmhnbpQR?usp=sharing)
-* [Technical Documentation](https://drive.google.com/drive/folders/1T7oX-wEwgv4zsX9J0LcDOdeiuieK1ypQ?usp=sharing)
-* [Database Design](https://drive.google.com/drive/folders/1KsflTdEvIEjUWkwE2QUN4T5fb64jpjxH?usp=sharing)
+* [BioCount Technical Documentation](https://drive.google.com/drive/folders/1T7oX-wEwgv4zsX9J0LcDOdeiuieK1ypQ?usp=sharing)
+* [BioCount Database Design](https://drive.google.com/drive/folders/1KsflTdEvIEjUWkwE2QUN4T5fb64jpjxH?usp=sharing)
 
 On GitLab you can find our:
-* [To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
-* [Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
+* [Technical To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
+* [BioCount Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
+
+Finally, you can view our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS) for our current work and follow ups.
+(Note, you may need your ANU login to view this as it is hosted using ANU's Office365 subscription)
 
 # <a name='the_website'></a> 8. The Website
 
@@ -116,8 +128,9 @@ We are currently hosting the website on:
 
 You can view and play around with our current prototype at [http://seprojgrp2b.anu.edu.au](http://seprojgrp2b.anu.edu.au).
 We only ask that you **don't delete anything**, thank you!
-
 (Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
+
+The Australasian Pollen and Spore Atlas (APSA) website can be found [here](http://apsa.anu.edu.au), and a code repository will be available to view once the team has gained access to the existing server.
 
 The project is housed on an Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing). You can view the [source code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/) on GitLab.
 
