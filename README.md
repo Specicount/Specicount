@@ -58,7 +58,7 @@ database is to be discussed and a feasibility study is to be performed for futur
 | Matthew Knill | u6052043@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
 | Kavan Lu | u6051623@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
 | Zibo Wang | u5720483@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
-| Alex Niven | u5801168@anu.edu.au | <ul><li>APSA Team Lead</li><li>Communications Specialist</li></ul> |
+| Alex Niven | alexander.niven@anu.edu.au | <ul><li>APSA Team Lead</li><li>Communications Specialist</li></ul> |
 | Elliott Wagener | u6053577@anu.edu.au | <ul><li>APSA Team Developer</li></ul> |
 | Jack Sekoranja | u6049302@anu.edu.au | <ul><li>APSA Team Developer</li><li>Management Assistant</li></ul> |
 
@@ -83,7 +83,7 @@ database is to be discussed and a feasibility study is to be performed for futur
     * Wishes to see APSA returned to its former usability
     * Wishes to see APSA be 'future proofed' based on team recommendations
 * Paige, Alex, Elliott, Matthew, Jack, Kavan, Zibo - Project Team
-    * Wish to produce a useful/valuable product
+    * Wish to produce a useful & valuable product to the clients & the wider scientific community
 
 ##### Potential Stakeholders
 
