@@ -70,6 +70,8 @@ database is to be discussed and a feasibility study is to be performed for futur
 * *Documentation Lead* - The Documentation Lead are responsible for ensuring published & released documents are held to the expectations of the team.
 * *Team Developer* - The Team Developers are responsible for assisting Team Leads in their specific projects. This includes back-end and front-end work where required.
 
+Our team charter can be found [here](https://drive.google.com/open?id=1F1k6C-FTzfjVUTyOtMI9Mt2XBjZPFsx-zroJ9AcWVsQ).
+
 # <a name='stakeholders'></a> 5. Stakeholders
 
 * Dr Rebecca Hamilton - Client
@@ -91,6 +93,8 @@ database is to be discussed and a feasibility study is to be performed for futur
     * Possible adoption of our application for their needs
     * Increased use of the APSA website as a reference database
 
+If you wish to explore this further, our intial stakeholder analysis is [here](https://drive.google.com/open?id=19pXy2BNxW7uDBcLVdOLtLPzxHylQrG6BgpUE_Bul87A).
+
 # <a name='meetings_schedule'></a> 6. Meetings Schedule
 
 ##### Client Meetings
@@ -100,6 +104,8 @@ We aim for weekly meetings, although frequency may depend on necessity.
 ##### Team Meetings
 In-person meetings are preferred by the team, although we will be trialing Skype for Business for online meetings.
 * Time - 12pm Wednesdays
+
+If you wish to learn more about our communication procedures, we have developed a strategy [here](https://drive.google.com/open?id=1LVsi5XhkpQDEJ4MFu_uNH8JtkcbKRFrVMJJAGeEej2k).
 
 # <a name='documents_and_links'></a> 7. Documents and Links
 
