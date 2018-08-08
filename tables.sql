@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS found_specimen (
   core_id VARCHAR (45) NOT NULL,
   project_name VARCHAR (150) NOT NULL,
   spec_id VARCHAR (45) NOT NULL,
-  order INT (11) DEFAULT NULL,
+  `order` INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
   PRIMARY KEY (spec_id, sample_id, core_id, project_name),
