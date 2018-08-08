@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS found_specimen (
   PRIMARY KEY (spec_id, sample_id, core_id, project_name),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (core_id) REFERENCES cores (core_id),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name)
+  FOREIGN KEY (project_name) REFERENCES projects(project_name),
   FOREIGN KEY (spec_id) REFERENCES specimen(spec_id)
 );
 
