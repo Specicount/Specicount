@@ -5,7 +5,8 @@
  * Date: 14/03/2018
  * Time: 8:17 PM
  *
- * This is the required stylesheets for each of the pages
+ * This is the required stylesheets for each of the pages.
+ * All are in the css directory.
  */
 
 

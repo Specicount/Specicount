@@ -1,5 +1,16 @@
+/*
+This is the table structure of the database (unfortunately might not be
+fully updated since changes were made directly on server).
+This probably won't need to be used since we can do a database
+backup and restore both the table structure and their
+respective data fairly easily.
+Nice for reverse ER diagrams and crap :p
+ */
+
 CREATE DATABASE BioBase;
 
+-- This has not been implemented yet
+-- Will need to decide if projects references users and how they are shared...
 CREATE TABLE IF NOT EXISTS users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(30) NOT NULL,

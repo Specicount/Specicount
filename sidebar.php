@@ -1,4 +1,11 @@
 <?php
+/*
+ * This is the sidebar.
+ * It currently chages depending on the pages you are on.
+ * For instance, if you have selected a sample, it will display things you can do within the sample,
+ * otherwise it will display what samples have already been created (there is also an add new button).
+ */
+
 use phpformbuilder\database\Mysql;
 
 // Sample Side Bar (shown if sample is selected)
