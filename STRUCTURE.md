@@ -1,13 +1,13 @@
 # General
 The structure of this app is divided into two systems being the backend database and the front-end website.
-Would be worth playing with the website to get a feel for it.
+Would be worth playing with the website to get a feel for it: [http://seprojgrp2b.anu.edu.au](http://seprojgrp2b.anu.edu.au).
 
 # Database structure
 The database structure can be found in tables.sql and denotes the structure of the database.
 
 # Front-end structure
 The front-end is very much based around a library called phpformbuilder.
-All the documentation can be found [here](https://www.phpformbuilder.pro).
+All the documentation can be found here: [https://www.phpformbuilder.pro](https://www.phpformbuilder.pro).
 
 Each of the add_***.php files primarily use phpformbuilder to create the forms required to add stuff to the database.
 All of these files are also used to change entries in the database as well which is usually defined by the edit variable
@@ -31,3 +31,7 @@ Here are the pages (everything else is includes by these):
 8. specimen_details.php
 
 The *require_once* keyword is used to include files, so you can pretty easily see what includes what.
+
+# More info
+More information for crap can be found on Google Drive (hopefully is shared with you). Predominatly have a look at the
+stuff in the *Software Documentation* folder.
