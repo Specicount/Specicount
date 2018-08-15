@@ -66,49 +66,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
     $search = array_map("trim", $search);
     $search = array_unique($search);
 
-    $columns = array();
-
-    $col = $db->getColumnNames("specimen");
-
-    foreach ($col as $name) {
-        $columns[$name] = $db->getColumnDataType($name, "specimen");
-    }
-
-    //print_r($columns);
-
+    $columns = $db->getColumnNames("specimen");
     $col = array();
     foreach ($search as $s) {
         if (!empty($s)) {
-
-            if (is_numeric($s)) {
-                $s = Mysql::SQLValue($s, "number");
-                $query = array();
-                $q = "= $s";
-                foreach ($columns as $name => $type) {
-                    if (($type == 246 || $type == 3) && ($name != "polar_axis_n" && $name != "equatorial_axis_n")) {
-                        $query[] = "$name " . $q;
-                    }
-                }
-                $col[] = "(" . implode(" OR ", $query) . ")";
+            $s = Mysql::SQLValue($s);
+            $query = array();
+            if (strpos($s, "*") !== false) {
+                $s = str_replace("*", "%", $s);
+                $q = "LIKE $s";
             } else {
-                $s = Mysql::SQLValue($s);
-                $query = array();
-                if (strpos($s, "*") !== false) {
-                    $s = str_replace("*", "%", $s);
-                    $q = "LIKE $s";
-                } else {
-                    $q = "= $s";
-                }
-                foreach ($columns as $name => $type) {
-                    if ($type == 253) {
-                        $query[] = "$name " . $q;
-                    }
-                }
-                $col[] = "(" . implode(" OR ", $query) . ")";
+                $q = "= $s";
             }
+            foreach ($columns as $name) {
+                $query[] = "$name " . $q;
+            }
+            $col[] = "(" . implode(" OR ", $query) . ")";
         }
     }
     $sql = "SELECT * FROM BioBase.specimen WHERE " . implode(" AND ", $col);
+    //echo $sql;
     $db->query($sql);
     if ($db->rowCount() > 0) {
         $results = $db->recordsArray();
