@@ -4,6 +4,10 @@
  * User: Matthew
  * Date: 7/04/2018
  * Time: 3:53 PM
+ *
+ * This page is used to describe each specimen extracted from the database.
+ * It is in table format and is separate from the rest of the pages.
+ * It opens in a new tab and has no sidebar.
  */
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;

@@ -4,7 +4,11 @@
  * User: Matthew
  * Date: 14/03/2018
  * Time: 8:17 PM
+ *
+ * This is the required stylesheets for each of the pages
  */
+
+
 ?>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">

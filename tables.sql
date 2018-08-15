@@ -1,6 +1,4 @@
--- CREATE DATABASE BioBase;
-
--- TODO add foreign keys to server
+CREATE DATABASE BioBase;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -29,7 +27,6 @@ CREATE TABLE IF NOT EXISTS cores (
 );
 
 -- This contains all the information relating to the sample
--- Not sure if we bother storing determined fields at this stage?????
 CREATE TABLE IF NOT EXISTS samples (
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,

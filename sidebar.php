@@ -1,8 +1,7 @@
 <?php
 use phpformbuilder\database\Mysql;
-?>
-<?php
-// Sample Side Bar
+
+// Sample Side Bar (shown if sample is selected)
 if (!empty($_GET["sample"])) {
     $sample = $_GET["sample"];
     $core = $_GET["core"];
@@ -18,7 +17,7 @@ if (!empty($_GET["sample"])) {
         </ul>
     </nav>
     <?php
-// Project Side Bar (Needs to be updated dynamically from DB)
+// Project Side Bar (shown if not in sample - has drop downs of project, core and samples extracted from database)
 } else {
     ?>
     <nav class="sidebar bg-dark">

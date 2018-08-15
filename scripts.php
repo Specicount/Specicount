@@ -1,9 +1,11 @@
+<!--This is the necessary scripts for each page-->
 <script src="js/jquery-3.3.1.js"></script>
 <script src="js/jquery.hoverIntent.min.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/popper.js"></script>
 <script src="js/bsadmin.js"></script>
 <script src="js/fontawesome-all.js"></script>
+<!--The following script is for the overlays for each specimen on the counting page (fiddly and a bit ugly but somewhat works be wary if playing with)-->
 <script>
 $(document).ready(function() {
     // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
