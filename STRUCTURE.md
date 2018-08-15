@@ -1,5 +1,6 @@
 # General
 The structure of this app is divided into two systems being the backend database and the front-end website.
+Would be worth playing with the website to get a feel for it.
 
 # Database structure
 The database structure can be found in tables.sql and denotes the structure of the database.
