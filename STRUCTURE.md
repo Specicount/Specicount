@@ -33,5 +33,5 @@ Here are the pages (everything else is includes by these):
 The *require_once* keyword is used to include files, so you can pretty easily see what includes what.
 
 # More info
-More information for crap can be found on Google Drive (hopefully is shared with you). Predominatly have a look at the
+More information for crap can be found on Google Drive (hopefully is shared with you). Predominantly have a look at the
 stuff in the *Software Documentation* folder.
