@@ -56,11 +56,11 @@ database is to be discussed and a feasibility study is to be performed for futur
 | --- | --- | -- |
 | Paige Brown | paige.brown@anu.edu.au | <ul><li>BioCount Team Lead</li><li>Communications Specialist</li><li>Documentation Lead</li></ul> |
 | Matthew Knill | u6052043@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
-| Kavan Lu | u6051623@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
 | Zibo Wang | u5720483@anu.edu.au | <ul><li>BioCount Team Developer</li></ul> |
+| Jack Sekoranja | u6049302@anu.edu.au | <ul><li>APSA Team Developer</li><li>Management Assistant</li></ul> |
 | Alex Niven | alexander.niven@anu.edu.au | <ul><li>APSA Team Lead</li><li>Communications Specialist</li></ul> |
 | Elliott Wagener | u6053577@anu.edu.au | <ul><li>APSA Team Developer</li></ul> |
-| Jack Sekoranja | u6049302@anu.edu.au | <ul><li>APSA Team Developer</li><li>Management Assistant</li></ul> |
+| Kavan Lu | u6051623@anu.edu.au | <ul><li>APSA Team Developer</li></ul> |
 
 #### Role Descriptions
 
@@ -71,6 +71,8 @@ database is to be discussed and a feasibility study is to be performed for futur
 * *Team Developer* - The Team Developers are responsible for assisting Team Leads in their specific projects. This includes back-end and front-end work where required.
 
 Our team charter can be found [here](https://drive.google.com/open?id=1F1k6C-FTzfjVUTyOtMI9Mt2XBjZPFsx-zroJ9AcWVsQ).
+The breakdown of our workload can be seen on our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-US/Home/Planner/#/plantaskboard?groupId=752d315f-2752-48cf-997c-2633cd55dc52&planId=d30F3Njbe0OwtxYCPTibV8gADMmS)
+(Please note, an ANU login may be required to view our Planner)
 
 # <a name='stakeholders'></a> 5. Stakeholders
 
@@ -104,6 +106,9 @@ We aim for weekly meetings, although frequency may depend on necessity.
 ##### Team Meetings
 In-person meetings are preferred by the team, although we will be trialing Skype for Business for online meetings.
 * Time - 12pm Wednesdays
+
+Adding to this, we are also trialing a *Tuesday Check In*. This is to allow the team to communicate updates from over the weekend
+if team members are unable to come to the meeting on Wednesdays.
 
 If you wish to learn more about our communication procedures, we have developed a strategy [here](https://drive.google.com/open?id=1LVsi5XhkpQDEJ4MFu_uNH8JtkcbKRFrVMJJAGeEej2k).
 
@@ -139,7 +144,7 @@ You can view and play around with our current prototype at [http://seprojgrp2b.a
 We only ask that you **don't delete anything**, thank you!
 (Note: this server can only be accessed on the ANU campus or via the [ANU VPN](https://services.anu.edu.au/information-technology/login-access/virtual-private-network-0)).
 
-The Australasian Pollen and Spore Atlas (APSA) website can be found [here](http://apsa.anu.edu.au), and a code repository will be available to view once the team has gained access to the existing server.
+The Australasian Pollen and Spore Atlas (APSA) website can be found [here](http://apsa.anu.edu.au), and a code repository is currently being populated [here](https://gitlab.cecs.anu.edu.au/u5801168/APSA)
 
 The project is housed on an Apache2 server using PHP 7 and other items which can be found in our [Technical Documentation](https://docs.google.com/document/d/19ObKv17vrhDEsHHpE8ep23V5kh7Y6Wm3NpOwPVRjhlc/edit?usp=sharing). You can view the [source code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/) on GitLab.
 
