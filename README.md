@@ -120,9 +120,12 @@ In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPT
 * [BioCount Technical Documentation](https://drive.google.com/drive/folders/1T7oX-wEwgv4zsX9J0LcDOdeiuieK1ypQ?usp=sharing)
 * [BioCount Database Design](https://drive.google.com/drive/folders/1KsflTdEvIEjUWkwE2QUN4T5fb64jpjxH?usp=sharing)
 
-On GitLab you can find our:
+On BioCount GitLab you can find our:
 * [Technical To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
 * [BioCount Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
+
+Our APSA GitLab page can be found here:
+* [Landing Page](https://gitlab.cecs.anu.edu.au/u5801168/APSA)
 
 Finally, you can view our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS) for our current work and follow ups.
 (Note, you may need your ANU login to view this as it is hosted using ANU's Office365 subscription)
