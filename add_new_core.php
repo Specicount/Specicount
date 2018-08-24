@@ -28,6 +28,10 @@ if ($_GET["edit"]) {
     validation if posted
 ============================================= */
 
+//Security token is automatically added to each form.
+//Token is valid for 1800 seconds (30mn) without refreshing page.
+//Validate posted token this way (first half of && is irrelevant):
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     if ($_POST["submit-btn"] == "delete") {
         # Delete from both cores table
