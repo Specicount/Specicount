@@ -32,9 +32,6 @@ to identify the pollen samples found, and record this. Once all items are record
 is then manually fed back into a Microsoft Excel spreadsheet and exported into graphing
 programs to discover trends and publish to other participants within the project.
 
-While bespoke image storage systems such as using "Flickr" exist, the ANU has been instrumental
-in providing a web-based reference for the pollen and spores found in the Australasian ecosystem.
-
 
 # <a name='project_description'></a> 3. Project Description
 
@@ -78,7 +75,9 @@ This is purely the denotation of their software development responsibility, not 
 | Jack Sekoranja | <ul><li> Login Systems </li></ul> |
 | Kavan Lu |  <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 
-Our team charter can be found [here](https://drive.google.com/open?id=1F1k6C-FTzfjVUTyOtMI9Mt2XBjZPFsx-zroJ9AcWVsQ).
+A approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
+while our current work on requirements can be found on our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS)
+
 
 # <a name='stakeholders'></a> 5. Stakeholders
 
@@ -100,8 +99,6 @@ Our team charter can be found [here](https://drive.google.com/open?id=1F1k6C-FTz
     * Possible adoption of our application for their needs
     * Increased use of the APSA website as a reference database
 
-If you wish to explore this further, our intial stakeholder analysis is [here](https://drive.google.com/open?id=19pXy2BNxW7uDBcLVdOLtLPzxHylQrG6BgpUE_Bul87A).
-
 # <a name='meetings_schedule'></a> 6. Meetings Schedule
 
 ##### Client Meetings
@@ -112,15 +109,18 @@ We aim for weekly meetings, although frequency may depend on necessity.
 In-person meetings are preferred by the team, although we will be trialing Skype for Business for online meetings.
 * Time - 12pm Wednesdays
 
-We are currently trialing a *Tuesday Check In*. This is to allow the team to communicate updates from over the weekend
-if team members are unable to come to the meeting on Wednesdays.
+We are currently trialing *Tuesday Check Ins*. This is a informal meeting where the Team Leader will interact with all
+Project Team members to discover their current work performed, any issues, if they are on track for deadlines.
+This is to allow the team to communicate updates from over the weekend
+if team members are unable to come to the team meeting on Wednesdays.
 
-If you wish to learn more about our communication procedures, we have developed a strategy [here](https://drive.google.com/open?id=1LVsi5XhkpQDEJ4MFu_uNH8JtkcbKRFrVMJJAGeEej2k).
+If you wish to learn more about our communication procedures, we have developed a strategy [here](https://docs.google.com/document/d/1r-EzJ9cmtGbjgq_M8eiBXLTo2zRZHgJJhH7DvKJBWKo/edit?usp=sharing).
 
 # <a name='documents_and_links'></a> 7. Documents and Links
 
 In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPTnVEgKWPhOLoYgx?usp=sharing) repository, among other artifacts, you will find:
 
+* [Team Charter](https://drive.google.com/open?id=1F1k6C-FTzfjVUTyOtMI9Mt2XBjZPFsx-zroJ9AcWVsQ)
 * [Project Requirements](https://docs.google.com/document/d/115KGVQwYhtEMleP7rEepZzgEWeQ1M9aRcb0ic8zY2yc/edit?usp=sharing)
 * [Project Schedule](https://docs.google.com/document/d/14GQnB148GisnAGT17ykqR8gI4GXcONIb8MDBXXVSzSo/edit?usp=sharing)
 * [Decisions Paper](https://docs.google.com/document/d/1gFgDK_EgetDZsNauIYRrImGhIKQwk-Kp5Vx-_jBXIoo/edit?usp=sharing)
