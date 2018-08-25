@@ -2,6 +2,7 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
+use classes\Page_Renderer;
 
 /* =============================================
     start session and include form class
@@ -107,5 +108,6 @@ $form->printBtnGroup('my-btn-group');
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 
-$title = "$project > $name";
-require_once "add_form_html.php";
+$pr = new Page_Renderer();
+$pr->setForm($form);
+$pr->renderPage();
