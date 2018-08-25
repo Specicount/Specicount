@@ -94,9 +94,13 @@ function validLogin()
         }
     }*/
 
-    $db->selectRows('specimen', array('spec_id' => Mysql::SQLValue($_REQUEST['username'])), null, null, true, 1);
-    $specimen = $db->recordsArray()[0];
-
+    $db->selectRows('user', array('username' => Mysql::SQLValue($_REQUEST['username'])), null, null, true, 1);
+    $user = $db->recordsArray()[0];
+    $pass = $user["passwd"];
+    $salt = substr($pass, 0, 2);
+    if (crypt($_REQUEST['password'], $salt) == $pass) {
+        return TRUE;
+    }
     return FALSE;
 }
 

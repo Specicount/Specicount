@@ -15,16 +15,18 @@ CREATE TABLE IF NOT EXISTS users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
-  password CHAR(128) NOT NULL
+  passwd CHAR(128) NOT NULL
 );
 
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS projects (
+  username VARCHAR(30) NOT NULL,
   project_name VARCHAR (150) NOT NULL,
   biorealm VARCHAR (100) DEFAULT NULL,
   country VARCHAR (100) DEFAULT NULL,
   region VARCHAR (100) DEFAULT NULL,
-  PRIMARY KEY (project_name)
+  PRIMARY KEY (users, project_name)
+  FOREIGN KEY (project_name) REFERENCES projects(project_name)
 );
 
 -- This contains all the information relating to the core
