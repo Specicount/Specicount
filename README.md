@@ -75,7 +75,7 @@ This is purely the allocation of their software development responsibility, not 
 | Jack Sekoranja | <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 | Kavan Lu |  <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 
-A approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
+An approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
 while our current work on requirements can be found on our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS)
 
 
