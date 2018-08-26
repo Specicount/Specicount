@@ -12,19 +12,21 @@ CREATE DATABASE BioBase;
 -- This has not been implemented yet
 -- Will need to decide if projects references users and how they are shared...
 CREATE TABLE IF NOT EXISTS users (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(30) NOT NULL,
   email VARCHAR(50) NOT NULL,
-  password CHAR(128) NOT NULL
+  passwd CHAR(128) NOT NULL,
+  PRIMARY KEY (username)
 );
 
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS projects (
+  username VARCHAR(30) NOT NULL,
   project_name VARCHAR (150) NOT NULL,
   biorealm VARCHAR (100) DEFAULT NULL,
   country VARCHAR (100) DEFAULT NULL,
   region VARCHAR (100) DEFAULT NULL,
-  PRIMARY KEY (project_name)
+  PRIMARY KEY (project_name),
+  FOREIGN KEY (username) REFERENCES users(username)
 );
 
 -- This contains all the information relating to the core

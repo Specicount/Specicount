@@ -7,10 +7,7 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-session_start();
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 if ($_GET["edit"]) {
     $form_name = 'add-new-project-edit';
@@ -44,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
         } else {
 
             $update["project_name"] = Mysql::SQLValue($_POST["project_name"]);
+            $update["username"] = Mysql::SQLValue($_SESSION['auth_user']);
             $update["biorealm"] = Mysql::SQLValue($_POST["biorealm"]);
             $update["country"] = Mysql::SQLValue($_POST["country"]);
             $update["region"] = Mysql::SQLValue($_POST["region"]);
@@ -130,6 +128,9 @@ $form->printBtnGroup('my-btn-group');
 
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
-$title = $name;
-require_once "add_form_html.php";
-?>
+
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle($name);
+$page_render->renderPage();

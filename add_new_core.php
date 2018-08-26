@@ -2,16 +2,12 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-use classes\Page_Renderer;
 
 /* =============================================
     start session and include form class
 ============================================= */
 
-session_start();
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 $project = $_GET["project"];
 
@@ -28,10 +24,6 @@ if ($_GET["edit"]) {
 /* =============================================
     validation if posted
 ============================================= */
-
-//Security token is automatically added to each form.
-//Token is valid for 1800 seconds (30mn) without refreshing page.
-//Validate posted token this way (first half of && is irrelevant):
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
     if ($_POST["submit-btn"] == "delete") {
@@ -108,6 +100,8 @@ $form->printBtnGroup('my-btn-group');
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 
-$pr = new Page_Renderer();
-$pr->setForm($form);
-$pr->renderPage();
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle("$project > $name");
+$page_render->renderPage();

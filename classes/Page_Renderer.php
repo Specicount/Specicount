@@ -22,16 +22,29 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
-
-session_start();
-if(!isset($_SESSION["auth_user"]) || $_SESSION["auth_user"] !== true){
-    header("location: login.php");
-    exit;
+function get_topmost_script() {
+    $backtrace = debug_backtrace(
+        defined("DEBUG_BACKTRACE_IGNORE_ARGS")
+            ? DEBUG_BACKTRACE_IGNORE_ARGS
+            : FALSE);
+    $top_frame = array_pop($backtrace);
+    return $top_frame['file'];
 }
 
+$current_dir = __DIR__;
+include_once $current_dir.'/../phpformbuilder/Form.php';
+require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
+require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
+
+session_start();
+print_r($_SESSION["auth_user"]);
+if(!isset($_SESSION["auth_user"])){
+    if (basename(get_topmost_script(), ".php") != "login.php") {
+        //$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        header("location: login.php");
+        exit;
+    }
+}
 
 class Page_Renderer {
 
@@ -39,14 +52,19 @@ class Page_Renderer {
 
     //Variables that will store content to render on the page
     //Will only be rendered if not null
-    private $form, $php_filename, $html_string;
+    private $form, $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
+
+    // Archived: $php_filename
 
     //Boolean variables that determine what page_components to render
     //Will be rendered by default
-    public $render_header, $render_navbar, $render_sidebar, $render_scripts;
 
     public function __construct() {
         $this->render_header = $this->render_navbar = $this->render_sidebar = $this->render_scripts = true;
+    }
+
+    public function setPageTitle($title) {
+        $this->page_title = $title;
     }
 
     public function disableHeader() {
@@ -69,15 +87,16 @@ class Page_Renderer {
         $this->form = $form;
     }
 
-    public function setPHPFile($php_filename) {
+    /*public function setPHPFile($php_filename) {
         $this->php_filename = $php_filename;
-    }
+    }*/
 
     public function setInnerHTML($html_string) {
-        $this->html_string = "../".$html_string;
+        $this->html_string = $html_string;
     }
 
     public function renderPage() {
+        $current_dir = __DIR__;
     ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -85,7 +104,7 @@ class Page_Renderer {
             <title><?= $this->page_title ?></title>
             <?php
             if ($this->render_header) {
-                require_once "../page_components/header.php";
+                require_once $current_dir.'/../page-components/header.php';
             }
 
             //Check whether $form has been initialised so we can add the relevant css files
@@ -108,14 +127,14 @@ class Page_Renderer {
         //This variable is used in the navbar's php file
         $navbar_text = $this->page_title;
         if ($this->render_navbar) {
-            require_once "../page_components/navbar.php"; // Add top navbar
+            require_once $current_dir.'/../page-components/navbar.php'; // Add top navbar
         }
 
         ?>
         <div class="d-flex">
             <?php
             if ($this->render_sidebar) {
-                require_once "../page_components/sidebar.php"; // Add sidebar
+                require_once $current_dir.'/../page-components/sidebar.php'; // Add sidebar
             }
 
             ?>
@@ -147,9 +166,9 @@ class Page_Renderer {
                         }
 
                         //Check whether $php_filename has been initialised so we can render
-                        if ($this->php_filename) {
+                        /*if ($this->php_filename) {
                             require_once $this->php_filename;
-                        }
+                        }*/
 
                         //Check whether $html_string has been initialised so we can render
                         if ($this->html_string) {
@@ -162,7 +181,7 @@ class Page_Renderer {
         </div>
         <?php
         if ($this->render_scripts) {
-            require_once "../page_components/scripts.php"; // Get scripts
+            require_once $current_dir.'/../page-components/scripts.php'; // Get scripts
         }
 
         //Check whether $form has been initialised so we can add the relevant js files
