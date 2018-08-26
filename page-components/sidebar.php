@@ -21,6 +21,7 @@ if (!empty($_GET["sample"])) {
             <li><a href="sample.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-stopwatch"></i> Sample Count</a></li>
             <li><a href="search_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-search"></i> Search Specimen</a></li>
             <li><a href="add_new_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-plus"></i> Add New Specimen</a></li>
+            <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
         </ul>
     </nav>
     <?php
@@ -36,7 +37,7 @@ if (!empty($_GET["sample"])) {
             <li>
                 <?php
                 $db = new Mysql();
-                $db->selectRows("projects", null, "project_name", "project_name", true);
+                $db->selectRows("projects", array("username"=>Mysql::SQLValue($_SESSION['auth_user'])), "project_name", "project_name", true);
                 foreach ($db->recordsArray() as $project) {
                     echo "<a href=\"#".$project["project_name"]."\" data-toggle=\"collapse\"><i class=\"fas fa-folder\"></i>  ".$project["project_name"]."</a>
                             <ul id=\"".$project["project_name"]."\" class=\"list-unstyled collapse\">
@@ -54,7 +55,6 @@ if (!empty($_GET["sample"])) {
                         foreach ($db->recordsArray() as $sample) {
                             echo "<li><a href=\"sample.php?project=".$project["project_name"]."&core=".$core["core_id"]."&sample=".$sample["sample_id"]."\"><i class=\"fa fa-flask\"></i> ".$sample["sample_id"]."</a></li>";
                         }
-
                         echo "</ul>";
                     }
 
@@ -62,6 +62,7 @@ if (!empty($_GET["sample"])) {
                 }
                 ?>
             </li>
+            <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
         </ul>
     </nav>
     <?php

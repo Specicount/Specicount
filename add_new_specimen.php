@@ -28,10 +28,7 @@ function delete_files($target) {
     start session and include form class
 ============================================= */
 
-session_start();
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 function extract_name($file) {
     $file_array = explode("/", $file);
@@ -721,8 +718,11 @@ $form->addPlugin('nice-check', 'form', 'default', ['%skin%' => 'purple']);
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new', 'bs4');
 
-$title = $name;
-require_once "add_form_html.php";
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle($name);
+$page_render->renderPage();
 ?>
 <script>
     function merge_polar (){
