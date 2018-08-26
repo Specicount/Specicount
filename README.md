@@ -122,13 +122,12 @@ In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPT
 
 * [Team Charter](https://drive.google.com/open?id=1F1k6C-FTzfjVUTyOtMI9Mt2XBjZPFsx-zroJ9AcWVsQ)
 * [Project Requirements](https://docs.google.com/document/d/115KGVQwYhtEMleP7rEepZzgEWeQ1M9aRcb0ic8zY2yc/edit?usp=sharing)
-* [Project Schedule](https://docs.google.com/document/d/14GQnB148GisnAGT17ykqR8gI4GXcONIb8MDBXXVSzSo/edit?usp=sharing)
+* [Project Schedule](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw)
 * [Decisions Paper](https://docs.google.com/document/d/1gFgDK_EgetDZsNauIYRrImGhIKQwk-Kp5Vx-_jBXIoo/edit?usp=sharing)
 * [Teamwork Processes](https://docs.google.com/document/d/1G-T9GXdtyyxoaMnwY5RjtxSAWErB-U2dGpqbN8NYcTo/edit?usp=sharing)
 * [Feedback Log](https://docs.google.com/document/d/18pogwthw4jYylOjL7o7JrqS4WdTehgahTqEdHTzbNO0/edit?usp=sharing)
 * [Meetings](https://drive.google.com/drive/folders/1AXES9vnyGHSa6DJfrqXNPuLBWmhnbpQR?usp=sharing)
 * [Technical Documentation](https://drive.google.com/drive/folders/1T7oX-wEwgv4zsX9J0LcDOdeiuieK1ypQ?usp=sharing)
-* [Database Design](https://drive.google.com/drive/folders/1KsflTdEvIEjUWkwE2QUN4T5fb64jpjxH?usp=sharing)
 
 On GitLab you can find our:
 * [Technical To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
