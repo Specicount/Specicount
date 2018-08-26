@@ -7,10 +7,7 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-session_start();
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 $project = $_GET["project"];
 
@@ -103,5 +100,8 @@ $form->printBtnGroup('my-btn-group');
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 
-$title = "$project > $name";
-require_once "add_form_html.php";
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle("$project > $name");
+$page_render->renderPage();

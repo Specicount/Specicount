@@ -7,9 +7,6 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 session_start();
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
