@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     renderLoginForm();
 }
 
+# Test the username and password
 function doLogin()
 {
     if ($_REQUEST['username'] && $_REQUEST['password']) {
@@ -42,6 +43,7 @@ function doLogin()
     }
 }
 
+# Test username or password was entered
 function validateLogin()
 {
     $errors = array();
@@ -63,42 +65,34 @@ function validateLogin()
     return $errors;
 }
 
+# Test password in database
 function validLogin()
 {
     $db = new Mysql();
     $db->selectRows('users', array('username' => Mysql::SQLValue($_REQUEST['username'])), null, null, true, 1);
     $user = $db->recordsArray()[0];
 
+    // Password is hashed
     if (password_verify($_REQUEST['password'], $user["passwd"])) {
         return TRUE;
     }
     return FALSE;
 }
 
+# Create login form
 function renderLoginForm($errors = NULL)
 {
     $myself = $_SERVER['PHP_SELF'];
 
     $errOut = NULL;
 
-    if (is_array($errors) && !empty($errors)) {
-        $errOut .= "<h2>Errors</h2>\n";
-
-        $errOut .= "<ul class=\"errors\">\n";
-
-        foreach ($errors as $error) {
-            $errOut .= "<li>" . $error . "</li>\n";
-        }
-
-        $errOut .= "</ul>\n";
-    }
-
     $username = isset($_REQUEST['username']) ? htmlentities($_REQUEST['username']) : NULL;
     $password = isset($_REQUEST['password']) ? htmlentities($_REQUEST['password']) : NULL;
 
-    echo $errOut;
     $form = new Form("login", 'horizontal', 'novalidate', 'bs4');
     $form->setCols(0, 12);
+
+    if (!empty($errors) and is_array($errors)) $form->addHtml("<p class=\"alert alert-danger\">".$errors['username']."</p>");
     $form->addHelper("Username", "username");
     $form->addInput('text', 'username', '', '', 'required');
     $form->addHelper("Password", "password");
