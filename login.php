@@ -24,11 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     if (empty($errors)) {
         doLogin();
-        if (isset($_GET["redirect"])) {
-            header("Location: ".json_decode($_GET["redirect"]));
-        } else {
-            header("Location: index.php");
-        }
+        header("Location: index.php");
         exit;
     } else {
         renderLoginForm($errors);
@@ -103,8 +99,10 @@ function renderLoginForm($errors = NULL)
     echo $errOut;
     $form = new Form("login", 'horizontal', 'novalidate', 'bs4');
     $form->setCols(0, 12);
-    $form->addInput('text', 'username', '', 'Username', 'required');
-    $form->addInput('password', 'password', '', 'Password', 'required');
+    $form->addHelper("Username", "username");
+    $form->addInput('text', 'username', '', '', 'required');
+    $form->addHelper("Password", "password");
+    $form->addInput('password', 'password', '', '', 'required');
     $form->addBtn('submit', 'submit-btn', 1, 'Submit', 'class=btn btn-success ladda-button, data-style=zoom-in');
 
     // Render Page
@@ -112,6 +110,6 @@ function renderLoginForm($errors = NULL)
     $page_render->setForm($form);
     $page_render->setPageTitle("BioBase Login");
     $page_render->disableSidebar();
-    $page_render->disableNavbar();
+    //$page_render->disableNavbar();
     $page_render->renderPage();
 }

@@ -37,9 +37,8 @@ require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 
 session_start();
-print_r($_SESSION["auth_user"]);
 if(!isset($_SESSION["auth_user"])){
-    if (basename(get_topmost_script(), ".php") != "login.php") {
+    if (basename(get_topmost_script(), ".php") != "login") {
         //$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         header("location: login.php");
         exit;
