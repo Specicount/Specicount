@@ -63,7 +63,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 * *Team Developer* - The Team Developers are given an Area of Responsibility for work to be performed. This includes back-end and front-end work where required.
 
 The breakdown of Team Member's development Area of Responsibities (AOR) can be found below.
-This is purely the denotation of their software development responsibility, not including any admin, project management or documentation workload.
+This is purely the allocation of their software development responsibility, not including any admin, project management or documentation workload.
 
 | **Name** | **AOR** |
 | --- | --- |
@@ -72,7 +72,7 @@ This is purely the denotation of their software development responsibility, not 
 | Elliott Wagener | <ul><li> Code Revision </li></ul> |
 | Zibo Wang | <ul><li> Statistical Functionality </li></ul> |
 | Matthew Knill | <ul><li> Login Systems </li></ul> |
-| Jack Sekoranja | <ul><li> Login Systems </li></ul> |
+| Jack Sekoranja | <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 | Kavan Lu |  <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 
 A approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
