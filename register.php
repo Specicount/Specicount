@@ -7,13 +7,14 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-function rand_char($length) {
+// Captcha if we decide to allow any user to register
+/*function rand_char($length) {
     $random = '';
     for ($i = 0; $i < $length; $i++) {
         $random .= chr(mt_rand(33, 126));
     }
     return $random;
-}
+}*/
 
 require_once "classes/Page_Renderer.php";
 
@@ -35,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('register') === true
         if ($_POST["password"] == $_POST["password_conf"]) {
             $update["username"] = Mysql::SQLValue($_POST["username"]);
             $update["email"] = Mysql::SQLValue($_POST["email"]);
+            // Create encrypted password
             $update["passwd"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
 
             $db->insertRow('users', $update);
@@ -69,10 +71,10 @@ $form->addInput('email', 'email', '', '', 'required, placeholder=Email');
 $form->addHelper('Password', 'password');
 $form->addInput('password', 'password', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
 
-$form->addHelper('Password Confirm', 'password_conf');
-$form->addInput('password', 'password_conf', '', '', 'required');
+$form->addHelper('Password Confirmation', 'password_conf');
+$form->addInput('password', 'password_conf', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
 
-// If we decide to allow any user to register
+// Captcha if we decide to allow any user to register
 /*$key = rand_char(15);
 $form->addHtml('<input id="captcha_code" name="captcha_code" type="hidden" value="'.$key.'">');
 $form->addRecaptcha($key);*/

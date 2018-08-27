@@ -48,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
             $update["analyst_first_name"] = Mysql::SQLValue($_POST["first_name"]);
             $update["analyst_last_name"] = Mysql::SQLValue($_POST["last_name"]);
             $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+            $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
             $update["modelled_age"] = Mysql::SQLValue($_POST["modelled_age"]);
 
             if ($_GET["edit"]) {

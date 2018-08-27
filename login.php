@@ -10,7 +10,6 @@ use phpformbuilder\database\Mysql;
  * Time: 8:03 AM
  */
 
-$at_login = true;
 require_once "classes/Page_Renderer.php";
 
 $myself = $_SERVER['PHP_SELF'];
@@ -82,12 +81,12 @@ function validLogin()
 # Create login form
 function renderLoginForm($errors = NULL)
 {
-    $myself = $_SERVER['PHP_SELF'];
+    //$myself = $_SERVER['PHP_SELF'];
 
     $errOut = NULL;
 
-    $username = isset($_REQUEST['username']) ? htmlentities($_REQUEST['username']) : NULL;
-    $password = isset($_REQUEST['password']) ? htmlentities($_REQUEST['password']) : NULL;
+    /*$username = isset($_REQUEST['username']) ? htmlentities($_REQUEST['username']) : NULL;
+    $password = isset($_REQUEST['password']) ? htmlentities($_REQUEST['password']) : NULL;*/
 
     $form = new Form("login", 'horizontal', 'novalidate', 'bs4');
     $form->setCols(0, 12);

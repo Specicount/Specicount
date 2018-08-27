@@ -17,10 +17,7 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-session_start();
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 $spec_id = $_GET["spec_id"];
 
@@ -68,47 +65,31 @@ $db = new Mysql();
 
 $db->selectRows('specimen', array('spec_id' => Mysql::SQLValue($spec_id)), null, null, true, 1);
 $specimen = $db->recordsArray()[0];
-?>
-<html>
-<head>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/fontawesome.min.css">
-    <link rel="stylesheet" href="css/bsadmin.css">
-</head>
-<body>
-<div class="d-flex">
 
-    <?php
-    //require_once "sidebar.php"; // Add Side Nav Bar
-    ?>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div style="padding-top: 30px" class="col-md-11 col-lg-10">
+$output = "
 <h1>Specimen: <?= $spec_id?></h1>
-<table class="table table-bordered">
-    <thead><tr><td style="font-weight: bold">Type</td><td style="font-weight: bold">Value</td></tr></thead>
-<?php
+<table class=\"table table-bordered\">
+    <thead><tr><td style=\"font-weight: bold\">Type</td><td style=\"font-weight: bold\">Value</td></tr></thead>";
 foreach ($names as $column => $value) {
-    echo "<tr><td>".$value."</td><td>".str_replace(",", "<br/>",$specimen[$column])."</td></tr>";
+    $output .= "<tr><td>".$value."</td><td>".str_replace(",", "<br/>",$specimen[$column])."</td></tr>";
 }
-?>
-</table>
-<?php
+
+$output .= "</table>";
+
 $dir = new DirectoryIterator($specimen["image_folder"]);
-echo "<br /> <p style='font-weight: bold'>Images</p>";
+$output .= "<br /> <p style='font-weight: bold'>Images</p>";
 foreach ($dir as $fileinfo) {
     if (!$fileinfo->isDot()) {
         $image = $fileinfo->getFilename();
         if ($image != "thumbnail") {
-            echo '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/' . $image . '"><br />';
+            $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/' . $image . '"><br />';
         }
     }
 }
-?>
-            </div>
-        </div>
-    </div>
-</div>
-<?php
-require_once "scripts.php"; // Get scripts
-?>
+
+$page_render = new \classes\Page_Renderer();
+$page_render->setPageTitle("Specimen Details");
+$page_render->disableSidebar();
+$page_render->disableNavbar();
+$page_render->setInnerHTML($output);
+$page_render->renderPage();

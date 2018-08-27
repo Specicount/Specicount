@@ -7,10 +7,7 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-session_start();
-include_once 'phpformbuilder/Form.php';
-require_once 'phpformbuilder/database/db-connect.php';
-require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 $date = date("Y-m-d H:i:s");
 
@@ -161,6 +158,7 @@ $form->addHtml('</div>');
 
 $form->addHtml("</div><div class='col-sm'>");
 
+// Concentration curve div
 $form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
 
 $form->addHtml("</div></div>");
@@ -172,7 +170,7 @@ $specs = $db->recordsArray();
 
 if($db->rowCount() > 0) {
 
-    $form->addHtml('<hr>');
+    //$form->addHtml('<hr>');
 
     $form->addHtml('<div class="square-grid">');
 
@@ -208,8 +206,13 @@ if($db->rowCount() > 0) {
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 
-$title = "$project > $core > $sample > Sample Count";
-require_once "add_form_html.php";
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle("$project > $core > $sample > Sample Count");
+$page_render->renderPage();
+
+// Add concentration curve scripts
 require_once "concentration.php";
 ?>
 <script>

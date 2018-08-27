@@ -21,7 +21,8 @@ if (!$db->error()) {
 }
 
 $result_concentration = implode($result,", ");
-echo "
+if ($db->rowCount() > 0) {
+    echo "
         <script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>
         <div style='height: 350px' id=\"chart_div\"></div><br/>
         
@@ -58,3 +59,4 @@ echo "
             chart.draw(data, options);
         }
         </script>";
+}
