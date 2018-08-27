@@ -62,6 +62,7 @@ if (!empty($_GET["sample"])) {
                 }
                 ?>
             </li>
+            <li><a href="register.php"><i class="fa fa-user-plus"></i> Add User</a></li>
             <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
         </ul>
     </nav>
