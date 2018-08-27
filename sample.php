@@ -200,7 +200,7 @@ if($db->rowCount() > 0) {
     $form->addHtml('</div><br><br>');
 
 } else {
-    $form->addHtml('<p style="font-style: italic">No specimens added to this sample</p>');
+    $form->addHtml('<p style="font-style: italic; margin-top:-200px;">No specimens added to this sample</p>');
 }
 
 // jQuery validation
