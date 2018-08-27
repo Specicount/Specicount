@@ -48,7 +48,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 | --- | --- | -- |
 | Alex Niven | alexander.niven@anu.edu.au | <ul><li>Team Leader</li><li>Communications Specialist</li></ul> |
 | Paige Brown | paige.brown@anu.edu.au | <ul><li>Publication Lead</li><li>Documentation Lead</li></ul> |
-| Elliott Wagener | u6053577@anu.edu.au | <ul><li> Team Developer</li></ul> |
+| Elliott Wagener | u6053577@anu.edu.au | <ul><li>Technical Lead</li></ul> |
 | Zibo Wang | u5720483@anu.edu.au | <ul><li> Team Developer</li></ul> |
 | Matthew Knill | u6052043@anu.edu.au | <ul><li> Team Developer</li></ul> |
 | Jack Sekoranja | u6049302@anu.edu.au | <ul><li> Team Developer</li></ul> |
@@ -60,6 +60,7 @@ in the wider research community for multiple data capture senarios, eliminating 
 * *Communications Specialist* - Communications Specialists are responsible for any communication between Clients, Project group, Shadow group and other Stakeholders. They will also lead presentations when necessary.
 * *Documentation Lead* - The Documentation Lead are responsible for ensuring published & released documents are held to the expectations of the team.
 * *Publication Lead* - A new role added in this semester, the Publication Lead is responsible for the writing, editing & delegation of tasks regarding the any written publications.
+* *Technical Lead* - Technical Lead assists with the collation of information between the relevent Area's of Responsibilities and assists in development work when required. This also includes minor decision making for actions which need not be raised with the entire project team.
 * *Team Developer* - The Team Developers are given an Area of Responsibility for work to be performed. This includes back-end and front-end work where required.
 
 The breakdown of Team Member's development Area of Responsibities (AOR) can be found below.
@@ -75,7 +76,7 @@ This is purely the allocation of their software development responsibility, not 
 | Jack Sekoranja | <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 | Kavan Lu |  <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
 
-A approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
+An approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
 while our current work on requirements can be found on our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS)
 
 
@@ -121,14 +122,13 @@ If you wish to learn more about our communication procedures, we have developed 
 In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPTnVEgKWPhOLoYgx?usp=sharing) repository, among other artifacts, you will find:
 
 * [Team Charter](https://drive.google.com/open?id=1F1k6C-FTzfjVUTyOtMI9Mt2XBjZPFsx-zroJ9AcWVsQ)
-* [Project Requirements](https://docs.google.com/document/d/115KGVQwYhtEMleP7rEepZzgEWeQ1M9aRcb0ic8zY2yc/edit?usp=sharing)
-* [Project Schedule](https://docs.google.com/document/d/14GQnB148GisnAGT17ykqR8gI4GXcONIb8MDBXXVSzSo/edit?usp=sharing)
+* [Project Requirements](https://docs.google.com/document/d/13OBNTy6nSa7AAXpxxEjETcAAhVeJ5qu1rEmsY1D9wuM/edit?usp=sharing)
+* [Project Schedule](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw)
 * [Decisions Paper](https://docs.google.com/document/d/1gFgDK_EgetDZsNauIYRrImGhIKQwk-Kp5Vx-_jBXIoo/edit?usp=sharing)
 * [Teamwork Processes](https://docs.google.com/document/d/1G-T9GXdtyyxoaMnwY5RjtxSAWErB-U2dGpqbN8NYcTo/edit?usp=sharing)
 * [Feedback Log](https://docs.google.com/document/d/18pogwthw4jYylOjL7o7JrqS4WdTehgahTqEdHTzbNO0/edit?usp=sharing)
 * [Meetings](https://drive.google.com/drive/folders/1AXES9vnyGHSa6DJfrqXNPuLBWmhnbpQR?usp=sharing)
 * [Technical Documentation](https://drive.google.com/drive/folders/1T7oX-wEwgv4zsX9J0LcDOdeiuieK1ypQ?usp=sharing)
-* [Database Design](https://drive.google.com/drive/folders/1KsflTdEvIEjUWkwE2QUN4T5fb64jpjxH?usp=sharing)
 
 On GitLab you can find our:
 * [Technical To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
