@@ -40,19 +40,24 @@ require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 
 session_start();
 // Test if the user is logged in
-if(!isset($_SESSION["auth_user"])){
-    // Test if login script
-    if (basename(get_topmost_script(), ".php") != "login") {
-        //$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-        // Go to login page
-        header("location: login.php");
-        exit;
+/*
+    if(!isset($_SESSION["auth_user"])){
+        // Test if login script
+        if (basename(get_topmost_script(), ".php") != "login") {
+            //$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            // Go to login page
+            header("location: login.php");
+            exit;
+        }
     }
-}
+*/
 
 class Page_Renderer {
 
     private $page_title = "UNTITLED";
+
+    //Whether the page requires a user to be logged in to view its contents
+    private $require_login;
 
     //Variables that will store content to render on the page
     //Will only be rendered if not null
@@ -60,11 +65,18 @@ class Page_Renderer {
 
     // Archived: $php_filename
 
-    //Boolean variables that determine what page_components to render
-    //Will be rendered by default
 
     public function __construct() {
-        $this->render_header = $this->render_navbar = $this->render_sidebar = $this->render_scripts = true;
+        $this->render_header
+        = $this->render_navbar
+        = $this->render_sidebar
+        = $this->render_scripts
+        = $this->require_login
+        = true;
+    }
+
+    public function noLoginRequired() {
+        $this->require_login = false;
     }
 
     public function setPageTitle($title) {
@@ -101,7 +113,12 @@ class Page_Renderer {
 
     public function renderPage() {
         $current_dir = __DIR__;
-    ?>
+
+        if(!isset($_SESSION["auth_user"]) && $this->require_login){
+            header("location: login.php");
+            exit;
+        }
+        ?>
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -135,6 +152,7 @@ class Page_Renderer {
         }
 
         ?>
+
         <div class="d-flex">
             <?php
             if ($this->render_sidebar) {
@@ -183,11 +201,12 @@ class Page_Renderer {
                 </div>
             </div>
         </div>
+
+
         <?php
         if ($this->render_scripts) {
             require_once $current_dir.'/../page-components/scripts.php'; // Get scripts
         }
-
         //Check whether $form has been initialised so we can add the relevant js files
         if ($this->form) {
             //Since form could be an array that holds multiple form objects

@@ -103,6 +103,7 @@ function renderLoginForm($errors = NULL)
     $page_render->setForm($form);
     $page_render->setPageTitle("BioBase Login");
     $page_render->disableSidebar();
+    $page_render->noLoginRequired();
     //$page_render->disableNavbar();
     $page_render->renderPage();
 }
