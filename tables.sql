@@ -9,23 +9,35 @@ Nice for reverse ER diagrams and crap :p
 
 CREATE DATABASE BioBase;
 
--- This has not been implemented yet
--- Will need to decide if projects references users and how they are shared...
+-- All the information we store about users
 CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(30) NOT NULL,
-  email VARCHAR(50) NOT NULL,
   passwd CHAR(128) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  institution VARCHAR(100),
   PRIMARY KEY (username)
 );
 
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS projects (
-  username VARCHAR(30) NOT NULL,
   project_name VARCHAR (150) NOT NULL,
   biorealm VARCHAR (100) DEFAULT NULL,
   country VARCHAR (100) DEFAULT NULL,
   region VARCHAR (100) DEFAULT NULL,
+  is_global BOOLEAN DEFAULT FALSE, -- determines whether any user can use this project's specimens in their own project
   PRIMARY KEY (project_name),
+  FOREIGN KEY (username) REFERENCES users(username)
+);
+
+-- This contains all the information relating to the project
+CREATE TABLE IF NOT EXISTS user_project_access (
+  project_name VARCHAR (150) NOT NULL,
+  username VARCHAR(30) NOT NULL,
+  access_level ENUM('visitor','collaborator','admin') NOT NULL,
+  PRIMARY KEY (project_name, username),
+  FOREIGN KEY (project_name) REFERENCES projects(project_name),
   FOREIGN KEY (username) REFERENCES users(username)
 );
 
@@ -61,7 +73,8 @@ CREATE TABLE IF NOT EXISTS samples (
 );
 
 CREATE TABLE IF NOT EXISTS specimen (
-  spec_id VARCHAR (45) PRIMARY KEY NOT NULL,
+  project_name VARCHAR (150) NOT NULL,
+  spec_id VARCHAR (45) NOT NULL,
   family VARCHAR (45) DEFAULT NULL,
   genus VARCHAR (45) DEFAULT NULL,
   species VARCHAR (45) DEFAULT NULL,
@@ -101,7 +114,10 @@ CREATE TABLE IF NOT EXISTS specimen (
   plant_function_type VARCHAR (200),
   morphology_notes VARCHAR (600),
   image_folder VARCHAR(200),
-  primary_image VARCHAR(100)
+  primary_image VARCHAR(100),
+  PRIMARY KEY (project_name,spec_id),
+  FOREIGN KEY (project_name) REFERENCES projects(project_name)
+
   -- tags VARCHAR (200) no tags at present
 );
 
