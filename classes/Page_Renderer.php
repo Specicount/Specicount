@@ -41,7 +41,7 @@ require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 session_start();
 // Test if the user is logged in
 /*
-    if(!isset($_SESSION["auth_user"])){
+    if(!isset($_SESSION["username"])){
         // Test if login script
         if (basename(get_topmost_script(), ".php") != "login") {
             //$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -114,7 +114,7 @@ class Page_Renderer {
     public function renderPage() {
         $current_dir = __DIR__;
 
-        if(!isset($_SESSION["auth_user"]) && $this->require_login){
+        if(!isset($_SESSION["username"]) && $this->require_login){
             header("location: login.php");
             exit;
         }
