@@ -41,17 +41,19 @@ function getColumnNames($table_name) {
     foreach ($db->recordsArray() as $row) {
         $column_names[] = $row['COLUMN_NAME'];
     }
-
     return $column_names;
 }
 
-function printGETVariables($array) {
+// Takes an associative array of GET variables and their values and concatenates them for easy placement in URLs
+function getVariablesToString($array) {
+    $get_variables = "";
     foreach ($array as $key => $value) {
-        echo $key."=".$value;
+        $get_variables .= $key."=".$value;
         end($array); // Move internal array pointer to last element
         // If current key is the last key, then don't output & since there may be no more GET variables to append
         if ($key !== key($array)) {
-            echo "&";
+            $get_variables .= "&";
         }
     }
+    return $get_variables;
 }
