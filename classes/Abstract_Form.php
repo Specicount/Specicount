@@ -21,11 +21,10 @@ abstract class Abstract_Form {
 
     public abstract function getFormType(); //Should return a string, e.g. 'project', 'core', 'sample', etc
     public abstract function getTableName(); //Should return a string, e.g. 'projects', 'cores', 'samples', etc
-    public abstract function submit();
+    public abstract function submit($update, $filter);
+    public abstract function update($update, $filter);
     public abstract function delete();
-    public abstract function deleteMsgSuccess();
     public abstract function deleteMsgFail();
-    public abstract function initializeVariables();
 
     public function __construct() {
         $this->form_type = strtolower($this->getFormType()); //strtolower just in case of bad data
@@ -53,10 +52,30 @@ abstract class Abstract_Form {
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
+
+
+
+            //Get the primary keys of the given table
+            $sql =  "SELECT k.column_name".
+                "FROM information_schema.table_constraints t".
+                "JOIN information_schema.key_column_usage k".
+                "USING(constraint_name,table_schema,table_name)".
+                "WHERE t.constraint_type='PRIMARY KEY'".
+                "AND t.table_schema= '".constant(DBNAME)."'".
+                "AND t.table_name='".$this->table_name."'";
+            $db->query($sql);
+
+            // Create an array which stores the posted values of the primary keys to identify which row to update
+            foreach ($db->recordsArray() as $row) {
+                $primary_key = $row['column_name'];
+                $filter[$primary_key] = Mysql::SQLValue($_POST[$primary_key]);
+            }
+
+
             // If the delete button was pressed
             if ($_POST["submit-btn"] == "delete") {
                 // Call the form-specific delete function
-                $this->delete();
+                $this->delete($filter);
                 if ($db->error()) {
                     $msg = '<p class="alert alert-danger">'.$this->deleteMsgFail().'</p>' . '\n';
                 } else {
@@ -67,14 +86,16 @@ abstract class Abstract_Form {
             } else {
                 $validator = Form::validate($this->form_name);
 
+
                 if ($validator->hasErrors()) {
                     $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
+                // If posted form has been filled out correctly
                 } else {
 
                     // Get all the column names of the given table
                     $sql =  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS".
-                            "WHERE TABLE_SCHEMA = '".cconstant(DBNAME)."'".  // Constant defined in db-connect.php
-                            "AND TABLE_NAME = '".$this->table_name."'";
+                        "WHERE TABLE_SCHEMA = '".cconstant(DBNAME)."'".  // Constant defined in db-connect.php
+                        "AND TABLE_NAME = '".$this->table_name."'";
                     $db->query($sql);
 
                     // Create an array which stores the new values to update for each column
@@ -83,26 +104,10 @@ abstract class Abstract_Form {
                         $update[$column_name] = Mysql::SQLValue($_POST[$column_name]);
                     }
 
-                    //Get the primary keys of the given table
-                    $sql =  "SELECT k.column_name".
-                            "FROM information_schema.table_constraints t".
-                            "JOIN information_schema.key_column_usage k".
-                            "USING(constraint_name,table_schema,table_name)".
-                            "WHERE t.constraint_type='PRIMARY KEY'".
-                                "AND t.table_schema= '".constant(DBNAME)."'".
-                                "AND t.table_name='".$this->table_name."'";
-                    $db->query($sql);
-
-                    // Create an array which stores the submitted values of the primary keys to identify which row to update
-                    foreach ($db->recordsArray() as $row) {
-                        $primary_key = $row['column_name'];
-                        $filter[$primary_key] = $update[$primary_key];
-                    }
-
                     if ($_GET["edit"]) {
-                        $db->updateRows($this->table_name, $update, $filter);
+                        $this->update($update, $filter);
                     } else {
-                        $db->insertRow($this->table_name, $update);
+                        $this->submit($update, $filter);
                     }
 
                     if (!empty($db->error())) {
@@ -118,11 +123,11 @@ abstract class Abstract_Form {
         if ($_GET["edit"]) {
             //$primary_keys = array_values($db->recordsArray()[0]['column_name']);
             unset($_SESSION[$this->form_name]);
-            $core_id = trim($_GET["edit"]);
-            $db->selectRows($this->table_name, array("core_id" => Mysql::SQLValue($core_id), 'project_name' => Mysql::SQLValue($project)));
-            $core = $db->recordsArray()[0];
-            $_SESSION[$this->form_name]["core_id"] = $core["core_id"];
-            $_SESSION[$this->form_name]["core_description"] = $core["description"];
+            $db->selectRows($this->table_name, $filter);
+            $form_db_values = $db->recordsArray()[0];
+            foreach($form_db_values as $column_name => $value) {
+                $_SESSION[$this->form_name][$column_name] = $value;
+            }
         }
 
     }
