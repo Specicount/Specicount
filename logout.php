@@ -6,9 +6,9 @@
  * Time: 2:49 PM
  */
 session_start();
-if (isset($_SESSION['auth_user']))
+if (isset($_SESSION['username']))
 {
-    unset($_SESSION['auth_user']);
+    unset($_SESSION['username']);
 }
 
 header("Location: login.php");

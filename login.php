@@ -37,7 +37,7 @@ function doLogin()
 {
     if ($_REQUEST['username'] && $_REQUEST['password']) {
         if (validLogin()) {
-            $_SESSION['auth_user'] = $_REQUEST['username'];
+            $_SESSION['username'] = $_REQUEST['username'];
         }
     }
 }
