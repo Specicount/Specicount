@@ -5,6 +5,10 @@ This probably won't need to be used since we can do a database
 backup and restore both the table structure and their
 respective data fairly easily.
 Nice for reverse ER diagrams and crap :p
+
+Important Note: Tables need to have their primary keys in order specificity for code to work properly
+E.g. the 'samples' table should have sample_id, core_id, project_id in that order since sample_id is the most
+specific thing that identifies a sample because it lives in a hierarchy of project->core->sample
  */
 
 CREATE DATABASE BioBase;
@@ -22,39 +26,39 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS projects (
-  project_name VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,
   biorealm VARCHAR (100) DEFAULT NULL,
   country VARCHAR (100) DEFAULT NULL,
   region VARCHAR (100) DEFAULT NULL,
   is_global BOOLEAN DEFAULT FALSE, -- determines whether any user can use this project's specimens in their own project
-  PRIMARY KEY (project_name)
+  PRIMARY KEY (project_id)
 );
 
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS user_project_access (
-  project_name VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,
   username VARCHAR(30) NOT NULL,
   access_level ENUM('visitor','collaborator','admin') NOT NULL,
-  PRIMARY KEY (project_name, username),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name),
+  PRIMARY KEY (project_id, username),
+  FOREIGN KEY (project_id) REFERENCES projects(project_id),
   FOREIGN KEY (username) REFERENCES users(username)
 );
 
 -- This contains all the information relating to the core
 CREATE TABLE IF NOT EXISTS cores (
   core_id VARCHAR (45) NOT NULL,
-  project_name VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,
   description VARCHAR (600),
   tags VARCHAR (200),
-  PRIMARY KEY (core_id, project_name),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name)
+  PRIMARY KEY (core_id, project_id),
+  FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
 
 -- This contains all the information relating to the sample
 CREATE TABLE IF NOT EXISTS samples (
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
-  project_name VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,
   analyst_first_name VARCHAR (60) NOT NULL,
   analyst_last_name VARCHAR (60) NOT NULL,
   start_date DATE NOT NULL,
@@ -66,14 +70,14 @@ CREATE TABLE IF NOT EXISTS samples (
   charcoal INT (11),
   last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
-  PRIMARY KEY (sample_id, core_id, project_name),
+  PRIMARY KEY (sample_id, core_id, project_id),
   FOREIGN KEY (core_id) REFERENCES cores(core_id),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
 
 CREATE TABLE IF NOT EXISTS specimen (
   spec_id VARCHAR (45) NOT NULL,
-  project_name VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,
   family VARCHAR (45) DEFAULT NULL,
   genus VARCHAR (45) DEFAULT NULL,
   species VARCHAR (45) DEFAULT NULL,
@@ -114,8 +118,8 @@ CREATE TABLE IF NOT EXISTS specimen (
   morphology_notes VARCHAR (600),
   image_folder VARCHAR(200),
   primary_image VARCHAR(100),
-  PRIMARY KEY (spec_id, project_name),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name)
+  PRIMARY KEY (spec_id, project_id),
+  FOREIGN KEY (project_id) REFERENCES projects(project_id)
 
   -- tags VARCHAR (200) no tags at present
 );
@@ -143,14 +147,14 @@ CREATE TABLE IF NOT EXISTS found_specimen (
   spec_id VARCHAR (45) NOT NULL,
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
-  project_name VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,
   `order` INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
-  PRIMARY KEY (spec_id, sample_id, core_id, project_name),
+  PRIMARY KEY (spec_id, sample_id, core_id, project_id),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (core_id) REFERENCES cores (core_id),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name),
+  FOREIGN KEY (project_id) REFERENCES projects(project_id),
   FOREIGN KEY (spec_id) REFERENCES specimen(spec_id)
 );
 
@@ -160,9 +164,9 @@ CREATE TABLE IF NOT EXISTS concentration_curve (
   unique_spec INT (11) NOT NULL, -- Y axis
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
-  project_name VARCHAR (150) NOT NULL,
-  PRIMARY KEY (unique_spec, sample_id, core_id, project_name),
+  project_id VARCHAR (150) NOT NULL,
+  PRIMARY KEY (unique_spec, sample_id, core_id, project_id),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (core_id) REFERENCES cores (core_id),
-  FOREIGN KEY (project_name) REFERENCES projects(project_name)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
