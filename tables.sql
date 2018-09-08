@@ -27,8 +27,7 @@ CREATE TABLE IF NOT EXISTS projects (
   country VARCHAR (100) DEFAULT NULL,
   region VARCHAR (100) DEFAULT NULL,
   is_global BOOLEAN DEFAULT FALSE, -- determines whether any user can use this project's specimens in their own project
-  PRIMARY KEY (project_name),
-  FOREIGN KEY (username) REFERENCES users(username)
+  PRIMARY KEY (project_name)
 );
 
 -- This contains all the information relating to the project
@@ -73,8 +72,8 @@ CREATE TABLE IF NOT EXISTS samples (
 );
 
 CREATE TABLE IF NOT EXISTS specimen (
-  project_name VARCHAR (150) NOT NULL,
   spec_id VARCHAR (45) NOT NULL,
+  project_name VARCHAR (150) NOT NULL,
   family VARCHAR (45) DEFAULT NULL,
   genus VARCHAR (45) DEFAULT NULL,
   species VARCHAR (45) DEFAULT NULL,
@@ -115,7 +114,7 @@ CREATE TABLE IF NOT EXISTS specimen (
   morphology_notes VARCHAR (600),
   image_folder VARCHAR(200),
   primary_image VARCHAR(100),
-  PRIMARY KEY (project_name,spec_id),
+  PRIMARY KEY (spec_id, project_name),
   FOREIGN KEY (project_name) REFERENCES projects(project_name)
 
   -- tags VARCHAR (200) no tags at present
@@ -141,10 +140,10 @@ CREATE TABLE IF NOT EXISTS tags (
 -- This contains the amount of pollen found at the specific location.
 -- It also shows the date it was last found.
 CREATE TABLE IF NOT EXISTS found_specimen (
+  spec_id VARCHAR (45) NOT NULL,
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
   project_name VARCHAR (150) NOT NULL,
-  spec_id VARCHAR (45) NOT NULL,
   `order` INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
