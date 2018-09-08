@@ -44,3 +44,14 @@ function getColumnNames($table_name) {
 
     return $column_names;
 }
+
+function printGETVariables($array) {
+    foreach ($array as $key => $value) {
+        echo $key."=".$value;
+        end($array); // Move internal array pointer to last element
+        // If current key is the last key, then don't output & since there may be no more GET variables to append
+        if ($key !== key($array)) {
+            echo "&";
+        }
+    }
+}
