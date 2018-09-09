@@ -28,7 +28,7 @@ class Sample_Form extends \classes\Abstract_Form {
         $db->deleteRows($this->getTableName(), $filter);
     }
 
-    public function submit($db, $update) {
+    public function create($db, $update) {
         $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
         $db->insertRow($this->getTableName(), $update);

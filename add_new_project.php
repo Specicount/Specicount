@@ -24,13 +24,6 @@ class Project_Form extends \classes\Abstract_Form {
         $db->deleteRows('projects', array("project_name" => Mysql::SQLValue($_POST["project_name"],text)));
     }
 
-    public function submit($db, $update) {
-        $db->insertRow($this->getTableName(), $update);
-    }
-
-    public function update($db, $update, $filter) {
-        $db->updateRows($this->getTableName(), $update, $filter);
-    }
 }
 
 

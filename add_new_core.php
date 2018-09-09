@@ -19,22 +19,6 @@ class Core_Form extends \classes\Abstract_Form {
     public function getTableName() {
         return "cores";
     }
-
-    public function delete($db, $filter) {
-        $db->deleteRows($this->getTableName(), $filter);
-    }
-
-    public function deleteMsgFail($db) {
-        return $db->error();
-    }
-
-    public function submit($db, $update) {
-        $db->insertRow($this->getTableName(), $update);
-    }
-
-    public function update($db, $update, $filter) {
-        $db->updateRows($this->getTableName(), $update, $filter);
-    }
 }
 
 

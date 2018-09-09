@@ -58,7 +58,6 @@ if (!empty($_GET["sample_id"])) {
                 $db = new Mysql();
                 $db->selectRows("projects", array("username"=>Mysql::SQLValue($_SESSION['username'])), "project_name", "project_name", true);
                 foreach ($db->recordsArray() as $project) {
-                    //print_r($project);
                     echo "<a href='#".$project["project_name"]."' data-toggle='collapse'><i class='fas fa-folder'></i>  ".$project["project_name"]."</a>
                             <ul id='".$project["project_name"]."' class='list-unstyled collapse'>
                             <li><a href='add_new_project.php?edit=true&project_name=".$project["project_name"]."'><i class='fa fa-edit'></i> Edit Project</a></li>
@@ -66,14 +65,12 @@ if (!empty($_GET["sample_id"])) {
 
                     $db->selectRows("cores", array("project_name" => Mysql::SQLValue($project["project_name"])), "core_id", "core_id", true);
                     foreach ($db->recordsArray() as $core) {
-                        //print_r($core);
                         echo "<a href='#".$core["core_id"]."' data-toggle='collapse'><i class='fa fa-database'></i> ".$core["core_id"]."</a>
                         <ul id='".$core["core_id"]."' class='list-unstyled collapse'>
                         <li><a href='add_new_core.php?edit=true&project_name=".$project["project_name"]."&core_id=".$core["core_id"]."'><i class='fa fa-edit'></i> Edit Core</a></li>
                         <li><a href='add_new_sample.php?project_name=".$project["project_name"]."&core_id=".$core["core_id"]."' data-parent='#".$core["core_id"]."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
 
                         $db->selectRows("samples", array("core_id" => Mysql::SQLValue($core["core_id"]), "project_name" => Mysql::SQLValue($project["project_name"])), "sample_id", "sample_id", true);
-                        print_r($db->recordsArray());
                         foreach ($db->recordsArray() as $sample) {
                             echo "<li><a href='sample.php?project_name=".$project["project_name"]."&core_id=".$core["core_id"]."&sample_id=".$sample["sample_id"]."'><i class='fa fa-flask'></i> ".$sample["sample_id"]."</a></li>";
                         }
