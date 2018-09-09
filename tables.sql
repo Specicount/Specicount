@@ -18,7 +18,7 @@ CREATE DATABASE BioBase;
 -- All the information we store about users
 CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(30) NOT NULL,
-  password CHAR(128) NOT NULL,
+  `password` CHAR(128) NOT NULL,
   email VARCHAR(50) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS found_specimens (
   core_id VARCHAR (45) NOT NULL,
   project_id VARCHAR (150) NOT NULL,
   `order` INT (11) DEFAULT NULL,
-  count INT (11) DEFAULT 0,
+  `count` INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
   PRIMARY KEY (specimen_id, sample_id, core_id, project_id),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id) ON DELETE CASCADE ON UPDATE CASCADE,
