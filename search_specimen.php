@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
 
     if (isset($_POST["add-to-sample"])) {
         $specimen = trim(base64_decode(str_replace("-", "=", $_POST["add-to-sample"])));
-        $update["spec_id"] = Mysql::SQLValue($specimen);
+        $update["specimen_id"] = Mysql::SQLValue($specimen);
         $update["sample_id"] = Mysql::SQLValue($sample);
         $update["core_id"] = Mysql::SQLValue($core);
         $update["project_id"] = Mysql::SQLValue($project);
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
         $db->insertRow('found_specimen', $update);
         if (!empty($db->error())) {
             if (stripos($db->error(), "Duplicate") !== false) {
-                $msg = '<p class="alert alert-danger">Specimen: '.$update["spec_id"].' has already added to the sample</p>' . "\n";
+                $msg = '<p class="alert alert-danger">Specimen: '.$update["specimen_id"].' has already added to the sample</p>' . "\n";
             } else {
                 $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
             }
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
             $unique_spec = $db->recordsArray()[0]["amount"];
             $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
             $db->insertRow('concentration_curve', $update_curve);
-            $msg = '<p class="alert alert-success">Successfully added: '.$update["spec_id"].' to the sample !</p>' . " \n";
+            $msg = '<p class="alert alert-success">Successfully added: '.$update["specimen_id"].' to the sample !</p>' . " \n";
         }
     }
 
@@ -113,21 +113,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($results)) {
         $form->addHtml('<div class="square-grid">');
         foreach ($results as $specimen) {
-            $specimen_name = $specimen["spec_id"];
-            $specimen["spec_id"] = str_replace("=", "-", trim(base64_encode($specimen["spec_id"])));
+            $specimen_name = $specimen["specimen_id"];
+            $specimen["specimen_id"] = str_replace("=", "-", trim(base64_encode($specimen["specimen_id"])));
             $image = $specimen["image_folder"].$specimen["primary_image"];
-            $form->addHtml('<div id="'.$specimen["spec_id"].'" class="specimen-container cell"');
+            $form->addHtml('<div id="'.$specimen["specimen_id"].'" class="specimen-container cell"');
             if (is_file($image)) {
                 $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen_name.'/'.$specimen["primary_image"].'\');"');
             }
             $form->addHtml('>');
-            $form->addHtml('<div id="'.$specimen["spec_id"].'_counter" class="counter"><p id="'.$specimen["spec_id"].'_counter_text">ID: ' . $specimen_name . '</p></div>');
-            $form->addHtml('<div id="'.$specimen["spec_id"].'_overlay" class="overlay">');
+            $form->addHtml('<div id="'.$specimen["specimen_id"].'_counter" class="counter"><p id="'.$specimen["specimen_id"].'_counter_text">ID: ' . $specimen_name . '</p></div>');
+            $form->addHtml('<div id="'.$specimen["specimen_id"].'_overlay" class="overlay">');
             $form->addHtml('<text>ID: ' . $specimen_name . '</text>');
-            $form->addHtml('<a href="add_new_specimen.php?edit=true&project='.$project.'&core='.$core.'&sample='.$sample.'&spec_id='.$specimen_name.'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
-            $form->addHtml('<a href="specimen_details.php?spec_id='.$specimen_name.'" target="_blank"><i class="fa fa-info-circle del-btn"></i></a>');
-            $form->addHtml('<a href="#"><span><i id="'.$specimen["spec_id"].'_close" class="fas fa-window-close close-btn"></i></span></a>');
-            $form->addBtn('submit', 'add-to-sample', $specimen["spec_id"], 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button add-btn, data-style=zoom-in');
+            $form->addHtml('<a href="add_new_specimen.php?edit=true&project='.$project.'&core='.$core.'&sample='.$sample.'&specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
+            $form->addHtml('<a href="specimen_details.php?specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-info-circle del-btn"></i></a>');
+            $form->addHtml('<a href="#"><span><i id="'.$specimen["specimen_id"].'_close" class="fas fa-window-close close-btn"></i></span></a>');
+            $form->addBtn('submit', 'add-to-sample', $specimen["specimen_id"], 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button add-btn, data-style=zoom-in');
             $form->addHtml('</div>');
             $form->addHtml('</div>');
         }

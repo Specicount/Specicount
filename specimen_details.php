@@ -19,10 +19,10 @@ use phpformbuilder\database\Mysql;
 
 require_once "classes/Page_Renderer.php";
 
-$spec_id = $_GET["spec_id"];
+$specimen_id = $_GET["specimen_id"];
 
 # Specimen details
-$names["spec_id"] = "Specimen ID";
+$names["specimen_id"] = "Specimen ID";
 $names["family"] = "Family";
 $names["genus"] = "Genus";
 $names["species"] = "Species";
@@ -63,11 +63,11 @@ $names["morphology_notes"] = "Morphology Notes";
 
 $db = new Mysql();
 
-$db->selectRows('specimen', array('spec_id' => Mysql::SQLValue($spec_id)), null, null, true, 1);
+$db->selectRows('specimen', array('specimen_id' => Mysql::SQLValue($specimen_id)), null, null, true, 1);
 $specimen = $db->recordsArray()[0];
 
 $output = "
-<h1>Specimen: <?= $spec_id?></h1>
+<h1>Specimen: <?= $specimen_id?></h1>
 <table class=\"table table-bordered\">
     <thead><tr><td style=\"font-weight: bold\">Type</td><td style=\"font-weight: bold\">Value</td></tr></thead>";
 foreach ($names as $column => $value) {
@@ -82,7 +82,7 @@ foreach ($dir as $fileinfo) {
     if (!$fileinfo->isDot()) {
         $image = $fileinfo->getFilename();
         if ($image != "thumbnail") {
-            $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["spec_id"] . '/' . $image . '"><br />';
+            $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["specimen_id"] . '/' . $image . '"><br />';
         }
     }
 }

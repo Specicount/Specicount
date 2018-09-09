@@ -46,12 +46,12 @@ class Specimen_Form extends \classes\Abstract_Form {
     }
 
     public function delete($db, $filter) {
-        $filter = array('spec_id' => Mysql::SQLValue($_POST["spec_id"], "text"));
+        $filter = array('specimen_id' => Mysql::SQLValue($_POST["specimen_id"], "text"));
         $db->deleteRows($this->getTableName(), $filter);
         $db->deleteRows("found_specimen", $filter);
         if (!$db->error()) {
             global $image_folder;
-            delete_files($image_folder . $_POST["spec_id"]. "/");
+            delete_files($image_folder . $_POST["specimen_id"]. "/");
         }
     }
 
@@ -60,7 +60,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         $this->printDbErrors($db);
         // If specimen added from sample page then also add the specimen to the sample
         if ($_GET['sample_id']) {
-            $update_found["spec_id"] = $update["spec_id"];
+            $update_found["specimen_id"] = $update["specimen_id"];
             $update_found["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
             $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
             $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
@@ -90,7 +90,7 @@ class Specimen_Form extends \classes\Abstract_Form {
     public function getUpdateArray() {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
-        $update["spec_id"] = Mysql::SQLValue($_POST["spec_id"], "text");
+        $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
         $update["species"] = Mysql::SQLValue($_POST["species"], "text");
@@ -131,14 +131,14 @@ class Specimen_Form extends \classes\Abstract_Form {
         $update["morphology_notes"] = Mysql::SQLValue($_POST["morphology_notes"], "text");
 
         if (!empty($_POST["uploaded-images"])) {
-            $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["spec_id"] . "/", "text");
-            mkdir($image_folder . $_POST["spec_id"]);
+            $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["specimen_id"] . "/", "text");
+            mkdir($image_folder . $_POST["specimen_id"]);
             $uploaded_images = json_decode($_POST["uploaded-images"], true);
             $update["primary_image"] = Mysql::SQLValue(extract_name($uploaded_images[0]["file"]), "text");
             foreach ($uploaded_images as $image) {
                 $image = extract_name($image["file"]);
-                //echo $image_folder.$image, $image_folder.$_POST["spec_id"]."/".$image;
-                rename($image_folder . $image, $image_folder . $_POST["spec_id"] . "/" . $image);
+                //echo $image_folder.$image, $image_folder.$_POST["specimen_id"]."/".$image;
+                rename($image_folder . $image, $image_folder . $_POST["specimen_id"] . "/" . $image);
             }
         }
 
@@ -147,7 +147,7 @@ class Specimen_Form extends \classes\Abstract_Form {
 
     public function fillFormWithDbValues($record_array) {
         $specimen = $record_array;
-        $_SESSION[$this->getFormName()]["spec_id"] = $specimen["spec_id"];
+        $_SESSION[$this->getFormName()]["specimen_id"] = $specimen["specimen_id"];
         $_SESSION[$this->getFormName()]["family"] = $specimen["family"];
         $_SESSION[$this->getFormName()]["genus"] = $specimen["genus"];
         $_SESSION[$this->getFormName()]["species"] = $specimen["species"];
@@ -209,12 +209,12 @@ if ($_GET['sample_id']) {
 # Code ID and Family
 $form->startFieldset('General');
 $form->setCols(4, 4);
-$form->groupInputs('spec_id', 'family');
-$form->addHelper('Specimen ID', 'spec_id');
+$form->groupInputs('specimen_id', 'family');
+$form->addHelper('Specimen ID', 'specimen_id');
 if ($_GET["edit"]) {
-    $form->addInput('text', 'spec_id', '', 'Descriptors ', 'required, readonly="readonly"');
+    $form->addInput('text', 'specimen_id', '', 'Descriptors ', 'required, readonly="readonly"');
 } else {
-    $form->addInput('text', 'spec_id', '', 'Descriptors ', 'required'); // Need to have warning for code !!!!!!!!!
+    $form->addInput('text', 'specimen_id', '', 'Descriptors ', 'required'); // Need to have warning for code !!!!!!!!!
 }
 $form->setCols(0, 4);
 $form->addHelper('Family', 'family');
@@ -621,7 +621,7 @@ $fileUpload_config = array(
 
 // NOT WORKING ATM
 if ($_GET["edit"]) {
-    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["spec_id"].'/';
+    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"].'/';
     if (file_exists($current_file_path)) {
         $dir = new DirectoryIterator($current_file_path);
         foreach ($dir as $fileinfo) {
@@ -635,7 +635,7 @@ if ($_GET["edit"]) {
                             'name' => $current_file_name,
                             'size' => $current_file_size,
                             'type' => $current_file_type,
-                            'file' => '/phpformbuilder/images/uploads/' . $_GET["spec_id"] . "/" . $current_file_name, // url of the file
+                            'file' => '/phpformbuilder/images/uploads/' . $_GET["specimen_id"] . "/" . $current_file_name, // url of the file
                             'data' => array(
                                 'listProps' => array(
                                     'file' => $current_file_name
@@ -651,7 +651,7 @@ if ($_GET["edit"]) {
         $fileUpload_config = array(
             'xml' => 'image-upload', // the thumbs directories must exist
             'uploader' => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php
-            'upload_dir' => '../../../../images/uploads/' . $_GET["spec_id"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
+            'upload_dir' => '../../../../images/uploads/' . $_GET["specimen_id"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
             'limit' => 10, // max. number of files
             'file_max_size' => 3, // each file's maximal size in MB {null, Number}
             'extensions' => ['jpg', 'jpeg', 'png'],
