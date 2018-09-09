@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
 
-        $db->query("SELECT * FROM found_specimen JOIN specimen USING(specimen_id) WHERE sample_id = ".Mysql::SQLValue($sample)." ORDER BY `count` DESC");
+        $db->query("SELECT * FROM found_specimens JOIN specimens USING(specimen_id) WHERE sample_id = ".Mysql::SQLValue($sample)." ORDER BY `count` DESC");
         $specimen_data = $db->recordsArray();
 
         // Create a PHP output stream for the user to download
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
         exit;
     } else if ($_POST['delete-from-sample']) {
         $specimen = trim(base64_decode(str_replace("-", "=", $_POST['delete-from-sample'])));
-        $db->deleteRows('found_specimen', array('specimen_id' => Mysql::SQLValue($specimen)));
+        $db->deleteRows('found_specimens', array('specimen_id' => Mysql::SQLValue($specimen)));
         if($db->error()) {
             $msg = '<p class="alert alert-danger">'.$specimen.' could not be deleted !</p>' . " \n";
         } else {
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
                     $update["last_update"] = "'" . $date . "'";
                     $update["count"] = Mysql::SQLValue($count);
 
-                    $db->updateRows('found_specimen', $update, array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core),
+                    $db->updateRows('found_specimens', $update, array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core),
                         'project_id' => Mysql::SQLValue($project), "specimen_id" => Mysql::SQLValue($specimen)));
                     if (!empty($db->error())) $error = true;
                 } else {
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
             }
 
             if ($_POST["submit-btn"] == "reorder") {
-                $sql = "UPDATE BioBase.found_specimen SET `order` = `count` WHERE sample_id = " . Mysql::SQLValue($sample);
+                $sql = "UPDATE BioBase.found_specimens SET `order` = `count` WHERE sample_id = " . Mysql::SQLValue($sample);
                 $db->query($sql);
                 if (!empty($db->error())) $error = true;
             }
@@ -164,7 +164,7 @@ $form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
 $form->addHtml("</div></div>");
 
 
-$db->query("SELECT * FROM found_specimen JOIN specimen USING(specimen_id) WHERE sample_id=".Mysql::SQLValue($sample)." ORDER BY `order` DESC");
+$db->query("SELECT * FROM found_specimens JOIN specimens USING(specimen_id) WHERE sample_id=".Mysql::SQLValue($sample)." ORDER BY `order` DESC");
 $specs = array();
 $specs = $db->recordsArray();
 

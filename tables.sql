@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS tags (
 
 -- This contains the amount of pollen found at the specific location.
 -- It also shows the date it was last found.
-CREATE TABLE IF NOT EXISTS found_specimens (
+CREATE TABLE IF NOT EXISTS found_specimenss (
   specimen_id VARCHAR (45) NOT NULL,
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,

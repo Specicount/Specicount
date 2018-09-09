@@ -48,7 +48,7 @@ class Specimen_Form extends \classes\Abstract_Form {
     public function delete($db, $filter) {
         $filter = array('specimen_id' => Mysql::SQLValue($_POST["specimen_id"], "text"));
         $db->deleteRows($this->getTableName(), $filter);
-        $db->deleteRows("found_specimen", $filter);
+        $db->deleteRows("found_specimens", $filter);
         if (!$db->error()) {
             global $image_folder;
             delete_files($image_folder . $_POST["specimen_id"]. "/");
@@ -66,7 +66,7 @@ class Specimen_Form extends \classes\Abstract_Form {
             $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
             $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
             $update_found["count"] = Mysql::SQLValue(1);
-            $db->insertRow('found_specimen', $update_found);
+            $db->insertRow('found_specimens', $update_found);
             $this->printDbErrors($db);
             unset($_SESSION['add-new-specimen']);
 
@@ -75,10 +75,10 @@ class Specimen_Form extends \classes\Abstract_Form {
             $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
             $update_curve["core_id"] = Mysql::SQLValue($_GET['core_id']);
             $update_curve["project_id"] = Mysql::SQLValue($_GET['project_id']);
-            $db->query("SELECT SUM(count) as total FROM found_specimen WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
+            $db->query("SELECT SUM(count) as total FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
             $tally_count = $db->recordsArray()[0]["total"];
             $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
-            $db->query("SELECT COUNT(*) as amount FROM found_specimen WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
+            $db->query("SELECT COUNT(*) as amount FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
             $unique_spec = $db->recordsArray()[0]["amount"];
             $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
             $db->insertRow('concentration_curve', $update_curve);
@@ -91,6 +91,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
         $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");
+        $update["specimen_id"] = Mysql::SQLValue($_GET["specimen_id"], "text");
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
         $update["species"] = Mysql::SQLValue($_POST["species"], "text");
