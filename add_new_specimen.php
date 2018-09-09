@@ -32,7 +32,13 @@ function extract_name($file) {
     return empty($file_array[1]) ? $file_array[0] : $file_array[1];
 }
 
+
+
 $image_folder = $_SERVER['DOCUMENT_ROOT']."/phpformbuilder/images/uploads/";
+if (!file_exists($image_folder)) {
+    mkdir($image_folder);
+}
+
 
 class Specimen_Form extends \classes\Abstract_Form {
     public function getFormType() {
@@ -49,6 +55,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         $db->deleteRows("found_specimen", $filter);
         if (!$db->error()) {
             global $image_folder;
+            print_r($image_folder);
             delete_files($image_folder . $_POST["spec_id"]. "/");
         }
     }
@@ -619,7 +626,7 @@ $fileUpload_config = array(
 
 // NOT WORKING ATM
 if ($_GET["edit"]) {
-    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["edit"].'/';
+    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["spec_id"].'/';
     if (file_exists($current_file_path)) {
         $dir = new DirectoryIterator($current_file_path);
         foreach ($dir as $fileinfo) {
@@ -633,7 +640,7 @@ if ($_GET["edit"]) {
                             'name' => $current_file_name,
                             'size' => $current_file_size,
                             'type' => $current_file_type,
-                            'file' => '/phpformbuilder/images/uploads/' . $_GET["edit"] . "/" . $current_file_name, // url of the file
+                            'file' => '/phpformbuilder/images/uploads/' . $_GET["spec_id"] . "/" . $current_file_name, // url of the file
                             'data' => array(
                                 'listProps' => array(
                                     'file' => $current_file_name
@@ -649,7 +656,7 @@ if ($_GET["edit"]) {
         $fileUpload_config = array(
             'xml' => 'image-upload', // the thumbs directories must exist
             'uploader' => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php
-            'upload_dir' => '../../../../images/uploads/' . $_GET["edit"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
+            'upload_dir' => '../../../../images/uploads/' . $_GET["spec_id"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
             'limit' => 10, // max. number of files
             'file_max_size' => 3, // each file's maximal size in MB {null, Number}
             'extensions' => ['jpg', 'jpeg', 'png'],
