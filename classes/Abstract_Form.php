@@ -24,11 +24,10 @@ abstract class Abstract_Form {
     private $table_name;
 
     public abstract function getFormType(); //Should return a string, e.g. 'project', 'core', 'sample', etc
-    public abstract function getTableName(); //Should return a string, e.g. 'projects', 'cores', 'samples', etc
 
     public function __construct() {
         $this->form_type = strtolower($this->getFormType()); //strtolower just in case of bad data
-        $this->table_name = $this->getTableName();
+        $this->table_name = $this->form_type . 's';
 
         if ($_GET["edit"]) {
             $id = end($_GET); // Last element of array is always the most specific id

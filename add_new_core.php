@@ -15,10 +15,6 @@ class Core_Form extends \classes\Abstract_Form {
     public function getFormType() {
         return "core";
     }
-
-    public function getTableName() {
-        return "cores";
-    }
 }
 
 

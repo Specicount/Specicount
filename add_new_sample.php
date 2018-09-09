@@ -16,10 +16,6 @@ class Sample_Form extends \classes\Abstract_Form {
         return "sample";
     }
 
-    public function getTableName() {
-        return "samples";
-    }
-
     public function delete($db, $filter) {
         $db->deleteRows("concentration_curve", $filter);
         $this->printDbErrors($db);

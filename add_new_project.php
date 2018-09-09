@@ -16,10 +16,6 @@ class Project_Form extends \classes\Abstract_Form {
         return "project";
     }
 
-    public function getTableName() {
-        return "projects";
-    }
-
     public function delete($db, $filter) {
         $db->deleteRows('projects', array("project_name" => Mysql::SQLValue($_POST["project_name"],text)));
     }

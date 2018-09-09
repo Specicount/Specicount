@@ -45,10 +45,6 @@ class Specimen_Form extends \classes\Abstract_Form {
         return "specimen";
     }
 
-    public function getTableName() {
-        return "specimen";
-    }
-
     public function delete($db, $filter) {
         $filter = array('spec_id' => Mysql::SQLValue($_POST["spec_id"], "text"));
         $db->deleteRows($this->getTableName(), $filter);
