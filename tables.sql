@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS samples (
   FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
 
-CREATE TABLE IF NOT EXISTS specimen (
+CREATE TABLE IF NOT EXISTS specimens (
   specimen_id VARCHAR (45) NOT NULL,
   project_id VARCHAR (150) NOT NULL,
   family VARCHAR (45) DEFAULT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS tags (
 
 -- This contains the amount of pollen found at the specific location.
 -- It also shows the date it was last found.
-CREATE TABLE IF NOT EXISTS found_specimen (
+CREATE TABLE IF NOT EXISTS found_specimens (
   specimen_id VARCHAR (45) NOT NULL,
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS found_specimen (
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (core_id) REFERENCES cores (core_id),
   FOREIGN KEY (project_id) REFERENCES projects(project_id),
-  FOREIGN KEY (specimen_id) REFERENCES specimen(specimen_id)
+  FOREIGN KEY (specimen_id) REFERENCES specimens(specimen_id)
 );
 
 -- This contains the data for the concentration curve
