@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
     $search = array_map("trim", $search);
     $search = array_unique($search);
 
-    $columns = $db->getColumnNames("specimen");
+    $columns = $db->getColumnNames("specimens");
     $col = array();
     foreach ($search as $s) {
         if (!empty($s)) {
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
             $col[] = "(" . implode(" OR ", $query) . ")";
         }
     }
-    $sql = "SELECT * FROM BioBase.specimen WHERE " . implode(" AND ", $col);
+    $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col);
     //echo $sql;
     $db->query($sql);
     if ($db->rowCount() > 0) {
