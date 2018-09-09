@@ -32,8 +32,6 @@ if (!empty($_GET["sample_id"])) {
         <ul class="list-unstyled">
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>
-            <li><a href="add_new_specimen.php"><i class="fa fa-plus"></i> Add New Specimen</a></li>
-
             <li>
                 <?php
 
@@ -45,6 +43,7 @@ if (!empty($_GET["sample_id"])) {
                     echo "<a href='#".$project["project_id"]."' data-toggle='collapse'><i class='fas fa-folder'></i>  ".$project["project_id"]."</a>
                             <ul id='".$project["project_id"]."' class='list-unstyled collapse'>
                             <li><a href='add_new_project.php?edit=true&project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit Project</a></li>
+                            <li><a href='add_new_specimen.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
                             <li><a href='add_new_core.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Core</a></li>";
 
                     $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project["project_id"])), "core_id", "core_id", true);
