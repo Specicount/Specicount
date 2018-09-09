@@ -38,8 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('register') === true
             $update['first_name'] = Mysql::SQLValue($_POST["first_name"]);
             $update['last_name'] = Mysql::SQLValue($_POST["last_name"]);
             $update["email"] = Mysql::SQLValue($_POST["email"]);
+            $update['institution'] = Mysql::SQLValue($_POST["institution"]);
             // Create encrypted password
-            $update["passwd"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
+            $update["`password`"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
 
 
             $db->insertRow('users', $update);
@@ -108,4 +109,5 @@ $form->addPlugin('formvalidation', '#register', 'bs4');
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle("Register");
+$page_render->noLoginRequired();
 $page_render->renderPage();

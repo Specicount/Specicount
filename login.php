@@ -72,7 +72,7 @@ function validLogin()
     $user = $db->recordsArray()[0];
 
     // Password is hashed
-    if (password_verify($_REQUEST['password'], $user["passwd"])) {
+    if (password_verify($_REQUEST['password'], $user["password"])) {
         return TRUE;
     }
     return FALSE;

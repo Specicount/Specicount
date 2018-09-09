@@ -123,7 +123,7 @@ abstract class Abstract_Form {
             if ($success_msg == "Success!") {
                 $msg .= '<p class="alert alert-success">'.$success_msg.'</br>'.$db->getLastSql().'</p>';
             } else {
-                $msg .= '<p class="alert alert-success">'.$success_msg.'</p>';
+                $msg = '<p class="alert alert-success">'.$success_msg.'</p>';
             }
 
             if ($redirect) {

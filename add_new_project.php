@@ -10,7 +10,6 @@ use phpformbuilder\database\Mysql;
 require_once "classes/Page_Renderer.php";
 require_once "classes/Abstract_Form.php";
 
-
 class Project_Form extends \classes\Abstract_Form {
     public function getFormType() {
         return "project";
@@ -24,11 +23,6 @@ class Project_Form extends \classes\Abstract_Form {
         $update_access['access_level'] = Mysql::SQLValue('admin');
         $db->insertRow('user_project_access', $update_access);
     }
-
-    public function delete($db, $filter) {
-        $db->deleteRows('projects', array("project_id" => Mysql::SQLValue($_POST["project_id"],text)));
-    }
-
 }
 
 $project_form = new Project_Form();
