@@ -26,6 +26,7 @@ abstract class Abstract_Form {
     public abstract function getFormType(); //Should return a string, e.g. 'project', 'core', 'sample', etc
 
     public function __construct() {
+
         $this->form_type = strtolower($this->getFormType()); //strtolower just in case of bad data
         $this->table_name = $this->form_type . 's';
 
@@ -46,7 +47,6 @@ abstract class Abstract_Form {
             $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
         }
 
-
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
             // If the delete button was pressed
@@ -57,10 +57,10 @@ abstract class Abstract_Form {
             } else {
                 // Update or insert new rows into db
                 $validator = Form::validate($this->form_name);
-
                 if ($validator->hasErrors()) {
                     $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
                 } else {
+
                     // If posted form has been filled out correctly
 
                     $update = $this->getUpdateArray();
@@ -107,6 +107,7 @@ abstract class Abstract_Form {
 
     // Prints any database errors to the user
     // Usually executed after any calls to the database
+    // If no success or fail message given then it will print the debug backtrace
     // Optional redirect to index.php on db success
     public function printDbErrors($db, $success_msg="Success!", $fail_msg=null, $redirect=false) {
         global $msg; // This variable is printed in the Page_Renderer class
@@ -119,7 +120,12 @@ abstract class Abstract_Form {
             }
             $msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
         } else {
-            $msg = '<p class="alert alert-success">'.$success_msg.'</p>';
+            if ($success_msg == "Success!") {
+                $msg .= '<p class="alert alert-success">'.$success_msg.'</br>'.$db->getLastSql().'</p>';
+            } else {
+                $msg .= '<p class="alert alert-success">'.$success_msg.'</p>';
+            }
+
             if ($redirect) {
                 header("Location: index.php");
             }
@@ -141,13 +147,15 @@ abstract class Abstract_Form {
         return $update;
     }
 
-
-
     public function getPageTitle() {
         return $this->page_title;
     }
 
     public function getFormName() {
         return $this->form_name;
+    }
+
+    public function getTableName() {
+        return $this->table_name;
     }
 }

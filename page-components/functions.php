@@ -20,14 +20,11 @@ function getPrimaryKeys($table_name) {
                 "AND t.table_schema='".constant('DBNAME')."' ".
                 "AND t.table_name='".$table_name."'";
     $db->query($sql);
-
     // Create an array which stores the posted values of the primary keys to identify which row to update
     foreach ($db->recordsArray() as $row) {
         $primary_keys[] = $row['column_name'];
     }
-
     return $primary_keys;
-
 }
 // Returns the column column names of the given table as an array of strings
 function getColumnNames($table_name) {

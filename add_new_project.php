@@ -16,13 +16,20 @@ class Project_Form extends \classes\Abstract_Form {
         return "project";
     }
 
+    public function create($db, $update) {
+        $db->insertRow($this->getTableName(), $update);
+        $this->printDbErrors($db);
+        $update_access['project_id'] = $update['project_id'];
+        $update_access['username'] = Mysql::SQLValue($_SESSION['username']);
+        $update_access['access_level'] = Mysql::SQLValue('admin');
+        $db->insertRow('user_project_access', $update_access);
+    }
+
     public function delete($db, $filter) {
-        $db->deleteRows('projects', array("project_name" => Mysql::SQLValue($_POST["project_name"],text)));
+        $db->deleteRows('projects', array("project_id" => Mysql::SQLValue($_POST["project_id"],text)));
     }
 
 }
-
-
 
 $project_form = new Project_Form();
 
@@ -35,13 +42,13 @@ $form = new Form($project_form->getFormName(), 'horizontal', 'novalidate', 'bs4'
 
 $form->startFieldset('Project Data');
 $form->setCols(6, 6);
-$form->groupInputs('project_name', 'biorealm');
+$form->groupInputs('project_id', 'biorealm');
 
-$form->addHelper('Project Name', 'project_name');
+$form->addHelper('Project Name', 'project_id');
 if ($_GET["edit"]) {
-    $form->addInput('text', 'project_name', '', '', 'required, readonly="readonly"');
+    $form->addInput('text', 'project_id', '', '', 'required, readonly="readonly"');
 } else {
-    $form->addInput('text', 'project_name', '', '', 'required'); // Need to have warning for code
+    $form->addInput('text', 'project_id', '', '', 'required'); // Need to have warning for code
 }
 $form->setCols(0, 6);
 

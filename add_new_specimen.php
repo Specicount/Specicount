@@ -51,7 +51,6 @@ class Specimen_Form extends \classes\Abstract_Form {
         $db->deleteRows("found_specimen", $filter);
         if (!$db->error()) {
             global $image_folder;
-            print_r($image_folder);
             delete_files($image_folder . $_POST["spec_id"]. "/");
         }
     }

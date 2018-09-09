@@ -16,7 +16,7 @@ CREATE DATABASE BioBase;
 -- All the information we store about users
 CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(30) NOT NULL,
-  passwd CHAR(128) NOT NULL,
+  password CHAR(128) NOT NULL,
   email VARCHAR(50) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS user_project_access (
   username VARCHAR(30) NOT NULL,
   access_level ENUM('visitor','collaborator','admin') NOT NULL,
   PRIMARY KEY (project_id, username),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id),
-  FOREIGN KEY (username) REFERENCES users(username)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- This contains all the information relating to the core
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS cores (
   description VARCHAR (600),
   tags VARCHAR (200),
   PRIMARY KEY (core_id, project_id),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- This contains all the information relating to the sample
@@ -71,8 +71,8 @@ CREATE TABLE IF NOT EXISTS samples (
   last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
   PRIMARY KEY (sample_id, core_id, project_id),
-  FOREIGN KEY (core_id) REFERENCES cores(core_id),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id)
+  FOREIGN KEY (core_id) REFERENCES cores(core_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS specimens (
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS specimens (
   image_folder VARCHAR(200),
   primary_image VARCHAR(100),
   PRIMARY KEY (specimen_id, project_id),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE
 
   -- tags VARCHAR (200) no tags at present
 );
@@ -152,10 +152,10 @@ CREATE TABLE IF NOT EXISTS found_specimens (
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
   PRIMARY KEY (specimen_id, sample_id, core_id, project_id),
-  FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
-  FOREIGN KEY (core_id) REFERENCES cores (core_id),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id),
-  FOREIGN KEY (specimen_id) REFERENCES specimens(specimen_id)
+  FOREIGN KEY (sample_id) REFERENCES samples (sample_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (core_id) REFERENCES cores (core_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (specimen_id) REFERENCES specimens(specimen_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- This contains the data for the concentration curve
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS concentration_curve (
   core_id VARCHAR (45) NOT NULL,
   project_id VARCHAR (150) NOT NULL,
   PRIMARY KEY (unique_spec, sample_id, core_id, project_id),
-  FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
-  FOREIGN KEY (core_id) REFERENCES cores (core_id),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id)
+  FOREIGN KEY (sample_id) REFERENCES samples (sample_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (core_id) REFERENCES cores (core_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

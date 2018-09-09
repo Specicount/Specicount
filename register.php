@@ -35,9 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('register') === true
     } else {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $update["username"] = Mysql::SQLValue($_POST["username"]);
+            $update['first_name'] = Mysql::SQLValue($_POST["first_name"]);
+            $update['last_name'] = Mysql::SQLValue($_POST["last_name"]);
             $update["email"] = Mysql::SQLValue($_POST["email"]);
             // Create encrypted password
             $update["passwd"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
+
 
             $db->insertRow('users', $update);
 
@@ -65,8 +68,17 @@ $form->setCols(0, 12);
 $form->addHelper('Username', 'username');
 $form->addInput('text', 'username', '', '', 'required');
 
+$form->addHelper('First Name', 'first_name');
+$form->addInput('text', 'first_name', '', '', 'required');
+
+$form->addHelper('Last Name', 'last_name');
+$form->addInput('text', 'last_name', '', '', 'required');
+
 $form->addHelper('Email', 'email');
 $form->addInput('email', 'email', '', '', 'required, placeholder=Email');
+
+$form->addHelper('Your Institution/Company', 'institution');
+$form->addInput('text', 'institution', '', '');
 
 $form->addHelper('Password', 'password');
 $form->addInput('password', 'password', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
