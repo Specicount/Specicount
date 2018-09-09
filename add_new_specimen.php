@@ -63,7 +63,7 @@ class Specimen_Form extends \classes\Abstract_Form {
             $update_found["spec_id"] = $update["spec_id"];
             $update_found["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
             $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
-            $update_found["project_name"] = Mysql::SQLValue($_GET['project_name']);
+            $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
             $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
             $update_found["count"] = Mysql::SQLValue(1);
             $db->insertRow('found_specimen', $update_found);
@@ -74,11 +74,11 @@ class Specimen_Form extends \classes\Abstract_Form {
             # Do concentration curve
             $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
             $update_curve["core_id"] = Mysql::SQLValue($_GET['core_id']);
-            $update_curve["project_name"] = Mysql::SQLValue($_GET['project_name']);
-            $db->query("SELECT SUM(count) as total FROM found_specimen WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_name = " . $update_curve["project_name"]);
+            $update_curve["project_id"] = Mysql::SQLValue($_GET['project_id']);
+            $db->query("SELECT SUM(count) as total FROM found_specimen WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
             $tally_count = $db->recordsArray()[0]["total"];
             $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
-            $db->query("SELECT COUNT(*) as amount FROM found_specimen WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_name = " . $update_curve["project_name"]);
+            $db->query("SELECT COUNT(*) as amount FROM found_specimen WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
             $unique_spec = $db->recordsArray()[0]["amount"];
             $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
             $db->insertRow('concentration_curve', $update_curve);

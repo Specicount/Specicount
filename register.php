@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('register') === true
             $update["email"] = Mysql::SQLValue($_POST["email"]);
             $update['institution'] = Mysql::SQLValue($_POST["institution"]);
             // Create encrypted password
-            $update["`password`"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
+            $update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
 
 
             $db->insertRow('users', $update);

@@ -8,7 +8,7 @@
 
 use phpformbuilder\database\Mysql;
 
-$db->selectRows("concentration_curve", array("sample_id" => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), "project_name" => Mysql::SQLValue($project)));
+$db->selectRows("concentration_curve", array("sample_id" => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), "project_id" => Mysql::SQLValue($project)));
 
 $result = array();
 if (!$db->error()) {
