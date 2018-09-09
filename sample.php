@@ -187,7 +187,7 @@ if($db->rowCount() > 0) {
         $form->addHtml('<div id="'.$specimen["specimen_id"].'_counter" class="counter"><p id="'.$specimen["specimen_id"].'_counter_text">' . $specimen["count"] . '</p></div>');
         $form->addHtml('<div id="'.$specimen["specimen_id"].'_overlay" class="overlay">');
         $form->addHtml('<text>ID: ' . $specimen_name . '</text>');
-        $form->addHtml('<a href="add_new_specimen.php?edit=true&project='.$project.'&core='.$core.'&sample='.$sample.'&specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
+        $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$project.'&core_id='.$core.'&sample_id='.$sample.'&specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
         $form->addHtml('<a href="specimen_details.php?specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-info-circle info-btn"></i></a>');
         $form->addHtml('<a href="#"><span><i id="'.$specimen["specimen_id"].'_close" class="fas fa-window-close close-btn"></i></span></a>');
         $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success add-btn, data-style=zoom-in, onclick=add(\''.$specimen["specimen_id"].'\');updateCounter(\''.$specimen["specimen_id"].'\')');

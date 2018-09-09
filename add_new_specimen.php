@@ -91,7 +91,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
         $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");
-        $update["specimen_id"] = Mysql::SQLValue($_GET["specimen_id"], "text");
+        $update["project_id"] = Mysql::SQLValue($_GET["project_id"], "text");
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
         $update["species"] = Mysql::SQLValue($_POST["species"], "text");

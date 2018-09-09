@@ -63,7 +63,7 @@ $names["morphology_notes"] = "Morphology Notes";
 
 $db = new Mysql();
 
-$db->selectRows('specimen', array('specimen_id' => Mysql::SQLValue($specimen_id)), null, null, true, 1);
+$db->selectRows('specimens', array('specimen_id' => Mysql::SQLValue($specimen_id)), null, null, true, 1);
 $specimen = $db->recordsArray()[0];
 
 $output = "
