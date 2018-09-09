@@ -8,72 +8,43 @@ use phpformbuilder\database\Mysql;
 ============================================= */
 
 require_once "classes/Page_Renderer.php";
+require_once "classes/Abstract_Form.php";
 
-$project = $_GET["project"];
 
-$db = new Mysql();
+class Core_Form extends \classes\Abstract_Form {
+    public function getFormType() {
+        return "core";
+    }
 
-if ($_GET["edit"]) {
-    $form_name = 'add-new-core-edit';
-    $name = "Edit Core ".$_GET["edit"];
-} else {
-    $form_name = 'add-new-core';
-    $name = "Add New Core";
-}
+    public function getTableName() {
+        return "cores";
+    }
 
-/* =============================================
-    validation if posted
-============================================= */
+    public function delete($db, $filter) {
+        $db->deleteRows($this->getTableName(), $filter);
+    }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
-    if ($_POST["submit-btn"] == "delete") {
-        # Delete from both cores table
-        $db->deleteRows('cores', array("core_id" => Mysql::SQLValue($_POST["core_id"], "text")));
-        if ($db->error()) {
-            $msg = '<p class="alert alert-danger">Could not delete core, please make sure all samples are deleted inside</p>' . "\n";
-        } else {
-            $msg = '<p class="alert alert-success">Core deleted successfully !</p>' . " \n";
-            header("Location: index.php");
-        }
-    } else {
-        $validator = Form::validate($form_name);
+    public function deleteMsgFail($db) {
+        return $db->error();
+    }
 
-        if ($validator->hasErrors()) {
-            $_SESSION['errors'][$form_name] = $validator->getAllErrors();
-        } else {
-            $update["core_id"] = Mysql::SQLValue($_POST["core_id"]);
-            $update["project_name"] = Mysql::SQLValue($project);
-            $update["description"] = Mysql::SQLValue($_POST["core_description"]);
+    public function submit($db, $update) {
+        $db->insertRow($this->getTableName(), $update);
+    }
 
-            if ($_GET["edit"]) {
-                $db->updateRows('cores', $update, array("core_id" => $update["core_id"], 'project_name' => $update["project_name"]));
-            } else {
-                $db->insertRow('cores', $update);
-            }
-
-            if (!empty($db->error())) {
-                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
-            } else {
-                $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
-            }
-        }
+    public function update($db, $update, $filter) {
+        $db->updateRows($this->getTableName(), $update, $filter);
     }
 }
 
-if ($_GET["edit"]) {
-    unset($_SESSION['add-new-core-edit']);
-    $core_id = trim($_GET["edit"]);
-    $db->selectRows('cores', array("core_id" => Mysql::SQLValue($core_id), 'project_name' => Mysql::SQLValue($project)));
-    $core = $db->recordsArray()[0];
-    $_SESSION[$form_name]["core_id"] = $core["core_id"];
-    $_SESSION[$form_name]["core_description"] = $core["description"];
-}
+
+$core_form = new Core_Form();
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($form_name, 'horizontal', 'novalidate', 'bs4');
+$form = new Form($core_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
 
 $form->addHelper('Core ID', 'core_id');
 
@@ -84,8 +55,8 @@ if ($_GET["edit"]) {
 }
 
 
-$form->addPlugin('tinymce', '#core_description', 'contact-config');
-$form->addTextarea('core_description', '', 'Core Notes');
+$form->addPlugin('tinymce', '#description', 'contact-config');
+$form->addTextarea('description', '', 'Core Notes');
 
 #######################
 # Clear/Save
@@ -103,5 +74,5 @@ $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle("$project > $name");
+$page_render->setPageTitle($core_form->getPageTitle());
 $page_render->renderPage();

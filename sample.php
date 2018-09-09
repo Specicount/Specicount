@@ -13,9 +13,9 @@ $date = date("Y-m-d H:i:s");
 
 $db = new Mysql();
 
-$project = $_GET["project"];
-$core = $_GET["core"];
-$sample = $_GET["sample"];
+$project = $_GET["project_name"];
+$core = $_GET["core_id"];
+$sample = $_GET["sample_id"];
 
 /* =============================================
     validation if posted

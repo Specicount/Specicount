@@ -33,7 +33,7 @@ function getPrimaryKeys($table_name) {
 function getColumnNames($table_name) {
     $db = new Mysql();
     $sql =  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS ".
-            "WHERE TABLE_SCHEMA = '".cconstant('DBNAME')."' ".  // Constant defined in db-connect.php
+            "WHERE TABLE_SCHEMA = '".constant('DBNAME')."' ".  // Constant defined in db-connect.php
             "AND TABLE_NAME = '".$table_name."'";
     $db->query($sql);
 
@@ -56,4 +56,26 @@ function getVariablesToString($array) {
         }
     }
     return $get_variables;
+}
+
+function printAddNewListElement($type, $get_variables) {
+//    if ($type == 'specimen') {
+//        $table_name = 'specimen';
+//    } else {
+//        $table_name = $type.'s';
+//    }
+
+    // If the list item actually needs to provide some GET variables
+    if ($get_variables) {
+        $get_variables = "?".getVariablesToString($get_variables);
+    } else {
+        $get_variables = "";
+    }
+
+    //$primary_keys = getPrimaryKeys($table_name);
+    //array_shift($primary_keys); // Remove the first element of the array since to create a new x you don't need to know the x_id
+    $html_i = "<i class='fa fa-plus'></i>";
+    $html_a = "<a href='add_new_".$type.".php".$get_variables."'>".$html_i." Add New ".ucwords($type)."</a>";
+    $html_li = "<li>".$html_a."</li>";
+    echo $html_li;
 }

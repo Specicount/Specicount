@@ -8,19 +8,37 @@
 
 use phpformbuilder\database\Mysql;
 
+function printDbErrors($db, $success_msg="Success!", $fail_msg=null, $redirect=false) {
+    global $msg; // This variable is printed in the Page_Renderer class
+    // If the database has thrown any errors
+    if ($db->error()) {
+        // If a fail message hasn't been set
+        if ($fail_msg == null) {
+            // Set the fail message to the given database error
+            $fail_msg = $db->error() . '<br>' . $db->getLastSql();
+        }
+        $msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
+    } else {
+        $msg = '<p class="alert alert-success">'.$success_msg.'</p>';
+        if ($redirect) {
+            header("Location: index.php");
+        }
+    }
+}
+
 // Sample Side Bar (shown if sample is selected)
-if (!empty($_GET["sample"])) {
-    $sample = $_GET["sample"];
-    $core = $_GET["core"];
-    $project = $_GET["project"];
+if (!empty($_GET["sample_id"])) {
+    $sample_id = $_GET["sample_id"];
+    $core_id = $_GET["core_id"];
+    $project_id = $_GET["project_name"];
     ?>
     <nav class="sidebar bg-dark">
         <ul class="list-unstyled">
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="add_new_sample.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>&edit=<?= $sample?>"><i class="fa fa-edit"></i> Edit Sample</a></li>
-            <li><a href="sample.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-stopwatch"></i> Sample Count</a></li>
-            <li><a href="search_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-search"></i> Search Specimen</a></li>
-            <li><a href="add_new_specimen.php?project=<?= $project?>&core=<?= $core?>&sample=<?= $sample?>"><i class="fa fa-plus"></i> Add New Specimen</a></li>
+            <li><a href="add_new_sample.php?edit=true&project_name=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-edit"></i> Edit Sample</a></li>
+            <li><a href="sample.php?project_name=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-stopwatch"></i> Sample Count</a></li>
+            <li><a href="search_specimen.php?project_name=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-search"></i> Search Specimen</a></li>
+            <li><a href="add_new_specimen.php?project_name=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-plus"></i> Add New Specimen</a></li>
             <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
         </ul>
     </nav>
@@ -36,24 +54,28 @@ if (!empty($_GET["sample"])) {
 
             <li>
                 <?php
+
                 $db = new Mysql();
-                $db->selectRows("projects", array("username"=>Mysql::SQLValue($_SESSION['auth_user'])), "project_name", "project_name", true);
+                $db->selectRows("projects", array("username"=>Mysql::SQLValue($_SESSION['username'])), "project_name", "project_name", true);
                 foreach ($db->recordsArray() as $project) {
-                    echo "<a href=\"#".$project["project_name"]."\" data-toggle=\"collapse\"><i class=\"fas fa-folder\"></i>  ".$project["project_name"]."</a>
-                            <ul id=\"".$project["project_name"]."\" class=\"list-unstyled collapse\">
-                            <li><a href='add_new_project.php?edit=".$project["project_name"]."'><i class=\"fa fa-edit\"></i> Edit Project</a></li>
-                            <li><a href=\"add_new_core.php?project=".$project["project_name"]."\"><i class=\"fa fa-plus\"></i> Add New Core</a></li>";
+                    //print_r($project);
+                    echo "<a href='#".$project["project_name"]."' data-toggle='collapse'><i class='fas fa-folder'></i>  ".$project["project_name"]."</a>
+                            <ul id='".$project["project_name"]."' class='list-unstyled collapse'>
+                            <li><a href='add_new_project.php?edit=true&project_name=".$project["project_name"]."'><i class='fa fa-edit'></i> Edit Project</a></li>
+                            <li><a href='add_new_core.php?project_name=".$project["project_name"]."'><i class='fa fa-plus'></i> Add New Core</a></li>";
 
                     $db->selectRows("cores", array("project_name" => Mysql::SQLValue($project["project_name"])), "core_id", "core_id", true);
                     foreach ($db->recordsArray() as $core) {
-                        echo "<a href=\"#".$core["core_id"]."\" data-toggle=\"collapse\"><i class=\"fa fa-database\"></i> ".$core["core_id"]."</a>
-                        <ul id=\"".$core["core_id"]."\" class=\"list-unstyled collapse\">
-                        <li><a href='add_new_core.php?project=".$project["project_name"]."&edit=".$core["core_id"]."'><i class=\"fa fa-edit\"></i> Edit Core</a></li>
-                        <li><a href=\"add_new_sample.php?project=".$project["project_name"]."&core=".$core["core_id"]."\" data-parent=\"#".$core["core_id"]."\"><i class=\"fa fa-plus\"></i> Add New Sample</a></li>";
+                        //print_r($core);
+                        echo "<a href='#".$core["core_id"]."' data-toggle='collapse'><i class='fa fa-database'></i> ".$core["core_id"]."</a>
+                        <ul id='".$core["core_id"]."' class='list-unstyled collapse'>
+                        <li><a href='add_new_core.php?edit=true&project_name=".$project["project_name"]."&core_id=".$core["core_id"]."'><i class='fa fa-edit'></i> Edit Core</a></li>
+                        <li><a href='add_new_sample.php?project_name=".$project["project_name"]."&core_id=".$core["core_id"]."' data-parent='#".$core["core_id"]."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
 
-                        $db->selectRows("samples", array("core_id" => Mysql::SQLValue($core["core_id"])), "sample_id", "sample_id", true);
+                        $db->selectRows("samples", array("core_id" => Mysql::SQLValue($core["core_id"]), "project_name" => Mysql::SQLValue($project["project_name"])), "sample_id", "sample_id", true);
+                        print_r($db->recordsArray());
                         foreach ($db->recordsArray() as $sample) {
-                            echo "<li><a href=\"sample.php?project=".$project["project_name"]."&core=".$core["core_id"]."&sample=".$sample["sample_id"]."\"><i class=\"fa fa-flask\"></i> ".$sample["sample_id"]."</a></li>";
+                            echo "<li><a href='sample.php?project_name=".$project["project_name"]."&core_id=".$core["core_id"]."&sample_id=".$sample["sample_id"]."'><i class='fa fa-flask'></i> ".$sample["sample_id"]."</a></li>";
                         }
                         echo "</ul>";
                     }

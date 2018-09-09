@@ -8,81 +8,47 @@ use phpformbuilder\database\Mysql;
 ============================================= */
 
 require_once "classes/Page_Renderer.php";
+require_once "classes/Abstract_Form.php";
 
-$project = $_GET["project"];
-$core = $_GET["core"];
 
-if ($_GET["edit"]) {
-    $form_name = 'add-new-sample-edit';
-    $name = "Edit Sample ".$_GET["edit"];
-} else {
-    $form_name = 'add-new-sample';
-    $name = "Add New Sample";
-}
+class Sample_Form extends \classes\Abstract_Form {
+    public function getFormType() {
+        return "sample";
+    }
 
-$db = new Mysql();
+    public function getTableName() {
+        return "samples";
+    }
 
-/* =============================================
-    validation if posted
-============================================= */
-if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
-    if ($_POST["submit-btn"] == "delete") {
-        # Delete from both found specimens and samples table
-        $db->deleteRows('found_specimen', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text")));
-        $db->deleteRows('samples', array('sample_id' => Mysql::SQLValue($_POST["sample_id"], "text"), "core_id" => Mysql::SQLValue($core, "text"),
-            'project_name' => Mysql::SQLValue($project, "text")));
-        if ($db->error()) {
-            $msg = '<p class="alert alert-danger">' . $db->error() . '</p>' . "\n";
-        } else {
-            $msg = '<p class="alert alert-success">Sample deleted successfully</p>' . " \n";
-            header("Location: index.php");
-        }
-    } else {
-        $validator = Form::validate($form_name);
-        if ($validator->hasErrors()) {
-            $_SESSION['errors'][$form_name] = $validator->getAllErrors();
-        } else {
-            $update["project_name"] = Mysql::SQLValue($project);
-            $update["core_id"] = Mysql::SQLValue($core);
-            $update["sample_id"] = Mysql::SQLValue($_POST["sample_id"]);
-            $update["analyst_first_name"] = Mysql::SQLValue($_POST["first_name"]);
-            $update["analyst_last_name"] = Mysql::SQLValue($_POST["last_name"]);
-            $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-            $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-            $update["modelled_age"] = Mysql::SQLValue($_POST["modelled_age"]);
+    public function delete($db, $filter) {
+        $db->deleteRows("concentration_curve", $filter);
+        $this->printDbErrors($db);
+        $db->deleteRows("found_specimen", $filter);
+        $this->printDbErrors($db);
+        $db->deleteRows($this->getTableName(), $filter);
+    }
 
-            if ($_GET["edit"]) {
-                $db->updateRows('samples', $update, array("sample_id" => $update["sample_id"], 'core_id' => Mysql::SQLValue($core)));
-            } else {
-                $db->insertRow('samples', $update);
-            }
+    public function submit($db, $update) {
+        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+        $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
+        $db->insertRow($this->getTableName(), $update);
+    }
 
-            if (!empty($db->error())) {
-                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
-            } else {
-                $msg = '<p class="alert alert-success">Database updated successfully !</p>' . " \n";
-            }
-        }
+    public function update($db, $update, $filter) {
+        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+        $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
+        $db->updateRows($this->getTableName(), $update, $filter);
     }
 }
 
-if ($_GET["edit"]) {
-    unset($_SESSION['add-new-sample-edit']);
-    $sample_id = trim($_GET["edit"]);
-    $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample_id), 'core_id' => Mysql::SQLValue($core)));
-    $sample = $db->recordsArray()[0];
-    $_SESSION[$form_name]["sample_id"] = $sample["sample_id"];
-    $_SESSION[$form_name]["first_name"] = $sample["analyst_first_name"];
-    $_SESSION[$form_name]["last_name"] = $sample["analyst_last_name"];
-    $_SESSION[$form_name]["start_date"] = $sample["start_date"];
-    $_SESSION[$form_name]["modelled_age"] = $sample["modelled_age"];
-}
+$sample_form = new Sample_Form();
+
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($form_name, 'horizontal', 'novalidate', 'bs4');
+$form = new Form($sample_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
 
 $form->addHelper('Sample ID', 'sample_id');
 
@@ -94,12 +60,12 @@ if ($_GET["edit"]) {
 
 # Analyst Name
 $form->setCols(4, 4);
-$form->groupInputs('first_name', 'last_name');
-$form->addHelper('First Name', 'first_name');
-$form->addInput('text', 'first_name', '', 'Analyst ', 'required');
+$form->groupInputs('analyst_first_name', 'analyst_last_name');
+$form->addHelper('First Name', 'analyst_first_name');
+$form->addInput('text', 'analyst_first_name', '', 'Analyst ', 'required');
 $form->setCols(0, 4);
-$form->addHelper('Last Name', 'last_name');
-$form->addInput('text', 'last_name', '', '', '');
+$form->addHelper('Last Name', 'analyst_last_name');
+$form->addInput('text', 'analyst_last_name', '', '', '');
 $form->setCols(4, 8);
 
 $form->addPlugin('pickadate', '#start_date');
@@ -124,5 +90,5 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle("$project > $core > $name");
+$page_render->setPageTitle($sample_form->getPageTitle());
 $page_render->renderPage();

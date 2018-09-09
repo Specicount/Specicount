@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS samples (
 );
 
 CREATE TABLE IF NOT EXISTS specimen (
-  spec_id VARCHAR (45) NOT NULL,
+  specimen_id VARCHAR (45) NOT NULL,
   project_id VARCHAR (150) NOT NULL,
   family VARCHAR (45) DEFAULT NULL,
   genus VARCHAR (45) DEFAULT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS specimen (
   morphology_notes VARCHAR (600),
   image_folder VARCHAR(200),
   primary_image VARCHAR(100),
-  PRIMARY KEY (spec_id, project_id),
+  PRIMARY KEY (specimen_id, project_id),
   FOREIGN KEY (project_id) REFERENCES projects(project_id)
 
   -- tags VARCHAR (200) no tags at present
@@ -126,12 +126,12 @@ CREATE TABLE IF NOT EXISTS specimen (
 
 /*-- Images related to specimen
 CREATE TABLE IF NOT EXISTS images (
-  spec_id VARCHAR (45) NOT NULL,
+  specimen_id VARCHAR (45) NOT NULL,
   image_path VARCHAR (200) NOT NULL,
   image_type VARCHAR (200),
   image_order INT (11),
-  PRIMARY KEY (spec_id, image_path),
-  FOREIGN KEY (spec_id) REFERENCES specimen(spec_id)
+  PRIMARY KEY (specimen_id, image_path),
+  FOREIGN KEY (specimen_id) REFERENCES specimen(specimen_id)
 );*/
 
 /*-- Tags related to specimen
@@ -144,18 +144,18 @@ CREATE TABLE IF NOT EXISTS tags (
 -- This contains the amount of pollen found at the specific location.
 -- It also shows the date it was last found.
 CREATE TABLE IF NOT EXISTS found_specimen (
-  spec_id VARCHAR (45) NOT NULL,
+  specimen_id VARCHAR (45) NOT NULL,
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
   project_id VARCHAR (150) NOT NULL,
   `order` INT (11) DEFAULT NULL,
   count INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
-  PRIMARY KEY (spec_id, sample_id, core_id, project_id),
+  PRIMARY KEY (specimen_id, sample_id, core_id, project_id),
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id),
   FOREIGN KEY (core_id) REFERENCES cores (core_id),
   FOREIGN KEY (project_id) REFERENCES projects(project_id),
-  FOREIGN KEY (spec_id) REFERENCES specimen(spec_id)
+  FOREIGN KEY (specimen_id) REFERENCES specimen(specimen_id)
 );
 
 -- This contains the data for the concentration curve

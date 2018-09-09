@@ -11,12 +11,13 @@ session_start();
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
 require_once 'phpformbuilder/database/Mysql.php';
+require_once "classes/Page_Renderer.php";
 
 $db = new Mysql();
 
-$project = $_GET["project"];
-$core = $_GET["core"];
-$sample = $_GET["sample"];
+$project = $_GET["project_name"];
+$core = $_GET["core_id"];
+$sample = $_GET["sample_id"];
 $date = date("Y-m-d H:i:s");
 
 /* =============================================
@@ -138,6 +139,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // jQuery validation
+
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
+
 $title = "$project > $core > $sample > Search Sample";
-require_once "add_form_html.php";
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle($title);
+$page_render->renderPage();
