@@ -145,15 +145,17 @@ CREATE TABLE IF NOT EXISTS tags (
 
 -- This contains the amount of pollen found at the specific location.
 -- It also shows the date it was last found.
-CREATE TABLE IF NOT EXISTS found_specimenss (
+CREATE TABLE IF NOT EXISTS found_specimens (
   specimen_id VARCHAR (45) NOT NULL,
+  specimen_project_id VARCHAR (45) NOT NULL, -- The project_id that identifies where the specimen is from
   sample_id VARCHAR (45) NOT NULL,
   core_id VARCHAR (45) NOT NULL,
-  project_id VARCHAR (150) NOT NULL,
+  project_id VARCHAR (150) NOT NULL,         -- The project_id that identifies the sample the found_specimen is in
   `order` INT (11) DEFAULT NULL,
   `count` INT (11) DEFAULT 0,
   last_update DATETIME DEFAULT NULL,
   PRIMARY KEY (specimen_id, sample_id, core_id, project_id),
+  FOREIGN KEY (specimen_project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (core_id) REFERENCES cores (core_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
