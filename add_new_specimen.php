@@ -45,7 +45,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         return "specimen";
     }
 
-    public function delete($db, $filter) {
+    protected function delete($db, $filter) {
         $filter = array('specimen_id' => Mysql::SQLValue($_POST["specimen_id"], "text"));
         $db->deleteRows($this->getTableName(), $filter);
         $db->deleteRows("found_specimens", $filter);
@@ -55,7 +55,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         }
     }
 
-    public function create($db, $update) {
+    protected function create($db, $update) {
         $db->insertRow($this->getTableName(), $update);
         $this->printDbErrors($db);
         // If specimen added from sample page then also add the specimen to the sample
@@ -87,7 +87,7 @@ class Specimen_Form extends \classes\Abstract_Form {
     }
 
 
-    public function getUpdateArray() {
+    protected function getUpdateArray() {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
         $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");

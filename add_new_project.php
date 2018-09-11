@@ -15,7 +15,7 @@ class Project_Form extends \classes\Abstract_Form {
         return "project";
     }
 
-    public function create($db, $update) {
+    protected function create($db, $update) {
         $db->insertRow($this->getTableName(), $update);
         $this->printDbErrors($db);
         $update_access['project_id'] = $update['project_id'];

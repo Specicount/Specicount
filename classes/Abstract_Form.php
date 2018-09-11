@@ -25,8 +25,6 @@ abstract class Abstract_Form {
 
     public abstract function getFormType(); //Should return a string, e.g. 'project', 'core', 'sample', etc
 
-
-
     public function __construct() {
         $this->form_type = strtolower($this->getFormType()); //strtolower just in case of bad data
         $this->table_name = $this->form_type . 's';
@@ -92,17 +90,17 @@ abstract class Abstract_Form {
     }
 
     // Deletes the form_type from the database based on a filter (primary keys)
-    public function delete($db, $filter) {
+    protected function delete($db, $filter) {
         $db->deleteRows($this->getTableName(), $filter);
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
-    public function create($db, $update) {
+    protected function create($db, $update) {
         $db->insertRow($this->getTableName(), $update);
     }
 
     // Updates the form_type in the database identified by $filter with values from $update
-    public function update($db, $update, $filter) {
+    protected function update($db, $update, $filter) {
         $db->updateRows($this->getTableName(), $update, $filter);
     }
 
@@ -110,7 +108,7 @@ abstract class Abstract_Form {
     // Usually executed after any calls to the database
     // If no success or fail message given then it will print the debug backtrace
     // Optional redirect to index.php on db success
-    public function printDbErrors($db, $success_msg="Success!", $fail_msg=null, $redirect=false) {
+    protected function printDbErrors($db, $success_msg="Success!", $fail_msg=null, $redirect=false) {
         global $msg; // This variable is printed in the Page_Renderer class
         // If the database has thrown any errors
         if ($db->error()) {
@@ -133,7 +131,7 @@ abstract class Abstract_Form {
         }
     }
 
-    public function getUpdateArray() {
+    protected function getUpdateArray() {
         // Get all the column names of the given table
         $column_names = getColumnNames($this->table_name);
         // Create an array which stores the new values to update for each column
