@@ -7,6 +7,8 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
+use function functions\printDbErrors;
+
 require_once "classes/Page_Renderer.php";
 require_once "classes/Abstract_Form.php";
 
@@ -17,7 +19,7 @@ class Project_Form extends \classes\Abstract_Form {
 
     protected function create($db, $update) {
         $db->insertRow($this->getTableName(), $update);
-        $this->printDbErrors($db);
+        printDbErrors($db);
         $update_access['project_id'] = $update['project_id'];
         $update_access['username'] = Mysql::SQLValue($_SESSION['username']);
         $update_access['access_level'] = Mysql::SQLValue('admin');

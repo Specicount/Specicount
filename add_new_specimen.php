@@ -5,6 +5,8 @@
  * Date: 5/03/2018
  * Time: 3:34 PM
  */
+
+use function functions\printDbErrors;
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
@@ -57,17 +59,18 @@ class Specimen_Form extends \classes\Abstract_Form {
 
     protected function create($db, $update) {
         $db->insertRow($this->getTableName(), $update);
-        $this->printDbErrors($db);
+        printDbErrors($db);
         // If specimen added from sample page then also add the specimen to the sample
         if ($_GET['sample_id']) {
             $update_found["specimen_id"] = $update["specimen_id"];
             $update_found["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
             $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
             $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
+            $update_found["specimen_project_id"] = Mysql::SQLValue($_GET['project_id']);
             $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
             $update_found["count"] = Mysql::SQLValue(1);
             $db->insertRow('found_specimens', $update_found);
-            $this->printDbErrors($db);
+            printDbErrors($db);
             unset($_SESSION['add-new-specimen']);
 
 
@@ -82,16 +85,19 @@ class Specimen_Form extends \classes\Abstract_Form {
             $unique_spec = $db->recordsArray()[0]["amount"];
             $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
             $db->insertRow('concentration_curve', $update_curve);
-            $this->printDbErrors($db,"Specimen added successfully and added to sample!");
+            printDbErrors($db,"Specimen added successfully and added to sample!");
         }
     }
-
 
     protected function getUpdateArray() {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
-        $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");
+
+        //Don't ever want to change the project a specimen is attached to
+        //This might change in the future if specimen migration functionality is desired
         $update["project_id"] = Mysql::SQLValue($_GET["project_id"], "text");
+
+        $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
         $update["species"] = Mysql::SQLValue($_POST["species"], "text");
@@ -146,7 +152,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         return $update;
     }
 
-    public function fillFormWithDbValues($record_array) {
+    protected function fillFormWithDbValues($record_array) {
         $specimen = $record_array;
         $_SESSION[$this->getFormName()]["specimen_id"] = $specimen["specimen_id"];
         $_SESSION[$this->getFormName()]["family"] = $specimen["family"];

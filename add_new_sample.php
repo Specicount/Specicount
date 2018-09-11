@@ -18,9 +18,9 @@ class Sample_Form extends \classes\Abstract_Form {
 
     protected function delete($db, $filter) {
         $db->deleteRows("concentration_curve", $filter);
-        $this->printDbErrors($db);
+        printDbErrors($db);
         $db->deleteRows("found_specimens", $filter);
-        $this->printDbErrors($db);
+        printDbErrors($db);
         $db->deleteRows($this->getTableName(), $filter);
     }
 
