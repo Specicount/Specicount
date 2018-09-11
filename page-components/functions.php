@@ -55,24 +55,47 @@ function getVariablesToString($array) {
     return $get_variables;
 }
 
-function printAddNewListElement($type, $get_variables) {
-//    if ($type == 'specimen') {
-//        $table_name = 'specimen';
-//    } else {
-//        $table_name = $type.'s';
-//    }
-
-    // If the list item actually needs to provide some GET variables
-    if ($get_variables) {
-        $get_variables = "?".getVariablesToString($get_variables);
-    } else {
-        $get_variables = "";
+function arrayToString($arr) {
+    $str = '(';
+    $last_key = end(array_keys($arr));
+    foreach($arr as $key => $value) {
+        $value = str_replace("'", "", $value);
+        $str .= $key.'=>'.$value;
+        if ($key != $last_key) {
+            $str .= ', ';
+        }
     }
+    $str .= ')';
+    return $str;
+}
 
-    //$primary_keys = getPrimaryKeys($table_name);
-    //array_shift($primary_keys); // Remove the first element of the array since to create a new x you don't need to know the x_id
-    $html_i = "<i class='fa fa-plus'></i>";
-    $html_a = "<a href='add_new_".$type.".php".$get_variables."'>".$html_i." Add New ".ucwords($type)."</a>";
-    $html_li = "<li>".$html_a."</li>";
-    echo $html_li;
+// Prints any database errors to the user
+// Usually executed after any calls to the database
+// If no success or fail message given then it will print the debug backtrace
+// Optional redirect to index.php on db success
+function printDbErrors($db, $success_msg=null, $fail_msg=null, $redirect=false, $errors_only=false) {
+    global $msg; // This variable is printed in the Page_Renderer class
+    // If the database has thrown any errors
+    if ($db->error()) {
+        // If a fail message hasn't been set
+        if ($fail_msg == null) {
+            // Set the fail message to the given database error
+            $fail_msg = $db->error() . '<br>' . $db->getLastSql();
+        }
+        $msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
+    } else if ($db->rowCount() == 0) {
+        $last_key = end(array_values($_GET));
+        $fail_msg = "Error: Could not find " . $last_key . " in database";
+        $msg = '<p class="alert alert-danger">' . $fail_msg . '</p>';
+    } else if (!$errors_only) {
+        if ($success_msg == null) {
+            $msg .= '<p class="alert alert-success">Success!</br>' . $db->getLastSql() . '</p>';
+        } else {
+            $msg = '<p class="alert alert-success">' . $success_msg . '</p>';
+        }
+
+        if ($redirect) {
+            header("Location: index.php");
+        }
+    }
 }

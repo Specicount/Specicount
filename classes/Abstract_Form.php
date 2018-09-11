@@ -8,11 +8,13 @@
 
 namespace classes;
 
+
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getPrimaryKeys;
 use function functions\getColumnNames;
+use function functions\printDbErrors;
 
 require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
@@ -40,11 +42,8 @@ abstract class Abstract_Form {
 
         $db = new Mysql();
 
-        // Create an array which stores the posted values of the primary keys to identify which row to update
-        $primary_keys = getPrimaryKeys($this->table_name);
-        foreach ($primary_keys as $pk) {
-            $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
-        }
+        $filter = $this->getFilterArray();
+        print_r($filter);
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
@@ -52,7 +51,7 @@ abstract class Abstract_Form {
             if ($_POST["submit-btn"] == "delete") {
                 // Call the form-specific delete function
                 $this->delete($db, $filter);
-                $this->printDbErrors($db, ucwords($this->form_type).' deleted successfully!',null, true);
+                printDbErrors($db, ucwords($this->form_type).' deleted successfully!',null, true);
             } else {
                 // Update or insert new rows into db
                 $validator = Form::validate($this->form_name);
@@ -63,13 +62,14 @@ abstract class Abstract_Form {
                     // If posted form has been filled out correctly
 
                     $update = $this->getUpdateArray();
+                    //print_r($update);
                     if ($_GET["edit"]) {
                         $this->update($db, $update, $filter);
                     } else {
                         $this->create($db, $update);
                     }
 
-                    $this->printDbErrors($db, "Database updated successfully !");
+                    printDbErrors($db, "Database updated successfully !");
                 }
             }
         }
@@ -78,12 +78,13 @@ abstract class Abstract_Form {
         if ($_GET["edit"]) {
             unset($_SESSION[$this->form_name]);
             $db->selectRows($this->table_name, $filter);
+            printDbErrors($db, null, null, false, true);
             $this->fillFormWithDbValues($db->recordsArray()[0]);
         }
     }
 
     // If editing a form, fill in the fields with the current database values
-    public function fillFormWithDbValues($record_array) {
+    protected function fillFormWithDbValues($record_array) {
         foreach($record_array as $column_name => $value) {
             $_SESSION[$this->form_name][$column_name] = $value;
         }
@@ -104,33 +105,6 @@ abstract class Abstract_Form {
         $db->updateRows($this->getTableName(), $update, $filter);
     }
 
-    // Prints any database errors to the user
-    // Usually executed after any calls to the database
-    // If no success or fail message given then it will print the debug backtrace
-    // Optional redirect to index.php on db success
-    protected function printDbErrors($db, $success_msg="Success!", $fail_msg=null, $redirect=false) {
-        global $msg; // This variable is printed in the Page_Renderer class
-        // If the database has thrown any errors
-        if ($db->error()) {
-            // If a fail message hasn't been set
-            if ($fail_msg == null) {
-                // Set the fail message to the given database error
-                $fail_msg = $db->error() . '<br>' . $db->getLastSql();
-            }
-            $msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
-        } else {
-            if ($success_msg == "Success!") {
-                $msg .= '<p class="alert alert-success">'.$success_msg.'</br>'.$db->getLastSql().'</p>';
-            } else {
-                $msg = '<p class="alert alert-success">'.$success_msg.'</p>';
-            }
-
-            if ($redirect) {
-                header("Location: index.php");
-            }
-        }
-    }
-
     protected function getUpdateArray() {
         // Get all the column names of the given table
         $column_names = getColumnNames($this->table_name);
@@ -144,6 +118,15 @@ abstract class Abstract_Form {
         }
 
         return $update;
+    }
+
+    protected function getFilterArray() {
+        // Create an array which stores the posted values of the primary keys to identify which row to update
+        $primary_keys = getPrimaryKeys($this->table_name);
+        foreach ($primary_keys as $pk) {
+            $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
+        }
+        return $filter;
     }
 
     public function getPageTitle() {

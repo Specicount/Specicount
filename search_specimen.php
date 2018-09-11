@@ -7,6 +7,9 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
+require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
+use function functions\printDbErrors;
+
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
 require_once 'phpformbuilder/database/Mysql.php';
@@ -14,9 +17,9 @@ require_once "classes/Page_Renderer.php";
 
 $db = new Mysql();
 
-$project = $_GET["project_id"];
-$core = $_GET["core_id"];
-$sample = $_GET["sample_id"];
+$project_id = $_GET["project_id"];
+$core_id = $_GET["core_id"];
+$sample_id = $_GET["sample_id"];
 $date = date("Y-m-d H:i:s");
 
 /* =============================================
@@ -30,11 +33,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
     $validator = Form::validate('search-form-1');
 
     if (isset($_POST["add-to-sample"])) {
-        $specimen = trim(base64_decode(str_replace("-", "=", $_POST["add-to-sample"])));
-        $update["specimen_id"] = Mysql::SQLValue($specimen);
-        $update["sample_id"] = Mysql::SQLValue($sample);
-        $update["core_id"] = Mysql::SQLValue($core);
-        $update["project_id"] = Mysql::SQLValue($project);
+        $primary_key_values = explode(",", $_POST["add-to-sample"]);
+        $specimen_project_id = trim(base64_decode(str_replace("-", "=", $primary_key_values[0])));
+        $specimen_id = trim(base64_decode(str_replace("-", "=", $primary_key_values[1])));
+        $update["specimen_id"] = Mysql::SQLValue($specimen_id);
+        $update["specimen_project_id"] = Mysql::SQLValue($specimen_project_id);
+        $update["sample_id"] = Mysql::SQLValue($sample_id);
+        $update["core_id"] = Mysql::SQLValue($core_id);
+        $update["project_id"] = Mysql::SQLValue($project_id);
         $update["last_update"] = "'" . $date . "'";
         $update["count"] = Mysql::SQLValue(1);
         $db->insertRow('found_specimens', $update);
@@ -47,9 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
 
         } else {
             # Do concentration curve
-            $update_curve["sample_id"] = Mysql::SQLValue($sample);
-            $update_curve["core_id"] = Mysql::SQLValue($core);
-            $update_curve["project_id"] = Mysql::SQLValue($project);
+            $update_curve["sample_id"] = Mysql::SQLValue($sample_id);
+            $update_curve["core_id"] = Mysql::SQLValue($core_id);
+            $update_curve["project_id"] = Mysql::SQLValue($project_id);
             $db->query("SELECT SUM(count) as total FROM found_specimens WHERE sample_id = ".$update_curve["sample_id"]." AND core_id = ".$update_curve["core_id"]." AND project_id = ".$update_curve["project_id"]);
             $tally_count = $db->recordsArray()[0]["total"];
             $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
@@ -84,9 +90,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
             $col[] = "(" . implode(" OR ", $query) . ")";
         }
     }
-    $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col);
+    $project_id_sql = Mysql::SQLValue($project_id);
+    $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col) . " AND project_id=". $project_id_sql;
+
     //echo $sql;
     $db->query($sql);
+    //printDbErrors($db);
     if ($db->rowCount() > 0) {
         $results = $db->recordsArray();
     }
@@ -113,21 +122,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($results)) {
         $form->addHtml('<div class="square-grid">');
         foreach ($results as $specimen) {
-            $specimen_name = $specimen["specimen_id"];
-            $specimen["specimen_id"] = str_replace("=", "-", trim(base64_encode($specimen["specimen_id"])));
+            $specimen_id_encoded = str_replace("=", "-", trim(base64_encode($specimen["specimen_id"])));
+            $specimen_project_id_encoded = str_replace("=", "-", trim(base64_encode($specimen["project_id"])));
+            $primary_key_values = $specimen_project_id_encoded . ',' . $specimen_id_encoded;
             $image = $specimen["image_folder"].$specimen["primary_image"];
-            $form->addHtml('<div id="'.$specimen["specimen_id"].'" class="specimen-container cell"');
+            $form->addHtml('<div id="'.$specimen_id_encoded.'" class="specimen-container cell"');
             if (is_file($image)) {
-                $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen_name.'/'.$specimen["primary_image"].'\');"');
+                $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
             }
             $form->addHtml('>');
-            $form->addHtml('<div id="'.$specimen["specimen_id"].'_counter" class="counter"><p id="'.$specimen["specimen_id"].'_counter_text">ID: ' . $specimen_name . '</p></div>');
-            $form->addHtml('<div id="'.$specimen["specimen_id"].'_overlay" class="overlay">');
-            $form->addHtml('<text>ID: ' . $specimen_name . '</text>');
-            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$project.'&core_id='.$core.'&sample_id='.$sample.'&specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
-            $form->addHtml('<a href="specimen_details.php?specimen_id='.$specimen_name.'" target="_blank"><i class="fa fa-info-circle del-btn"></i></a>');
-            $form->addHtml('<a href="#"><span><i id="'.$specimen["specimen_id"].'_close" class="fas fa-window-close close-btn"></i></span></a>');
-            $form->addBtn('submit', 'add-to-sample', $specimen["specimen_id"], 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button add-btn, data-style=zoom-in');
+            $form->addHtml('<div id="'.$specimen_id_encoded.'_counter" class="counter"><p id="'.$specimen_id_encoded.'_counter_text">ID: ' . $specimen["specimen_id"] . '</p></div>');
+            $form->addHtml('<div id="'.$specimen_id_encoded.'_overlay" class="overlay">');
+            $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
+            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
+            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle del-btn"></i></a>');
+            $form->addHtml('<a href="#"><span><i id="'.$specimen_id_encoded.'_close" class="fas fa-window-close close-btn"></i></span></a>');
+            $form->addBtn('submit', 'add-to-sample', $primary_key_values, 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button add-btn, data-style=zoom-in');
             $form->addHtml('</div>');
             $form->addHtml('</div>');
         }
@@ -141,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 
-$title = "$project > $core > $sample > Search Sample";
+$title = "$project_id > $core_id > $sample_id > Search Sample";
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle($title);
