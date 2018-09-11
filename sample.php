@@ -13,23 +13,23 @@ $date = date("Y-m-d H:i:s");
 
 $db = new Mysql();
 
-$project = $_GET["project_id"];
-$core = $_GET["core_id"];
-$sample = $_GET["sample_id"];
+$project_id = $_GET["project_id"];
+$core_id = $_GET["core_id"];
+$sample_id = $_GET["sample_id"];
 
 /* =============================================
     validation if posted
 ============================================= */
 if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sample') === true) {
 
-    $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), 'project_id' => Mysql::SQLValue($project)), null, null, true, 1);
+    $db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample_id), 'core_id' => Mysql::SQLValue($core_id), 'project_id' => Mysql::SQLValue($project_id)), null, null, true, 1);
     $sample_data = $db->recordsArray()[0];
 
     if($_POST["submit-btn"] == "export") {
         header('Content-Type: application/csv');
         header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
 
-        $db->query("SELECT * FROM found_specimens JOIN specimens USING(specimen_id) WHERE sample_id = ".Mysql::SQLValue($sample)." ORDER BY `count` DESC");
+        $db->query("SELECT * FROM found_specimens JOIN specimens USING(specimen_id) WHERE sample_id = ".Mysql::SQLValue($sample_id)." ORDER BY `count` DESC");
         $specimen_data = $db->recordsArray();
 
         // Create a PHP output stream for the user to download
@@ -73,29 +73,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
                     $specimen = trim(base64_decode(str_replace("-", "=", $specimen)));
                     $update = array();
                     $update["specimen_id"] = Mysql::SQLValue($specimen);
-                    $update["sample_id"] = Mysql::SQLValue($sample);
+                    $update["sample_id"] = Mysql::SQLValue($sample_id);
                     $update["last_update"] = "'" . $date . "'";
                     $update["count"] = Mysql::SQLValue($count);
 
-                    $db->updateRows('found_specimens', $update, array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core),
-                        'project_id' => Mysql::SQLValue($project), "specimen_id" => Mysql::SQLValue($specimen)));
+                    $db->updateRows('found_specimens', $update, array('sample_id' => Mysql::SQLValue($sample_id), 'core_id' => Mysql::SQLValue($core_id),
+                        'project_id' => Mysql::SQLValue($project_id), "specimen_id" => Mysql::SQLValue($specimen)));
                     if (!empty($db->error())) $error = true;
                 } else {
                     if ($specimen == "last_edit") {
                         $db->updateRows('samples',
                             array("last_edit" => "'" . $date . "'"),
-                            array("sample_id" => Mysql::SQLValue($sample)));
+                            array("sample_id" => Mysql::SQLValue($sample_id)));
                     } else {
                         $db->updateRows('samples',
                             array($specimen => Mysql::SQLValue($count)),
-                            array("sample_id" => Mysql::SQLValue($sample)));
+                            array("sample_id" => Mysql::SQLValue($sample_id)));
                     }
                     if (!empty($db->error())) $error = true;
                 }
             }
 
             if ($_POST["submit-btn"] == "reorder") {
-                $sql = "UPDATE BioBase.found_specimens SET `order` = `count` WHERE sample_id = " . Mysql::SQLValue($sample);
+                $sql = "UPDATE BioBase.found_specimens SET `order` = `count` WHERE sample_id = " . Mysql::SQLValue($sample_id);
                 $db->query($sql);
                 if (!empty($db->error())) $error = true;
             }
@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
 }
 
 # Get sample data
-$db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), 'project_id' => Mysql::SQLValue($project)), null, null, true, 1);
+$db->selectRows('samples', array('sample_id' => Mysql::SQLValue($sample_id), 'core_id' => Mysql::SQLValue($core_id), 'project_id' => Mysql::SQLValue($project_id)), null, null, true, 1);
 $sample_data = $db->recordsArray()[0];
 if ($db->error()){
     $msg = '<p class="alert alert-danger">Sample data not found</p>' . "\n";
@@ -175,7 +175,7 @@ $form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
 $form->addHtml("</div></div>");
 
 
-$db->query("SELECT * FROM found_specimens JOIN specimens USING(specimen_id) WHERE sample_id=".Mysql::SQLValue($sample)." ORDER BY `order` DESC");
+$db->query("SELECT * FROM found_specimens JOIN specimens USING(specimen_id) WHERE sample_id=".Mysql::SQLValue($sample_id)." ORDER BY `order` DESC");
 $specs = array();
 $specs = $db->recordsArray();
 
@@ -220,7 +220,7 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle("$project > $core > $sample > Sample Count");
+$page_render->setPageTitle("$project_id > $core_id > $sample_id > Sample Count");
 $page_render->renderPage();
 
 // Add concentration curve scripts
