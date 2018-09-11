@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
         }
     }
     $project_id_sql = Mysql::SQLValue($project_id);
-    $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col) . " AND project_id=". $project_id_sql;
+    $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col); // . " AND project_id=". $project_id_sql;
 
     //echo $sql;
     $db->query($sql);
