@@ -43,7 +43,6 @@ abstract class Abstract_Form {
         $db = new Mysql();
 
         $filter = $this->getFilterArray();
-        print_r($filter);
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
