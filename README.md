@@ -46,8 +46,8 @@ in the wider research community for multiple data capture senarios, eliminating 
 
 | **Name** | **Email** | **Roles** |
 | --- | --- | -- |
-| Alex Niven | alexander.niven@anu.edu.au | <ul><li>Team Leader</li><li>Communications Specialist</li></ul> |
-| Paige Brown | paige.brown@anu.edu.au | <ul><li>Publication Lead</li><li>Documentation Lead</li></ul> |
+| Alex Niven | alexander.niven@anu.edu.au | <ul><li>Team Leader</li><li>Communications Specialist</li><li>Documentation Lead</li></ul> |
+| Paige Brown | paige.brown@anu.edu.au | <ul><li>Publication Lead</li></ul> |
 | Elliott Wagener | u6053577@anu.edu.au | <ul><li>Technical Lead</li></ul> |
 | Zibo Wang | u5720483@anu.edu.au | <ul><li> Team Developer</li></ul> |
 | Matthew Knill | u6052043@anu.edu.au | <ul><li> Team Developer</li></ul> |
@@ -68,13 +68,12 @@ This is purely the allocation of their software development responsibility, not 
 
 | **Name** | **AOR** |
 | --- | --- |
-| Alex Niven | <ul><li> Code Revision </li></ul> |
-| Paige Brown | <ul><li> UI Redesign </li></ul> |
-| Elliott Wagener | <ul><li> Code Revision </li></ul> |
-| Zibo Wang | <ul><li> Statistical Functionality </li></ul> |
-| Matthew Knill | <ul><li> Login Systems </li></ul> |
-| Jack Sekoranja | <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
-| Kavan Lu |  <ul><li> Login Systems </li><li> UI Redesign </li></ul> |
+| Paige Brown | <ul><li> Publication </li></ul> |
+| Matthew Knill | <ul><li> Login & Sharing Functionality (Lead) </li></ul> |
+| Elliott Wagener | <ul><li> Login & Sharing Functionality </li></ul> |
+| Zibo Wang | <ul><li> Statistical Functionality (Lead) </li></ul> |
+| Kavan Lu |  <ul><li> General UI Redesign (Lead) </li></ul> |
+| Jack Sekoranja | <ul><li> General UI Redesign </li><li> Statistical Functionality (UI) </li></ul> |
 
 An approximate Project Schedule can be found [here](https://drive.google.com/open?id=1yET3ofIbAA9VhrzKibs2ofu1l-EQG6QX3S9zbk8F4pw),
 while our current work on requirements can be found on our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS)
@@ -107,13 +106,8 @@ We aim for weekly meetings, although frequency may depend on necessity.
 * Time - 12pm Thursdays
 
 ##### Team Meetings
-In-person meetings are preferred by the team, although we will be trialing Skype for Business for online meetings.
-* Time - 12pm Wednesdays
-
-We are currently trialing *Tuesday Check Ins*. This is a informal meeting where the Team Leader will interact with all
-Project Team members to discover their current work performed, any issues, if they are on track for deadlines.
-This is to allow the team to communicate updates from over the weekend
-if team members are unable to come to the team meeting on Wednesdays.
+In-person meetings are preferred by the team, while Google Hangouts is also used for informal online meetings.
+* Time - 2pm Tuesdays
 
 If you wish to learn more about our communication procedures, we have developed a strategy [here](https://docs.google.com/document/d/1r-EzJ9cmtGbjgq_M8eiBXLTo2zRZHgJJhH7DvKJBWKo/edit?usp=sharing).
 
@@ -133,7 +127,6 @@ In our [Google Drive](https://drive.google.com/drive/folders/1FDbh7U8zdyaGLZgFPT
 On GitLab you can find our:
 * [Technical To-Do List](https://gitlab.cecs.anu.edu.au/u6053577/BioData/issues)
 * [Source Code](https://gitlab.cecs.anu.edu.au/u6053577/BioData/)
-
 
 Finally, you can view our [Planner](https://tasks.office.com/ANU365.onmicrosoft.com/en-au/Home/PlanViews/d30F3Njbe0OwtxYCPTibV8gADMmS) for our current work and follow ups.
 (Note, you may need your ANU login to view this as it is hosted using ANU's Office365 subscription)
