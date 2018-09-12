@@ -83,10 +83,6 @@ function printDbErrors($db, $success_msg=null, $fail_msg=null, $redirect=false, 
             $fail_msg = $db->error() . '<br>' . $db->getLastSql();
         }
         $msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
-    } else if ($db->rowCount() == 0) {
-        $last_key = end(array_values($_GET));
-        $fail_msg = "Error: Could not find " . $last_key . " in database";
-        $msg = '<p class="alert alert-danger">' . $fail_msg . '</p>';
     } else if (!$errors_only) {
         if ($success_msg == null) {
             $msg .= '<p class="alert alert-success">Success!</br>' . $db->getLastSql() . '</p>';
