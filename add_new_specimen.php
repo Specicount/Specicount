@@ -699,6 +699,7 @@ $form->addPlugin('formvalidation', '#add-new', 'bs4');
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle($specimen_form->getPageTitle());
+$page_render->disableSidebar();
 $page_render->renderPage();
 ?>
 <script>

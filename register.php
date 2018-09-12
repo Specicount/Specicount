@@ -110,4 +110,5 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle("Register");
 $page_render->noLoginRequired();
+$page_render->disableSidebar();
 $page_render->renderPage();

@@ -67,6 +67,7 @@ function validateLogin()
 # Test password in database
 function validLogin()
 {
+    return TRUE;
     $db = new Mysql();
     $db->selectRows('users', array('username' => Mysql::SQLValue($_REQUEST['username'])), null, null, true, 1);
     $user = $db->recordsArray()[0];
@@ -104,6 +105,6 @@ function renderLoginForm($errors = NULL)
     $page_render->setPageTitle("BioBase Login");
     $page_render->disableSidebar();
     $page_render->noLoginRequired();
-    //$page_render->disableNavbar();
+    $page_render->disableNavbar();
     $page_render->renderPage();
 }

@@ -145,4 +145,5 @@ $title = "$project > $core > $sample > Search Sample";
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle($title);
+$page_render->disableSidebar();
 $page_render->renderPage();

@@ -16,12 +16,12 @@ if (!empty($_GET["sample_id"])) {
     ?>
     <nav class="sidebar bg-dark">
         <ul class="list-unstyled">
-            <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
+            <!--<li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>-->
             <li><a href="add_new_sample.php?edit=true&project_id=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-edit"></i> Edit Sample</a></li>
             <li><a href="sample.php?project_id=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-stopwatch"></i> Sample Count</a></li>
             <li><a href="search_specimen.php?project_id=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-search"></i> Search Specimen</a></li>
             <li><a href="add_new_specimen.php?project_id=<?= $project_id?>&core_id=<?= $core_id?>&sample_id=<?= $sample_id?>"><i class="fa fa-plus"></i> Add New Specimen</a></li>
-            <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
+            <!--<li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>-->
         </ul>
     </nav>
     <?php
@@ -30,7 +30,7 @@ if (!empty($_GET["sample_id"])) {
     ?>
     <nav class="sidebar bg-dark">
         <ul class="list-unstyled">
-            <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
+            <!--<li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>-->
             <li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>
             <li>
                 <?php
@@ -64,8 +64,8 @@ if (!empty($_GET["sample_id"])) {
                 }
                 ?>
             </li>
-            <li><a href="register.php"><i class="fa fa-user-plus"></i> Add User</a></li>
-            <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
+            <!--<li><a href="register.php"><i class="fa fa-user-plus"></i> Add User</a></li>-->
+            <!--<li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>-->
         </ul>
     </nav>
     <?php
