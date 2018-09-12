@@ -100,11 +100,9 @@ $form->startFieldset('Edit Current Users');
 $db = new Mysql();
 $filter = array("project_id"=> Mysql::SQLValue($_GET['project_id']));
 $db->selectRows($table_name, $filter);
-$index = 0;
 foreach ($db->recordsArray() as $user) {
     $username_input = 'username,'.$user["username"];
     $access_input = 'access_level,'.$user["username"];
-//    $del_btn_input = 'del-user-btn,'.$user['username'];
     $form->startFieldset('');
 
     $form->setCols(0,5);
@@ -126,8 +124,6 @@ foreach ($db->recordsArray() as $user) {
     $form->printBtnGroup('delete-btn-'.$user["username"]);
 
     $form->endFieldset();
-
-    $index++;
 }
 
 $form->endFieldset();
