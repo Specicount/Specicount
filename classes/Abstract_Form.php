@@ -54,9 +54,9 @@ abstract class Abstract_Form {
                     $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
                 } else {
 
+                    $this->setUpdateArray();
                     //print_r($update);
                     if ($_GET["edit"]) {
-                        $this->setUpdateArray();
                         $this->update($db, $this->update, $this->filter);
                     } else {
                         $this->create($db, $this->update);
@@ -83,7 +83,7 @@ abstract class Abstract_Form {
     // Deletes the form_type from the database based on a filter (primary keys)
     protected function delete($db, $filter) {
         $db->deleteRows($this->table_name, $filter);
-        printDbErrors($db, ucwords($this->form_type).' deleted successfully!',null, true);
+        printDbErrors($db, ucwords($this->form_type)." deleted successfully!",null, true);
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
@@ -95,7 +95,7 @@ abstract class Abstract_Form {
     // Updates the form_type in the database identified by $filter with values from $update
     protected function update($db, $update, $filter) {
         $db->updateRows($this->table_name, $update, $filter);
-        printDbErrors($db, "Database updated successfully!");
+        printDbErrors($db, ucwords($this->form_type)." updated successfully!");
     }
 
     protected function setUpdateArray() {

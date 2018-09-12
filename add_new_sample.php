@@ -9,6 +9,9 @@ use phpformbuilder\database\Mysql;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Abstract_Add_New_Form.php";
+require_once "page-components/functions.php";
+
+use function functions\printDbErrors;
 use classes\Abstract_Add_New_Form;
 
 class Sample_Form extends Abstract_Add_New_Form {
@@ -16,24 +19,17 @@ class Sample_Form extends Abstract_Add_New_Form {
         $this->form_type = "sample";
     }
 
-    protected function delete($db, $filter) {
-        $db->deleteRows("concentration_curve", $filter);
-        printDbErrors($db);
-        $db->deleteRows("found_specimens", $filter);
-        printDbErrors($db);
-        $db->deleteRows($this->table_name, $filter);
-    }
-
     protected function create($db, $update) {
         $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
         $db->insertRow($this->table_name, $update);
+        printDbErrors($db, "Successfully created new sample!");
     }
 
-    protected function update($db, $update, $filter) {
-        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-        $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $db->updateRows($this->table_name, $update, $filter);
+    protected function setUpdateArray() {
+        parent::setUpdateArray();
+        $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+        $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
     }
 }
 
