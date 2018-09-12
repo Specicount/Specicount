@@ -110,6 +110,21 @@ class Page_Renderer {
             header("location: login.php");
             exit;
         }
+
+        // If trying to access a page connected to a project
+        if ($_GET["project_id"]) {
+            $filter["project_id"] = Mysql::SqlValue($_GET["project_id"]);
+            $filter["username"] = Mysql::SqlValue($_SESSION["username"]);
+            $db = new Mysql();
+            $db->selectRows("user_project_access", $filter);
+
+            // If the user does not have access to that project
+            if ($db->rowCount() == 0) {
+                // Redirect to home page
+                header("location: index.php?error=no_project_access");
+                exit;
+            }
+        }
         ?>
         <!DOCTYPE html>
         <html lang="en">

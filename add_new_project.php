@@ -15,8 +15,7 @@ class Project_Form extends Abstract_Add_New_Form {
     }
 
     protected function create($db, $update) {
-        $db->insertRow($this->table_name, $update);
-        printDbErrors($db);
+        parent::create($db, $update);
         $update_access['project_id'] = $update['project_id'];
         $update_access['username'] = Mysql::SQLValue($_SESSION['username']);
         $update_access['access_level'] = Mysql::SQLValue('admin');

@@ -42,6 +42,31 @@ abstract class Abstract_Form {
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
+
+            // PERMISSIONS CHECK
+            // -----------------
+            // If trying to interact with a page related to a project
+            if (isset($_GET["project_id"])) {
+                $page = strtok(basename($_SERVER['HTTP_REFERER']), "?");
+                // If not just trying to create a new project
+                if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {;
+                    $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
+                    $filter["username"] = Mysql::SQLValue($_SESSION["username"]);
+                    $db->selectRows("user_project_access", $filter);
+                    $user = $db->recordsArray()[0];
+                    // If user is only a visitor
+                    if ($user["access_level"] == "visitor") {
+                        // Deny their changes and redirect them to home page
+                        header("location: index.php?error=invalid_permissions");
+                        exit;
+                    }
+
+                }
+
+            }
+            // -----------------
+
+
             // If the delete button was pressed
             if ($_POST["submit-btn"] == "delete") {
                 // Call the form-specific delete function
