@@ -112,5 +112,5 @@ $page_render->setPageTitle("Register");
 $page_render->disableSidebar();
 $page_render->disableNavbar();
 $page_render->noLoginRequired();
-$page_render->disableSidebar();
+$page_render->setInnerHTML("<p>Already a Member? <a href=\"login.php\">Login Now!</a></p>");
 $page_render->renderPage();
