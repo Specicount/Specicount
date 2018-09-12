@@ -10,8 +10,6 @@ use phpformbuilder\database\Mysql;
 require_once "classes/Page_Renderer.php";
 require_once "classes/Abstract_Add_New_Form.php";
 use classes\Abstract_Add_New_Form;
-use classes\Page_Renderer;
-
 
 class Sample_Form extends Abstract_Add_New_Form {
     public function setFormType() {

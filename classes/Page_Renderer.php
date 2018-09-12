@@ -21,29 +21,21 @@ namespace classes;
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-
-// Get parent most script (used to test if login script)
-function get_topmost_script() {
-    $backtrace = debug_backtrace(
-        defined("DEBUG_BACKTRACE_IGNORE_ARGS")
-            ? DEBUG_BACKTRACE_IGNORE_ARGS
-            : FALSE);
-    $top_frame = array_pop($backtrace);
-    return $top_frame['file'];
-}
+use function functions\getTopMostScript;
 
 // Add required files
 $current_dir = __DIR__;
 include_once $current_dir.'/../phpformbuilder/Form.php';
 require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
+require_once $current_dir.'/../page-components/functions.php';
 
 session_start();
 // Test if the user is logged in
 /*
     if(!isset($_SESSION["username"])){
         // Test if login script
-        if (basename(get_topmost_script(), ".php") != "login") {
+        if (basename(getTopMostScript(), ".php") != "login") {
             //$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
             // Go to login page
             header("location: login.php");

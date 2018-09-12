@@ -104,3 +104,15 @@ function printError($error_msg) {
     global $msg;
     $msg = '<p class="alert alert-danger">' . $error_msg . '</p>';
 }
+
+
+// Get parent most script (used to test if login script)
+// E.g. if you navigated to server/index.php it would return /var/www/html/index.php
+function getTopMostScript() {
+    $backtrace = debug_backtrace(
+        defined("DEBUG_BACKTRACE_IGNORE_ARGS")
+            ? DEBUG_BACKTRACE_IGNORE_ARGS
+            : FALSE);
+    $top_frame = array_pop($backtrace);
+    return basename($top_frame['file']);
+}

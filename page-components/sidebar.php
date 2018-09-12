@@ -31,7 +31,11 @@ if (!empty($_GET["sample_id"])) {
     <nav class="sidebar bg-dark">
         <ul class="list-unstyled">
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>
+            <?php
+                if (isset($_SESSION["username"])) {
+                    echo '<li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>';
+                }
+            ?>
             <li>
                 <?php
 
@@ -64,8 +68,6 @@ if (!empty($_GET["sample_id"])) {
                 }
                 ?>
             </li>
-            <li><a href="register.php"><i class="fa fa-user-plus"></i> Add User</a></li>
-            <li><a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
         </ul>
     </nav>
     <?php

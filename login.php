@@ -89,14 +89,16 @@ function renderLoginForm($errors = NULL)
     $password = isset($_REQUEST['password']) ? htmlentities($_REQUEST['password']) : NULL;*/
 
     $form = new Form("login", 'horizontal', 'novalidate', 'bs4');
-    $form->setCols(0, 12);
+    $form->setCols(0,12);
 
     if (!empty($errors) and is_array($errors)) $form->addHtml("<p class=\"alert alert-danger\">".$errors['username']."</p>");
     $form->addHelper("Username", "username");
-    $form->addInput('text', 'username', '', '', 'required');
+    $form->addInput('text', 'username', '', '', 'required, class=col-4');
     $form->addHelper("Password", "password");
-    $form->addInput('password', 'password', '', '', 'required');
-    $form->addBtn('submit', 'submit-btn', 1, 'Submit', 'class=btn btn-success ladda-button, data-style=zoom-in');
+    $form->addInput('password', 'password', '', '', 'required, class=col-4');
+    $form->addBtn('submit', 'submit-btn', 1, 'Log In', 'class=btn btn-success ladda-button, data-style=zoom-in');
+    $form->addHtml('<br><br>');
+    $form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
 
     // Render Page
     $page_render = new \classes\Page_Renderer();

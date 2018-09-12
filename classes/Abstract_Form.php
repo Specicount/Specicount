@@ -37,7 +37,7 @@ abstract class Abstract_Form {
         $this->setTableName();
         $this->setFilterArray();
 
-        unset($_SESSION[$this->form_name]); // Remove
+        //unset($_SESSION[$this->form_name]); // Remove
         $db = new Mysql();
 
         // If the form has been posted (saved, deleted, etc) back to the server
