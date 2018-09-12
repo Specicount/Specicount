@@ -114,6 +114,10 @@ class Page_Renderer {
     public function renderPage() {
         $current_dir = __DIR__;
 
+        //Make it so the text on the navbar reflects the title of the page
+        //This variable is used in the navbar's php file
+        $navbar_text = $this->page_title;
+
         if(!isset($_SESSION["username"]) && $this->require_login){
             header("location: login.php");
             exit;
@@ -144,9 +148,6 @@ class Page_Renderer {
             ?>
         </head>
         <?php
-        //Make it so the text on the navbar reflects the title of the page
-        //This variable is used in the navbar's php file
-        $navbar_text = $this->page_title;
         if ($this->render_navbar) {
             require_once $current_dir.'/../page-components/navbar.php'; // Add top navbar
         }
