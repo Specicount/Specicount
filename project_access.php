@@ -29,20 +29,58 @@ class Project_Access_Form extends Abstract_Form {
 $project_access_form = new Project_Access_Form();
 
 $form = new Form($project_access_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
+$form->setOptions(array('buttonWrapper'=>''));
 
-$form->setCols(0, 12);
 
+
+$form->startFieldset('Add New User to Project');
+
+$form->setCols(0,5);
+$form->groupInputs('username', 'access_level', 'add-new-user-btn');
 $form->addHelper('Username', 'username');
-$form->addInput('text', 'username', '', '', 'required, class=col-4');
+$form->addInput('text', 'username', '', '', 'required');
 
-$form->addHelper('First Name', 'first_name');
-$form->addInput('text', 'first_name', '', '', 'required, class=col-4');
+$form->setCols(0,2);
+$form->addHelper('Access Level', 'access_level');
+$form->addOption('access_level', 'visitor', 'Visitor', '', '');
+$form->addOption('access_level', 'collaborator', 'Collaborator', '', '');
+$form->addOption('access_level', 'admin', 'Admin', '', '');
+$form->addSelect('access_level', '', 'required');
 
-$form->addHelper('Last Name', 'last_name');
-$form->addInput('text', 'last_name', '', '', 'required, class=col-4');
+$form->setCols(0,5);
+$form->addBtn('submit', 'add-new-user-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'delete-btn-group');
+$form->printBtnGroup('my-btn-group');
 
-$form->addHelper('Email', 'email');
-$form->addInput('email', 'email', '', '', 'required, placeholder=Email, class=col-4');
+$form->endFieldset();
 
-$form->addHelper('Your Institution/Company', 'institution');
-$form->addInput('text', 'institution', '', '', "class=col-4");
+
+$form->startFieldset('Edit Current Users');
+
+$db = new Mysql();
+$filter = array("project_id"=> Mysql::SQLValue($_GET['project_id']));
+$db->selectRows($project_access_form->getTableName(), $filter);
+foreach ($db->recordsArray() as $user) {
+    $form->setCols(0,5);
+    $form->groupInputs('username,'.$user['username'], 'access_level,'.$user['username'], 'add-new-user-btn,'.$user['username']);
+    $form->addHelper('Username', 'username,'.$user['username']);
+    $form->addInput('text', 'username,'.$user['username'], '', '', 'required');
+
+    $form->setCols(0,2);
+    $form->addHelper('Access Level', 'access_level');
+    $form->addOption('access_level,'.$user['username'], 'visitor', 'Visitor', '', '');
+    $form->addOption('access_level,'.$user['username'], 'collaborator', 'Collaborator', '', '');
+    $form->addOption('access_level,'.$user['username'], 'admin', 'Admin', '', '');
+    $form->addSelect('access_level,'.$user['username'], '', 'required');
+
+    $form->setCols(0,5);
+    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-group');
+    $form->printBtnGroup('my-btn-group');
+}
+$form->endFieldset();
+
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setForm($form);
+$page_render->setPageTitle($project_access_form->getPageTitle());
+$page_render->renderPage();
