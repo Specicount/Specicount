@@ -18,7 +18,7 @@ abstract class Abstract_Add_New_Form extends Abstract_Form {
         }
     }
 
-    public function setTableName() {
+    public function setSqlTableName() {
         $this->table_name = $this->form_type . 's';
     }
 

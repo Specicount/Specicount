@@ -28,13 +28,13 @@ abstract class Abstract_Form {
     protected $update, $filter;
 
     public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
-    public abstract function setTableName(); //Set the $table_name variable to a string, e.g. 'projects', 'cores', 'samples', etc
+    public abstract function setSqlTableName(); //Set the $table_name variable to a string, e.g. 'projects', 'cores', 'samples', etc
 
     public function __construct() {
         $this->setFormType();
         $this->setFormName();
         $this->setPageTitle();
-        $this->setTableName();
+        $this->setSqlTableName();
         $this->setFilterArray();
 
         //unset($_SESSION[$this->form_name]); // Remove

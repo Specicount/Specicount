@@ -43,16 +43,27 @@ if (!empty($_GET["sample_id"])) {
                 $sql = "SELECT project_id FROM user_project_access NATURAL JOIN projects WHERE username =".$username." ORDER BY project_id";
                 $db->query($sql);
                 foreach ($db->recordsArray() as $project) {
-                    echo "<a href='#".$project["project_id"]."' data-toggle='collapse'><i class='fas fa-folder'></i>  ".$project["project_id"]."</a>
-                            <ul id='".$project["project_id"]."' class='list-unstyled collapse'>
+                    $toggle_expand_parent = $toggle_expand_child = "";
+                    if ($_GET["project_id"] == $project["project_id"]) {
+                        $toggle_expand_parent = 'aria-expanded="true"';
+                        $toggle_expand_child = 'show';
+                    }
+                    echo "<a href='#".$project["project_id"]."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fas fa-folder'></i>  ".$project["project_id"]."</a>
+                            <ul id='".$project["project_id"]."' class='list-unstyled collapse ".$toggle_expand_child."'>
                             <li><a href='add_new_project.php?edit=true&project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit Project</a></li>
+                            <li><a href='project_access.php?edit=true&project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit User Access</a></li>
                             <li><a href='add_new_specimen.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
                             <li><a href='add_new_core.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Core</a></li>";
 
                     $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project["project_id"])), "core_id", "core_id", true);
                     foreach ($db->recordsArray() as $core) {
-                        echo "<a href='#".$core["core_id"]."' data-toggle='collapse'><i class='fa fa-database'></i> ".$core["core_id"]."</a>
-                        <ul id='".$core["core_id"]."' class='list-unstyled collapse'>
+                        $toggle_expand_parent = $toggle_expand_child = "";
+                        if ($_GET["core_id"] == $core["core_id"]) {
+                            $toggle_expand_parent = 'aria-expanded="true"';
+                            $toggle_expand_child = 'show';
+                        }
+                        echo "<a href='#".$core["core_id"]."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fa fa-database'></i> ".$core["core_id"]."</a>
+                        <ul id='".$core["core_id"]."' class='list-unstyled collapse ".$toggle_expand_child."'>
                         <li><a href='add_new_core.php?edit=true&project_id=".$project["project_id"]."&core_id=".$core["core_id"]."'><i class='fa fa-edit'></i> Edit Core</a></li>
                         <li><a href='add_new_sample.php?project_id=".$project["project_id"]."&core_id=".$core["core_id"]."' data-parent='#".$core["core_id"]."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
 

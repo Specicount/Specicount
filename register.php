@@ -28,7 +28,7 @@ class Register_Form extends Abstract_Form {
         $this->form_type = "register";
     }
 
-    public function setTableName() {
+    public function setSqlTableName() {
         $this->table_name = "users";
     }
 
@@ -77,25 +77,25 @@ $form = new Form($register_form->getFormName(), 'horizontal', 'novalidate', 'bs4
 $form->setCols(0, 12);
 
 $form->addHelper('Username', 'username');
-$form->addInput('text', 'username', '', '', 'required');
+$form->addInput('text', 'username', '', '', 'required, class=col-4');
 
 $form->addHelper('First Name', 'first_name');
-$form->addInput('text', 'first_name', '', '', 'required');
+$form->addInput('text', 'first_name', '', '', 'required, class=col-4');
 
 $form->addHelper('Last Name', 'last_name');
-$form->addInput('text', 'last_name', '', '', 'required');
+$form->addInput('text', 'last_name', '', '', 'required, class=col-4');
 
 $form->addHelper('Email', 'email');
-$form->addInput('email', 'email', '', '', 'required, placeholder=Email');
+$form->addInput('email', 'email', '', '', 'required, placeholder=Email, class=col-4');
 
 $form->addHelper('Your Institution/Company', 'institution');
-$form->addInput('text', 'institution', '', '');
+$form->addInput('text', 'institution', '', '', "class=col-4");
 
 $form->addHelper('Password', 'password');
-$form->addInput('password', 'password', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
+$form->addInput('password', 'password', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long, class=col-4');
 
 $form->addHelper('Password Confirmation', 'password_conf');
-$form->addInput('password', 'password_conf', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
+$form->addInput('password', 'password_conf', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long, class=col-4');
 
 // Captcha if we decide to allow any user to register
 /*$key = rand_char(15);
