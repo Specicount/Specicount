@@ -13,6 +13,7 @@
         border: 0px;
         padding: 10px 0px;
         font-size: 14px;
+
         cursor: pointer;
         text-align: center;
         display: inline-block;
@@ -49,6 +50,7 @@
     .dropdown-content {
         display: none;
         position: absolute;
+        width:100%;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
     }
@@ -58,7 +60,6 @@
         padding: 12px 16px;
         text-decoration: none;
         display: block;
-        width: 100%;
     }
     .dropdown-content a:hover {
         background-color: #f1f1f1;

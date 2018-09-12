@@ -3,9 +3,8 @@ require_once 'classes/Page_Renderer.php';
 
 // Render Page
 $page_render = new \classes\Page_Renderer();
-$page_render->setPageTitle("Home");
-$page_render->setInnerHTML('
-<div style="text-align: center"><h1>Welcome</h1><br><p>Click on Projects to get started!</p></div>');
+$page_render->setPageTitle("Tools");
+$page_render->setInnerHTML('<h1 style="text-align: center">Tools</h1>');
 $page_render->noLoginRequired();
 $page_render->disableSidebar();
 $page_render->renderPage();
