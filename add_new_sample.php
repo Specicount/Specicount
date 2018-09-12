@@ -3,16 +3,12 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
-/* =============================================
-    start session and include form class
-============================================= */
+use function functions\printDbErrors;
+use classes\Abstract_Add_New_Form;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Abstract_Add_New_Form.php";
-require_once "page-components/functions.php";
 
-use function functions\printDbErrors;
-use classes\Abstract_Add_New_Form;
 
 class Sample_Form extends Abstract_Add_New_Form {
     public function setFormType() {

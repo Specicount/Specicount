@@ -17,7 +17,7 @@ use function functions\getColumnNames;
 use function functions\printDbErrors;
 use function functions\printError;
 
-require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
+//require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
 abstract class Abstract_Form {
 
@@ -83,19 +83,19 @@ abstract class Abstract_Form {
     // Deletes the form_type from the database based on a filter (primary keys)
     protected function delete($db, $filter) {
         $db->deleteRows($this->table_name, $filter);
-        printDbErrors($db, ucwords($this->form_type)." deleted successfully!",null, true);
+        printDbErrors($db, ucwords($this->form_type)." successfully deleted!",null, true);
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
     protected function create($db, $update) {
         $db->insertRow($this->table_name, $update);
-        printDbErrors($db, "New ".$this->form_type." created successfully!");
+        printDbErrors($db, "New ".$this->form_type." successfully created!");
     }
 
     // Updates the form_type in the database identified by $filter with values from $update
     protected function update($db, $update, $filter) {
         $db->updateRows($this->table_name, $update, $filter);
-        printDbErrors($db, ucwords($this->form_type)." updated successfully!");
+        printDbErrors($db, ucwords($this->form_type)." successfully updated!");
     }
 
     protected function setUpdateArray() {

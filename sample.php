@@ -2,6 +2,7 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
+use function functions\printDbErrors;
 
 /* =============================================
     start session and include form class
@@ -59,11 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
 
 
         $db->deleteRows('found_specimens', $filter);
-        if($db->error()) {
-            $msg = '<p class="alert alert-danger">'.$specimen.' could not be deleted !</p>' . " \n";
-        } else {
-            $msg = '<p class="alert alert-success">'.$specimen.' deleted from sample successfully !</p>' . " \n";
-        }
+        printDbErrors($db, "Successfully deleted specimen ".$specimen_id." from sample");
+
     } else {
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) { // Was last updated by this device
             $error = false;
