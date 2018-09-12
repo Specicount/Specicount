@@ -105,5 +105,6 @@ function renderLoginForm($errors = NULL)
     $page_render->disableSidebar();
     $page_render->noLoginRequired();
     //$page_render->disableNavbar();
+    $page_render->setInnerHTML("<p>Not a Member? <a href=\"register.php\">Register Now!</a></p>");
     $page_render->renderPage();
 }
