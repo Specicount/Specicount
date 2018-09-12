@@ -36,21 +36,20 @@ $form->setOptions(array('buttonWrapper'=>''));
 $form->startFieldset('Add New User to Project');
 
 $form->setCols(0,5);
-$form->groupInputs('username', 'access_level', 'add-new-user-btn');
-$form->addHelper('Username', 'username');
-$form->addInput('text', 'username', '', '', 'required');
+$form->groupInputs('add_username', 'add_access_level', 'add-new-user-btn');
+$form->addHelper('Username', 'add_username');
+$form->addInput('text', 'add_username', '', '', 'required');
 
 $form->setCols(0,2);
 $form->addHelper('Access Level', 'access_level');
-$form->addOption('access_level', 'visitor', 'Visitor', '', '');
-$form->addOption('access_level', 'collaborator', 'Collaborator', '', '');
-$form->addOption('access_level', 'admin', 'Admin', '', '');
-$form->addSelect('access_level', '', 'required');
+$form->addOption('add_access_level', 'visitor', 'Visitor', '', '');
+$form->addOption('add_access_level', 'collaborator', 'Collaborator', '', '');
+$form->addOption('add_access_level', 'admin', 'Admin', '', '');
+$form->addSelect('add_access_level', '', 'required');
 
 $form->setCols(0,5);
-$form->addBtn('submit', 'add-new-user-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'delete-btn-group');
-$form->printBtnGroup('my-btn-group');
+$form->addBtn('submit', 'add-new-user-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'add-group');
+$form->printBtnGroup('add-group');
 
 $form->endFieldset();
 
