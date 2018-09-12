@@ -36,8 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
             printDbErrors($db, "Successfully added " . $update["username"] . " to the project!");
         }
     } else if ($_POST['submit-btn'] == "save") {
-        $combined_array = array_map(null, $_POST["username"], $_POST["access_level"]);
-
         foreach (array_keys($_POST) as $key) {
             if (strpos($key, "access_level") !== false) {
                 $username = explode(',',$key)[1];
@@ -55,9 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
 
 
         }
-
         printDbErrors($db, "Changes have been saved!");
-
     }
      // If the delete button was pressed
     else {
