@@ -82,9 +82,16 @@
             </div>
         </div>
         <a class="ribbon-button" href="search_specimen.php" style="width:20%">Search</a>
-        <a class="ribbon-button" href="register.php" style="width:20%">Add User</a>
         <div class="dropdown" style="width:20%">
-            <a href="#Help"  class="ribbon-button">Help</a>
+        <a class="ribbon-button" href="tools.php">Tools</a>
+            <div class="dropdown-content">
+                <a href="#tool1">Tool 1</a>
+                <a href="#tool2">Tool 2</a>
+                <a href="#tool3">Tool 3</a>
+            </div>
+        </div>
+        <div class="dropdown" style="width:20%">
+            <a href="help.php"  class="ribbon-button">Help</a>
             <div class="dropdown-content">
                 <a href="#About">About</a>
                 <a href="#Usage">How To Use</a>
