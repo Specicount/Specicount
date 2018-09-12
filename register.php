@@ -17,52 +17,62 @@ use phpformbuilder\database\Mysql;
 }*/
 
 require_once "classes/Page_Renderer.php";
+require_once "classes/Abstract_Form.php";
+require_once "page-components/functions.php";
+use classes\Abstract_Form;
+use function functions\printDbErrors;
+use function functions\printError;
 
-$project = $_GET["project"];
+class Register_Form extends Abstract_Form {
+    public function setFormType() {
+        $this->form_type = "register";
+    }
 
-$db = new Mysql();
+    public function setTableName() {
+        $this->table_name = "users";
+    }
 
-/* =============================================
-    validation if posted
-============================================= */
+    protected function setUpdateArray() {
+        parent::setUpdateArray();
+        // Create encrypted password
+        $this->update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('register') === true) {
-    $validator = Form::validate('register');
-    //$validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
-
-    if ($validator->hasErrors()) {
-        $_SESSION['errors']['register'] = $validator->getAllErrors();
-    } else {
+    protected function create($db, $update) {
         if ($_POST["password"] == $_POST["password_conf"]) {
-            $update["username"] = Mysql::SQLValue($_POST["username"]);
-            $update['first_name'] = Mysql::SQLValue($_POST["first_name"]);
-            $update['last_name'] = Mysql::SQLValue($_POST["last_name"]);
-            $update["email"] = Mysql::SQLValue($_POST["email"]);
-            $update['institution'] = Mysql::SQLValue($_POST["institution"]);
-            // Create encrypted password
-            $update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
-
-
-            $db->insertRow('users', $update);
-
-            if (!empty($db->error())) {
-                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
-            } else {
-                $msg = '<p class="alert alert-success">User: '.$_POST["username"].' added successfully !</p>' . " \n";
-            }
+            $db->insertRow($this->table_name, $update);
+            printDbErrors($db, 'User: '.$_POST["username"].' added successfully!', "Username already exists!");
         } else {
-            $msg = '<p class="alert alert-danger">Passwords do not match</p>' . "\n";
+            printError("Passwords do not match!");
         }
     }
+
+    protected function update($db, $update, $filter) {
+        if ($_POST["password"] == $_POST["password_conf"]) {
+            $db->updateRows($this->table_name, $update, $filter);
+            printDbErrors($db, 'User: '.$_POST["username"].' information updated!');
+        } else {
+            printError("Passwords do not match!");
+        }
+    }
+
+    protected function fillFormWithDbValues($record_array) {
+        parent::fillFormWithDbValues($record_array);
+        unset($_SESSION[$this->form_name]["password"]);
+    }
 }
+
+$register_form = new Register_Form();
+
+//$validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
 
 /* ==================================================
     The Form
 ================================================== */
-unset($_SESSION['register']);
+//
 
 
-$form = new Form('register', 'horizontal', 'novalidate', 'bs4');
+$form = new Form($register_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
 
 $form->setCols(0, 12);
 
@@ -108,6 +118,6 @@ $form->addPlugin('formvalidation', '#register', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle("Register");
+$page_render->setPageTitle($register_form->getPageTitle());
 $page_render->noLoginRequired();
 $page_render->renderPage();

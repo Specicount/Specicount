@@ -99,3 +99,8 @@ function printDbErrors($db, $success_msg=null, $fail_msg=null, $redirect=false, 
         }
     }
 }
+
+function printError($error_msg) {
+    global $msg;
+    $msg = '<p class="alert alert-danger">' . $error_msg . '</p>';
+}

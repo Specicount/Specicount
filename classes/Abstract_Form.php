@@ -15,68 +15,59 @@ use phpformbuilder\database\Mysql;
 use function functions\getPrimaryKeys;
 use function functions\getColumnNames;
 use function functions\printDbErrors;
+use function functions\printError;
 
 require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
 abstract class Abstract_Form {
 
-    private $form_type;  // E.g. project, core, sample etc
-    private $form_name;  // A string that uniquely identifies the form for phpformbuilder
-    private $page_title; // What gets displayed on the browser tab and on the navbar
-    private $table_name;
+    protected $form_type;  // E.g. project, core, sample etc
+    protected $form_name;  // A string that uniquely identifies the form for phpformbuilder
+    protected $page_title; // What gets displayed on the browser tab and on the navbar
+    protected $table_name;
+    protected $update, $filter;
 
-    public abstract function getFormType(); //Should return a string, e.g. 'project', 'core', 'sample', etc
+    public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
+    public abstract function setTableName(); //Set the $table_name variable to a string, e.g. 'projects', 'cores', 'samples', etc
 
     public function __construct() {
-        $this->form_type = strtolower($this->getFormType()); //strtolower just in case of bad data
-        $this->table_name = $this->form_type . 's';
+        $this->setFormType();
+        $this->setFormName();
+        $this->setPageTitle();
+        $this->setTableName();
+        $this->setFilterArray();
 
-        if ($_GET["edit"]) {
-            $id = end($_GET); // Last element of array is always the most specific id
-            $this->form_name = 'add-new-'.$this->form_type.'-edit';
-            $this->page_title = "Edit ".ucwords($this->form_type).' '.$id;
-        } else {
-            $this->form_name = 'add-new-'.$this->form_type;
-            $this->page_title = 'Add New '.ucwords($this->form_type);
-        }
-
+        unset($_SESSION[$this->form_name]); // Remove
         $db = new Mysql();
-
-        $filter = $this->getFilterArray();
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
             // If the delete button was pressed
             if ($_POST["submit-btn"] == "delete") {
                 // Call the form-specific delete function
-                $this->delete($db, $filter);
-                printDbErrors($db, ucwords($this->form_type).' deleted successfully!',null, true);
+                $this->delete($db, $this->filter);
             } else {
-                // Update or insert new rows into db
+
+                // If posted form has been filled out correctly
                 $validator = Form::validate($this->form_name);
                 if ($validator->hasErrors()) {
                     $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
                 } else {
 
-                    // If posted form has been filled out correctly
-
-                    $update = $this->getUpdateArray();
                     //print_r($update);
                     if ($_GET["edit"]) {
-                        $this->update($db, $update, $filter);
+                        $this->setUpdateArray();
+                        $this->update($db, $this->update, $this->filter);
                     } else {
-                        $this->create($db, $update);
+                        $this->create($db, $this->update);
                     }
-
-                    printDbErrors($db, "Database updated successfully !");
                 }
             }
         }
 
         // If editing, then fill in the fields with the current database values
         if ($_GET["edit"]) {
-            unset($_SESSION[$this->form_name]);
-            $db->selectRows($this->table_name, $filter);
+            $db->selectRows($this->table_name, $this->filter);
             printDbErrors($db, null, null, false, true);
             $this->fillFormWithDbValues($db->recordsArray()[0]);
         }
@@ -91,45 +82,56 @@ abstract class Abstract_Form {
 
     // Deletes the form_type from the database based on a filter (primary keys)
     protected function delete($db, $filter) {
-        $db->deleteRows($this->getTableName(), $filter);
+        $db->deleteRows($this->table_name, $filter);
+        printDbErrors($db, ucwords($this->form_type).' deleted successfully!',null, true);
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
     protected function create($db, $update) {
-        $db->insertRow($this->getTableName(), $update);
+        $db->insertRow($this->table_name, $update);
+        printDbErrors($db, "New ".$this->form_type." created successfully!");
     }
 
     // Updates the form_type in the database identified by $filter with values from $update
     protected function update($db, $update, $filter) {
-        $db->updateRows($this->getTableName(), $update, $filter);
+        $db->updateRows($this->table_name, $update, $filter);
+        printDbErrors($db, "Database updated successfully!");
     }
 
-    protected function getUpdateArray() {
+    protected function setUpdateArray() {
         // Get all the column names of the given table
         $column_names = getColumnNames($this->table_name);
         // Create an array which stores the new values to update for each column
         foreach ($column_names as $column_name) {
-            if($_POST[$column_name]) {
+            if(isset($_POST[$column_name])) {
                 $update[$column_name] = Mysql::SQLValue($_POST[$column_name]);
-            } else if ($_GET[$column_name]) {
+            } else if (isset($_GET[$column_name])) {
                 $update[$column_name] = Mysql::SQLValue($_GET[$column_name]);
             }
         }
 
-        return $update;
+        $this->update = $update;
     }
 
-    protected function getFilterArray() {
+    protected function setFilterArray() {
         // Create an array which stores the posted values of the primary keys to identify which row to update
         $primary_keys = getPrimaryKeys($this->table_name);
         foreach ($primary_keys as $pk) {
             $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
         }
-        return $filter;
+        $this->filter = $filter;
+    }
+
+    protected function setPageTitle() {
+        $this->page_title = ucwords($this->form_type) . " Form";
     }
 
     public function getPageTitle() {
         return $this->page_title;
+    }
+
+    protected function setFormName() {
+        $this->form_name = $this->form_type;
     }
 
     public function getFormName() {
@@ -138,5 +140,10 @@ abstract class Abstract_Form {
 
     public function getTableName() {
         return $this->table_name;
+    }
+
+    protected function raiseNotImplemented() {
+        $calling_method_name = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
+        printError($calling_method_name. " function not implemented!");
     }
 }

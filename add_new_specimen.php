@@ -12,7 +12,8 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Abstract_Add_New_Form.php";
+use classes\Abstract_Add_New_Form;
 
 function delete_files($target) {
     if(is_dir($target)){
@@ -42,9 +43,9 @@ if (!file_exists($image_folder)) {
 }
 
 
-class Specimen_Form extends \classes\Abstract_Form {
-    public function getFormType() {
-        return "specimen";
+class Specimen_Form extends Abstract_Add_New_Form {
+    public function setFormType() {
+        $this->form_type = "specimen";
     }
 
     protected function delete($db, $filter) {
@@ -89,7 +90,7 @@ class Specimen_Form extends \classes\Abstract_Form {
         }
     }
 
-    protected function getUpdateArray() {
+    protected function setUpdateArray() {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
 
@@ -154,45 +155,45 @@ class Specimen_Form extends \classes\Abstract_Form {
 
     protected function fillFormWithDbValues($record_array) {
         $specimen = $record_array;
-        $_SESSION[$this->getFormName()]["specimen_id"] = $specimen["specimen_id"];
-        $_SESSION[$this->getFormName()]["family"] = $specimen["family"];
-        $_SESSION[$this->getFormName()]["genus"] = $specimen["genus"];
-        $_SESSION[$this->getFormName()]["species"] = $specimen["species"];
-        $_SESSION[$this->getFormName()]["poll_spore"] = $specimen["poll_spore"];
-        $_SESSION[$this->getFormName()]["grain_arrangement"] = $specimen["grain_arrangement"];
-        $_SESSION[$this->getFormName()]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
-        $_SESSION[$this->getFormName()]["polar_axis_length"] = $specimen["polar_axis_length"];
-        $_SESSION[$this->getFormName()]["polar_axis_n"] = $specimen["polar_axis_n"];
-        $_SESSION[$this->getFormName()]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
-        $_SESSION[$this->getFormName()]["equatorial_axis_n"] = $specimen["equatorial_axis_n"];
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->getFormName()]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
-        $_SESSION[$this->getFormName()]["polar_shape"] = explode(",", $specimen["polar_shape"]);
-        $_SESSION[$this->getFormName()]["surface_pattern"] = $specimen["surface_pattern"];
-        $_SESSION[$this->getFormName()]["wall_thickness"] = $specimen["wall_thickness"];
-        $_SESSION[$this->getFormName()]["wall_evenness"] = $specimen["wall_evenness"];
-        $_SESSION[$this->getFormName()]["exine_type"] = $specimen["exine_type"];
-        $_SESSION[$this->getFormName()]["colporus"] = $specimen["colporus"];
-        $_SESSION[$this->getFormName()]["L_P"] = $specimen["L_P"];
-        $_SESSION[$this->getFormName()]["L_E"] = $specimen["L_E"];
-        $_SESSION[$this->getFormName()]["pore_protrusion"] = $specimen["pore_protrusion"];
-        $_SESSION[$this->getFormName()]["pore_shape_e"] = $specimen["pore_shape_e"];
-        $_SESSION[$this->getFormName()]["pore_shape_size"] = $specimen["pore_shape_size"];
-        $_SESSION[$this->getFormName()]["pore_shape_p"] = $specimen["pore_shape_p"];
-        $_SESSION[$this->getFormName()]["pore_margin"] = $specimen["pore_margin"];
-        $_SESSION[$this->getFormName()]["colpus_sulcus_length_c_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_length_c"]; // poll / spore
-        $_SESSION[$this->getFormName()]["colpus_sulcus_shape_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_shape"]; // poll / spore
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->getFormName()]["colpus_sulcus_margin_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_margin"]; // poll / spore
-        $_SESSION[$this->getFormName()]["apocolpium_width_e"] = $specimen["apocolpium_width_e"];
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->getFormName()]["trilete_scar_arm_length"] = $specimen["trilete_scar_arm_length"];
-        $_SESSION[$this->getFormName()]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
-        $_SESSION[$this->getFormName()]["p_sacci_size"] = $specimen["p_sacci_size"];
-        $_SESSION[$this->getFormName()]["e_sacci_size"] = $specimen["e_sacci_size"];
-        $_SESSION[$this->getFormName()]["plant_function_type"] = explode(",", $specimen["plant_function_type"]);
-        $_SESSION[$this->getFormName()]["morphology_notes"] = $specimen["morphology_notes"];
+        $_SESSION[$this->form_name]["specimen_id"] = $specimen["specimen_id"];
+        $_SESSION[$this->form_name]["family"] = $specimen["family"];
+        $_SESSION[$this->form_name]["genus"] = $specimen["genus"];
+        $_SESSION[$this->form_name]["species"] = $specimen["species"];
+        $_SESSION[$this->form_name]["poll_spore"] = $specimen["poll_spore"];
+        $_SESSION[$this->form_name]["grain_arrangement"] = $specimen["grain_arrangement"];
+        $_SESSION[$this->form_name]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
+        $_SESSION[$this->form_name]["polar_axis_length"] = $specimen["polar_axis_length"];
+        $_SESSION[$this->form_name]["polar_axis_n"] = $specimen["polar_axis_n"];
+        $_SESSION[$this->form_name]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
+        $_SESSION[$this->form_name]["equatorial_axis_n"] = $specimen["equatorial_axis_n"];
+        //$_SESSION[$this->form_name]["***determined***"] = $specimen["***determined***"];
+        //$_SESSION[$this->form_name]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$this->form_name]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
+        $_SESSION[$this->form_name]["polar_shape"] = explode(",", $specimen["polar_shape"]);
+        $_SESSION[$this->form_name]["surface_pattern"] = $specimen["surface_pattern"];
+        $_SESSION[$this->form_name]["wall_thickness"] = $specimen["wall_thickness"];
+        $_SESSION[$this->form_name]["wall_evenness"] = $specimen["wall_evenness"];
+        $_SESSION[$this->form_name]["exine_type"] = $specimen["exine_type"];
+        $_SESSION[$this->form_name]["colporus"] = $specimen["colporus"];
+        $_SESSION[$this->form_name]["L_P"] = $specimen["L_P"];
+        $_SESSION[$this->form_name]["L_E"] = $specimen["L_E"];
+        $_SESSION[$this->form_name]["pore_protrusion"] = $specimen["pore_protrusion"];
+        $_SESSION[$this->form_name]["pore_shape_e"] = $specimen["pore_shape_e"];
+        $_SESSION[$this->form_name]["pore_shape_size"] = $specimen["pore_shape_size"];
+        $_SESSION[$this->form_name]["pore_shape_p"] = $specimen["pore_shape_p"];
+        $_SESSION[$this->form_name]["pore_margin"] = $specimen["pore_margin"];
+        $_SESSION[$this->form_name]["colpus_sulcus_length_c_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_length_c"]; // poll / spore
+        $_SESSION[$this->form_name]["colpus_sulcus_shape_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_shape"]; // poll / spore
+        //$_SESSION[$this->form_name]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$this->form_name]["colpus_sulcus_margin_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_margin"]; // poll / spore
+        $_SESSION[$this->form_name]["apocolpium_width_e"] = $specimen["apocolpium_width_e"];
+        //$_SESSION[$this->form_name]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$this->form_name]["trilete_scar_arm_length"] = $specimen["trilete_scar_arm_length"];
+        $_SESSION[$this->form_name]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
+        $_SESSION[$this->form_name]["p_sacci_size"] = $specimen["p_sacci_size"];
+        $_SESSION[$this->form_name]["e_sacci_size"] = $specimen["e_sacci_size"];
+        $_SESSION[$this->form_name]["plant_function_type"] = explode(",", $specimen["plant_function_type"]);
+        $_SESSION[$this->form_name]["morphology_notes"] = $specimen["morphology_notes"];
     }
 }
 

@@ -10,15 +10,16 @@ use phpformbuilder\database\Mysql;
 use function functions\printDbErrors;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Abstract_Add_New_Form.php";
+use classes\Abstract_Add_New_Form;
 
-class Project_Form extends \classes\Abstract_Form {
-    public function getFormType() {
-        return "project";
+class Project_Form extends Abstract_Add_New_Form {
+    public function setFormType() {
+        $this->form_type = "project";
     }
 
     protected function create($db, $update) {
-        $db->insertRow($this->getTableName(), $update);
+        $db->insertRow($this->table_name, $update);
         printDbErrors($db);
         $update_access['project_id'] = $update['project_id'];
         $update_access['username'] = Mysql::SQLValue($_SESSION['username']);

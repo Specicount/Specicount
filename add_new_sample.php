@@ -8,12 +8,14 @@ use phpformbuilder\database\Mysql;
 ============================================= */
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Abstract_Add_New_Form.php";
+use classes\Abstract_Add_New_Form;
+use classes\Page_Renderer;
 
 
-class Sample_Form extends \classes\Abstract_Form {
-    public function getFormType() {
-        return "sample";
+class Sample_Form extends Abstract_Add_New_Form {
+    public function setFormType() {
+        $this->form_type = "sample";
     }
 
     protected function delete($db, $filter) {
@@ -21,19 +23,19 @@ class Sample_Form extends \classes\Abstract_Form {
         printDbErrors($db);
         $db->deleteRows("found_specimens", $filter);
         printDbErrors($db);
-        $db->deleteRows($this->getTableName(), $filter);
+        $db->deleteRows($this->table_name, $filter);
     }
 
     protected function create($db, $update) {
         $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $db->insertRow($this->getTableName(), $update);
+        $db->insertRow($this->table_name, $update);
     }
 
     protected function update($db, $update, $filter) {
         $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $db->updateRows($this->getTableName(), $update, $filter);
+        $db->updateRows($this->table_name, $update, $filter);
     }
 }
 
