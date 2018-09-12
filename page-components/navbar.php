@@ -94,9 +94,9 @@
         <div class="dropdown" style="width:20%">
             <a href="help.php"  class="ribbon-button">Help</a>
             <div class="dropdown-content">
-                <a href="help.php?tab=User_Guide">How To Use</a>
-                <a href="help.php?tab=Documentation">Documentation</a>
                 <a href="help.php?tab=FAQ">Frequently Asked Questions</a>
+                <a href="help.php?tab=Documentation">Documentation</a>
+                <a href="help.php?tab=User_Guide">How To Use</a>
                 <a href="logout.php">[Temporary] Logout</a>
             </div>
         </div>
