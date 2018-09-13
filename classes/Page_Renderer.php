@@ -121,7 +121,8 @@ class Page_Renderer {
             // If the user does not have access to that project
             if ($db->rowCount() == 0) {
                 // Redirect to home page
-                header("location: index.php?error=no_project_access");
+                $error_message = urlencode("You do not have permissions to view pages related to that project");
+                header("location: index.php?error=".$error_message);
                 exit;
             }
         }

@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('add-new-found-sampl
 
 
         $db->deleteRows('found_specimens', $filter);
-        printDbErrors($db, "Successfully deleted specimen ".$specimen_id." from sample");
+        printDbErrors($db, "Successfully deleted specimen " . $specimen_id . " from sample");
 
     } else {
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) { // Was last updated by this device

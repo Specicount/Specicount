@@ -41,6 +41,12 @@ abstract class Abstract_Form {
         $this->setUpdateArray();
         $this->db = new Mysql();
 
+        // Boolean expressions constructed such that only one of them is ever called at a time
+        $this->registerPostAction("create", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" && !isset($_GET["edit"]));
+        $this->registerPostAction("update", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" &&  isset($_GET["edit"]));
+        $this->registerPostAction("delete", isset($_POST["delete-btn"]) && $_POST["delete-btn"] == "delete");
+
+
         //unset($_SESSION[$this->form_name]); // Remove
 
         // If the form has been posted (saved, deleted, etc) back to the server
@@ -60,48 +66,25 @@ abstract class Abstract_Form {
                     // If user is only a visitor
                     if ($user["access_level"] == "visitor") {
                         // Deny their changes and redirect them to home page
-                        header("location: index.php?error=invalid_permissions");
+                        $error_message = urlencode("You do not have the correct permissions to perform those changes");
+                        header("location: index.php?error=".$error_message);
                         exit;
                     }
 
                 }
-
             }
             // -----------------
 
-
-
-//            // If posted form has been filled out correctly
-//            $validator = Form::validate($this->form_name);
-//            if ($validator->hasErrors()) {
-//                $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
-//            } else {
-//                // Call any functions that should be called
-//                foreach ($this->post_actions as $function_name => $should_call_function) {
-//                    if ($should_call_function) {
-//                        $this->$function_name();
-//                    }
-//                }
-//            }
-
-            // If the delete button was pressed
-            if ($_POST["submit-btn"] == "delete") {
-                // Call the form-specific delete function
-                $this->delete();
+            // If posted form has been filled out correctly
+            $validator = Form::validate($this->form_name);
+            if ($validator->hasErrors()) {
+                $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
             } else {
+                // Call any functions that should be called
+                foreach ($this->post_actions as $function_name => $should_call_function) {
 
-                // If posted form has been filled out correctly
-                $validator = Form::validate($this->form_name);
-                if ($validator->hasErrors()) {
-                    $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
-                } else {
-
-
-                    //print_r($update);
-                    if ($_GET["edit"]) {
-                        $this->update();
-                    } else {
-                        $this->create();
+                    if ($should_call_function) {
+                        $this->$function_name();
                     }
                 }
             }
@@ -110,7 +93,7 @@ abstract class Abstract_Form {
         // If editing, then fill in the fields with the current database values
         if ($_GET["edit"]) {
             $this->db->selectRows($this->table_name, $this->filter);
-            printDbErrors($this->db, null, null, false, true);
+            printDbErrors($this->db, null, null, true);
             $this->fillFormWithDbValues($this->db->recordsArray()[0]);
         }
     }
@@ -125,26 +108,34 @@ abstract class Abstract_Form {
     // Deletes the form_type from the database based on a filter (primary keys)
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
-        printDbErrors($this->db, ucwords($this->form_type)." successfully deleted!",null, true);
+        if ($this->db->error()) {
+            printDbErrors($this->db);
+        } else {
+            $success_message = urlencode(ucwords($this->form_type) . " successfully deleted!");
+            header("location: index.php?success=".$success_message);
+            exit;
+        }
+
+
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
     protected function create() {
         $this->db->insertRow($this->table_name, $this->update);
-        printDbErrors($this->db, "New ".$this->form_type." successfully created!");
+        printDbErrors($this->db, "New " . $this->form_type . " successfully created!");
     }
 
     // Updates the form_type in the database identified by $filter with values from $update
     protected function update() {
         $this->db->updateRows($this->table_name, $this->update, $this->filter);
-        printDbErrors($this->db, ucwords($this->form_type)." successfully updated!");
+        printDbErrors($this->db, ucwords($this->form_type) . " successfully updated!");
     }
 
     // Register a new post action that will call the function identified by the string $function_name when $bool = true
     // All post action functions should take in three arguments: $db, $update and $filter, regardless
     // of whether the function uses them or not since some functions need all three arguments (e.g. update)
     protected function registerPostAction($function_name, $bool) {
-        $post_action[$function_name] = $bool;
+        $this->post_actions[$function_name] = $bool;
     }
 
     protected function setUpdateArray() {

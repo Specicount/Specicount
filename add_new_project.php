@@ -14,8 +14,8 @@ class Project_Form extends Abstract_Add_New_Form {
         $this->form_type = "project";
     }
 
-    protected function delete() {
-        parent::delete();
+    protected function create() {
+        parent::create();
         $update_access['project_id'] = $this->update['project_id'];
         $update_access['username'] = Mysql::SQLValue($_SESSION['username']);
         $update_access['access_level'] = Mysql::SQLValue('admin');

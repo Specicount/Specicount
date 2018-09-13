@@ -73,7 +73,7 @@ function arrayToString($arr) {
 // Usually executed after any calls to the database
 // If no success or fail message given then it will print the debug backtrace
 // Optional redirect to index.php on db success
-function printDbErrors($db, $success_msg=null, $fail_msg=null, $redirect=false, $errors_only=false) {
+function printDbErrors($db, $success_msg = null, $fail_msg = null, $errors_only = false) {
     global $msg; // This variable is printed in the Page_Renderer class
     // If the database has thrown any errors
     if ($db->error()) {
@@ -89,16 +89,17 @@ function printDbErrors($db, $success_msg=null, $fail_msg=null, $redirect=false, 
         } else {
             $msg = '<p class="alert alert-success">' . $success_msg . '</p>';
         }
-
-        if ($redirect) {
-            header("Location: index.php");
-        }
     }
 }
 
 function printError($error_msg) {
     global $msg;
     $msg = '<p class="alert alert-danger">' . $error_msg . '</p>';
+}
+
+function printSuccess($success_msg) {
+    global $msg;
+    $msg = '<p class="alert alert-success">' . $success_msg . '</p>';
 }
 
 

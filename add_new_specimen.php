@@ -81,7 +81,7 @@ class Specimen_Form extends Abstract_Add_New_Form {
                 $unique_spec = $this->db->recordsArray()[0]["amount"];
                 $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
                 $this->db->insertRow('concentration_curve', $update_curve);
-                printDbErrors($this->db,"Specimen successfully added to project and to sample!");
+                printDbErrors($this->db, "Specimen successfully added to project and to sample!");
             }
         }
     }

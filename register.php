@@ -41,7 +41,7 @@ class Register_Form extends Abstract_Form {
     protected function delete() {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->insertRow($this->table_name, $this->update);
-            printDbErrors($this->db, 'User: '.$_POST["username"].' added successfully!', "Username already exists!");
+            printDbErrors($this->db, 'User: ' . $_POST["username"] . ' added successfully!', "Username already exists!");
         } else {
             printError("Passwords do not match!");
         }
@@ -50,7 +50,7 @@ class Register_Form extends Abstract_Form {
     protected function update($db, $update, $filter) {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->updateRows($this->table_name, $this->update, $this->filter);
-            printDbErrors($this->db, 'User: '.$_POST["username"].' information updated!');
+            printDbErrors($this->db, 'User: ' . $_POST["username"] . ' information updated!');
         } else {
             printError("Passwords do not match!");
         }

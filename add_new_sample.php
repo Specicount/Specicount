@@ -15,7 +15,7 @@ class Sample_Form extends Abstract_Add_New_Form {
         $this->form_type = "sample";
     }
 
-    protected function delete() {
+    protected function create() {
         $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
         $this->db->insertRow($this->table_name, $this->update);
