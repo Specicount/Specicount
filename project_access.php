@@ -72,56 +72,7 @@ class Access_Form extends Abstract_Form {
     }
 }
 
-//if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true) {
-//
-//
-//     if ($_POST['submit-btn'] == "add-user") {
-//        // If posted form has been filled out correctly
-//        $validator = Form::validate($form_name);
-//        if ($validator->hasErrors()) {
-//            //print_r($_SESSION[$form_name]);
-//            $_SESSION['errors'][$form_name] = $validator->getAllErrors();
-//            print_r($validator->getAllErrors());
-//        } else {
-//            $update["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-//            $update["username"] = Mysql::SQLValue($_POST["username"]);
-//            $update["access_level"] = Mysql::SQLValue($_POST["access_level"]);
-//            $db->insertRow($table_name, $update);
-//
-//        }
-//    } else if ($_POST['submit-btn'] == "save-multiple") {
-//         print_r(isset($_POST["delete-btn"]));
-//        foreach (array_keys($_POST) as $key) {
-//            if (strpos($key, "access_level") !== false) {
-//                $username = explode(',',$key)[1];
-//                $access_level = $_POST[$key];
-//
-//                $update["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-//                $update["username"] = Mysql::SQLValue($username);
-//                $update["access_level"] = Mysql::SQLValue($access_level);
-//
-//                $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-//                $filter["username"] = Mysql::SQLValue($username);
-//
-//                $db->updateRows($table_name, $update, $filter);
-//            }
-//
-//
-//        }
-//        printDbErrors($db, "Changes have been saved!");
-//    }
-//     // If the delete button was pressed
-//    else {
-//        $username = $_POST["delete-btn"];
-//        $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-//        $filter["username"] = Mysql::SQLValue($username);
-//        $db->deleteRows($table_name, $filter);
-//        printDbErrors($db, "Successfully deleted " . $username . " from access list!", "Failed to delete " . $username . " from access list");
-//    }
-//}
-
 $access_form = new Access_Form();
-
 
 /* ==================================================
     The Form
@@ -153,8 +104,7 @@ $form->endFieldset();
 $form->startFieldset('Edit Current Users');
 
 $db = new Mysql();
-$filter = array("project_id"=> Mysql::SQLValue($_GET['project_id']));
-$db->selectRows($access_form->getTableName(), $filter);
+$db->selectRows($access_form->getTableName(), $access_form->getFilterArray());
 foreach ($db->recordsArray() as $user) {
     $username_input = 'username,'.$user["username"];
     $access_input = 'access_level,'.$user["username"];

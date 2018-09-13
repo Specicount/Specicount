@@ -57,7 +57,7 @@ abstract class Abstract_Form {
         // FILL FORM
         // ------------------------------
         // If editing a form, then populate the fields with the current database values
-        if ($_GET["edit"]) {
+        if (isset($_GET["edit"])) {
             $this->db->selectRows($this->table_name, $this->filter);
             // If could not find the object in the database with which to fill in the form
             if ($this->db->rowCount() == 0) {
@@ -74,7 +74,6 @@ abstract class Abstract_Form {
             //Security token is automatically added to each form.
             //Token is valid for 1800 seconds (30mn) without refreshing page
             if (Form::testToken($this->form_name) === true) {
-
                 // PERMISSIONS CHECK
                 // ------------------------------
                 // If trying to interact with a page related to a project
@@ -199,6 +198,10 @@ abstract class Abstract_Form {
             $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
         }
         $this->filter = $filter;
+    }
+
+    public function getFilterArray() {
+        return $this->filter;
     }
 
     protected function setPageTitle() {
