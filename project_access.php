@@ -33,7 +33,7 @@ class Access_Form extends Abstract_Form {
 
     protected function registerPostActions() {
         parent::registerPostActions();
-        $this->registerPostAction("updateMultiple", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
+        $this->registerPostAction("update", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
         $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
     }
 
@@ -51,7 +51,7 @@ class Access_Form extends Abstract_Form {
     }
 
     // Update all users access levels
-    protected function updateMultiple() {
+    protected function update() {
         foreach (array_keys($_POST) as $key) {
             if (strpos($key, "access_level") !== false) {
                 // TODO: May cause problems if usernames can have commas
