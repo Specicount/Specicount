@@ -82,7 +82,6 @@ abstract class Abstract_Form {
             } else {
                 // Call any functions that should be called
                 foreach ($this->post_actions as $function_name => $should_call_function) {
-
                     if ($should_call_function) {
                         $this->$function_name();
                     }
@@ -106,6 +105,8 @@ abstract class Abstract_Form {
     }
 
     // Deletes the form_type from the database based on a filter (primary keys)
+    // If you override this function you must not call the parent function, otherwise the redirect will not execute
+    // the rest of your code
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
         if ($this->db->error()) {
