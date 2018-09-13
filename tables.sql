@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS samples (
   top_depth DECIMAL(19,2),
   bottom_depth DECIMAL(19,2),
   mid_depth DECIMAL(19,2),
-  modelled_age INT (11), -- ????
-  lycopodium INT (11),
-  charcoal INT (11),
+  modelled_age INT (11),
+  lycopodium INT (11) DEFAULT 0,
+  charcoal INT (11) DEFAULT 0,
   last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
   PRIMARY KEY (sample_id, core_id, project_id),
