@@ -15,11 +15,11 @@ class Sample_Form extends Abstract_Add_New_Form {
         $this->form_type = "sample";
     }
 
-    protected function create($db, $update) {
-        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-        $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $db->insertRow($this->table_name, $update);
-        printDbErrors($db, "Successfully created new sample!");
+    protected function delete() {
+        $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+        $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
+        $this->db->insertRow($this->table_name, $this->update);
+        printDbErrors($this->db, "Successfully created new sample!");
     }
 
     protected function setUpdateArray() {

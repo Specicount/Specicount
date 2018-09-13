@@ -47,41 +47,41 @@ class Specimen_Form extends Abstract_Add_New_Form {
         $this->form_type = "specimen";
     }
 
-    protected function delete($db, $filter) {
-        parent::delete($db, $filter);
-        if (!$db->error()) {
+    protected function delete() {
+        parent::delete();
+        if (!$this->db->error()) {
             global $image_folder;
             delete_files($image_folder . $_POST["specimen_id"]. "/");
         }
     }
 
-    protected function create($db, $update) {
-        parent::create($db, $update);
-        if (!$db->error()) {
+    protected function create() {
+        parent::create();
+        if (!$this->db->error()) {
             // If specimen added from sample page then also add the specimen to the sample
             if ($_GET['sample_id']) {
-                $update_found["specimen_id"] = $update["specimen_id"];
+                $update_found["specimen_id"] = $this->update["specimen_id"];
                 $update_found["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
                 $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
                 $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
                 $update_found["specimen_project_id"] = Mysql::SQLValue($_GET['project_id']);
                 $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
                 $update_found["count"] = Mysql::SQLValue(1);
-                $db->insertRow('found_specimens', $update_found);
-                printDbErrors($db);
+                $this->db->insertRow('found_specimens', $update_found);
+                printDbErrors($this->db);
 
                 # Do concentration curve
                 $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
                 $update_curve["core_id"] = Mysql::SQLValue($_GET['core_id']);
                 $update_curve["project_id"] = Mysql::SQLValue($_GET['project_id']);
-                $db->query("SELECT SUM(count) as total FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
-                $tally_count = $db->recordsArray()[0]["total"];
+                $this->db->query("SELECT SUM(count) as total FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
+                $tally_count = $this->db->recordsArray()[0]["total"];
                 $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
-                $db->query("SELECT COUNT(*) as amount FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
-                $unique_spec = $db->recordsArray()[0]["amount"];
+                $this->db->query("SELECT COUNT(*) as amount FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
+                $unique_spec = $this->db->recordsArray()[0]["amount"];
                 $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
-                $db->insertRow('concentration_curve', $update_curve);
-                printDbErrors($db,"Specimen successfully added to project and to sample!");
+                $this->db->insertRow('concentration_curve', $update_curve);
+                printDbErrors($this->db,"Specimen successfully added to project and to sample!");
             }
         }
     }

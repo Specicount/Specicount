@@ -26,6 +26,8 @@ abstract class Abstract_Form {
     protected $page_title; // What gets displayed on the browser tab and on the navbar
     protected $table_name;
     protected $update, $filter;
+    protected $post_actions;
+    protected $db;
 
     public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
     public abstract function setSqlTableName(); //Set the $table_name variable to a string, e.g. 'projects', 'cores', 'samples', etc
@@ -36,9 +38,10 @@ abstract class Abstract_Form {
         $this->setPageTitle();
         $this->setSqlTableName();
         $this->setFilterArray();
+        $this->setUpdateArray();
+        $this->db = new Mysql();
 
         //unset($_SESSION[$this->form_name]); // Remove
-        $db = new Mysql();
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
@@ -52,8 +55,8 @@ abstract class Abstract_Form {
                 if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {;
                     $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
                     $filter["username"] = Mysql::SQLValue($_SESSION["username"]);
-                    $db->selectRows("user_project_access", $filter);
-                    $user = $db->recordsArray()[0];
+                    $this->db->selectRows("user_project_access", $filter);
+                    $user = $this->db->recordsArray()[0];
                     // If user is only a visitor
                     if ($user["access_level"] == "visitor") {
                         // Deny their changes and redirect them to home page
@@ -70,7 +73,7 @@ abstract class Abstract_Form {
             // If the delete button was pressed
             if ($_POST["submit-btn"] == "delete") {
                 // Call the form-specific delete function
-                $this->delete($db, $this->filter);
+                $this->delete();
             } else {
 
                 // If posted form has been filled out correctly
@@ -79,12 +82,12 @@ abstract class Abstract_Form {
                     $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
                 } else {
 
-                    $this->setUpdateArray();
+
                     //print_r($update);
                     if ($_GET["edit"]) {
-                        $this->update($db, $this->update, $this->filter);
+                        $this->update();
                     } else {
-                        $this->create($db, $this->update);
+                        $this->create();
                     }
                 }
             }
@@ -92,9 +95,9 @@ abstract class Abstract_Form {
 
         // If editing, then fill in the fields with the current database values
         if ($_GET["edit"]) {
-            $db->selectRows($this->table_name, $this->filter);
-            printDbErrors($db, null, null, false, true);
-            $this->fillFormWithDbValues($db->recordsArray()[0]);
+            $this->db->selectRows($this->table_name, $this->filter);
+            printDbErrors($this->db, null, null, false, true);
+            $this->fillFormWithDbValues($this->db->recordsArray()[0]);
         }
     }
 
@@ -106,21 +109,33 @@ abstract class Abstract_Form {
     }
 
     // Deletes the form_type from the database based on a filter (primary keys)
-    protected function delete($db, $filter) {
-        $db->deleteRows($this->table_name, $filter);
-        printDbErrors($db, ucwords($this->form_type)." successfully deleted!",null, true);
+    protected function delete() {
+        $this->db->deleteRows($this->table_name, $this->filter);
+        printDbErrors($this->db, ucwords($this->form_type)." successfully deleted!",null, true);
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
-    protected function create($db, $update) {
-        $db->insertRow($this->table_name, $update);
-        printDbErrors($db, "New ".$this->form_type." successfully created!");
+    protected function create() {
+        $this->db->insertRow($this->table_name, $this->update);
+        printDbErrors($this->db, "New ".$this->form_type." successfully created!");
     }
 
     // Updates the form_type in the database identified by $filter with values from $update
-    protected function update($db, $update, $filter) {
-        $db->updateRows($this->table_name, $update, $filter);
-        printDbErrors($db, ucwords($this->form_type)." successfully updated!");
+    protected function update() {
+        $this->db->updateRows($this->table_name, $this->update, $this->filter);
+        printDbErrors($this->db, ucwords($this->form_type)." successfully updated!");
+    }
+
+    // Returns "delete", "update", "create" or "reset" depending on what button was pressed on the form
+    protected function getPostAction() {
+
+    }
+
+    // Register a new post action that will call the function identified by the string $function_name when $bool = true
+    // All post action functions should take in three arguments: $db, $update and $filter, regardless
+    // of whether the function uses them or not since some functions need all three arguments (e.g. update)
+    protected function registerPostAction($function_name, $bool) {
+        $post_action[$function_name] = $bool;
     }
 
     protected function setUpdateArray() {

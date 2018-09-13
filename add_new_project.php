@@ -14,12 +14,12 @@ class Project_Form extends Abstract_Add_New_Form {
         $this->form_type = "project";
     }
 
-    protected function create($db, $update) {
-        parent::create($db, $update);
-        $update_access['project_id'] = $update['project_id'];
+    protected function delete() {
+        parent::delete();
+        $update_access['project_id'] = $this->update['project_id'];
         $update_access['username'] = Mysql::SQLValue($_SESSION['username']);
         $update_access['access_level'] = Mysql::SQLValue('admin');
-        $db->insertRow('user_project_access', $update_access);
+        $this->db->insertRow('user_project_access', $update_access);
     }
 }
 
