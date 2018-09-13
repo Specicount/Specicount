@@ -33,9 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
             $update["username"] = Mysql::SQLValue($_POST["add_username"]);
             $update["access_level"] = Mysql::SQLValue($_POST["add_access_level"]);
             $db->insertRow($table_name, $update);
-            printDbErrors($db, "Successfully added " . $update["username"] . " to the project!");
+            printDbErrors($db, "Successfully added " . $update["username"] . " to the project!", "User already added or does not exist");
         }
     } else if ($_POST['submit-btn'] == "save") {
+         print_r(isset($_POST["delete-btn"]));
         foreach (array_keys($_POST) as $key) {
             if (strpos($key, "access_level") !== false) {
                 $username = explode(',',$key)[1];
@@ -57,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($form_name) === true
     }
      // If the delete button was pressed
     else {
-        $username = $_POST["submit-btn"];
+        $username = $_POST["delete-btn"];
         $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
         $filter["username"] = Mysql::SQLValue($username);
         $db->deleteRows($table_name, $filter);
@@ -120,7 +121,7 @@ foreach ($db->recordsArray() as $user) {
 
 
     $form->setCols(0,5);
-    $form->addBtn('submit', 'submit-btn', $user['username'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["username"]);
+    $form->addBtn('submit', 'delete-btn', $user['username'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["username"]);
     $form->printBtnGroup('delete-btn-'.$user["username"]);
 
     $form->endFieldset();

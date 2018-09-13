@@ -51,7 +51,7 @@ abstract class Abstract_Form {
             // If trying to interact with a page related to a project
             if (isset($_GET["project_id"])) {
                 $page = strtok(basename($_SERVER['HTTP_REFERER']), "?");
-                // If not just trying to create a new project
+                // If not just trying to create a new project (all users are allowed to do that)
                 if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {;
                     $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
                     $filter["username"] = Mysql::SQLValue($_SESSION["username"]);
@@ -69,6 +69,20 @@ abstract class Abstract_Form {
             }
             // -----------------
 
+
+
+//            // If posted form has been filled out correctly
+//            $validator = Form::validate($this->form_name);
+//            if ($validator->hasErrors()) {
+//                $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
+//            } else {
+//                // Call any functions that should be called
+//                foreach ($this->post_actions as $function_name => $should_call_function) {
+//                    if ($should_call_function) {
+//                        $this->$function_name();
+//                    }
+//                }
+//            }
 
             // If the delete button was pressed
             if ($_POST["submit-btn"] == "delete") {
@@ -124,11 +138,6 @@ abstract class Abstract_Form {
     protected function update() {
         $this->db->updateRows($this->table_name, $this->update, $this->filter);
         printDbErrors($this->db, ucwords($this->form_type)." successfully updated!");
-    }
-
-    // Returns "delete", "update", "create" or "reset" depending on what button was pressed on the form
-    protected function getPostAction() {
-
     }
 
     // Register a new post action that will call the function identified by the string $function_name when $bool = true

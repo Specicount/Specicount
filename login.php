@@ -96,7 +96,7 @@ function renderLoginForm($errors = NULL)
     $form->addInput('text', 'username', '', '', 'required, class=col-4');
     $form->addHelper("Password", "password");
     $form->addInput('password', 'password', '', '', 'required, class=col-4');
-    $form->addBtn('submit', 'submit-btn', 1, 'Log In', 'class=btn btn-success ladda-button, data-style=zoom-in');
+    $form->addBtn('submit', 'submit-btn', "login", 'Log In', 'class=btn btn-success ladda-button, data-style=zoom-in');
     $form->addHtml('<br><br>');
     $form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
 
