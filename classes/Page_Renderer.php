@@ -122,7 +122,7 @@ class Page_Renderer {
             if ($db->rowCount() == 0) {
                 // Redirect to home page
                 $error_message = urlencode("You do not have permissions to view pages related to that project");
-                header("location: index.php?error=".$error_message);
+                header("location: index.php?error_message=".$error_message);
                 exit;
             }
         }

@@ -48,10 +48,15 @@ class Specimen_Form extends Abstract_Add_New_Form {
     }
 
     protected function delete() {
-        parent::delete();
-        if (!$this->db->error()) {
+        $this->db->deleteRows($this->table_name, $this->filter);
+        if ($this->db->error()) {
+            printDbErrors($this->db);
+        } else {
             global $image_folder;
             delete_files($image_folder . $_POST["specimen_id"]. "/");
+            $success_message = urlencode(ucwords($this->form_type) . " successfully deleted!");
+            header("location: index.php?success_message=".$success_message);
+            exit;
         }
     }
 

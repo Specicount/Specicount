@@ -3,16 +3,12 @@ require_once 'classes/Page_Renderer.php';
 use function functions\printError;
 use function functions\printSuccess;
 
-if ($_GET["error"]) {
-    printError($_GET["error"]);
-    switch ($_GET["error"]) {
-        case "no_project_access" : printError(); break;
-        case "invalid_permissions" : printError("You do not have the correct permissions to perform those changes"); break;
-    }
+if ($_GET["error_message"]) {
+    printError($_GET["error_message"]);
 }
 
-if ($_GET["success"]) {
-    printSuccess($_GET["success"]);
+if ($_GET["success_message"]) {
+    printSuccess($_GET["success_message"]);
 }
 
 // Render Page

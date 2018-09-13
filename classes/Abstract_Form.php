@@ -67,7 +67,7 @@ abstract class Abstract_Form {
                     if ($user["access_level"] == "visitor") {
                         // Deny their changes and redirect them to home page
                         $error_message = urlencode("You do not have the correct permissions to perform those changes");
-                        header("location: index.php?error=".$error_message);
+                        header("location: index.php?error_message=".$error_message);
                         exit;
                     }
 
@@ -112,11 +112,9 @@ abstract class Abstract_Form {
             printDbErrors($this->db);
         } else {
             $success_message = urlencode(ucwords($this->form_type) . " successfully deleted!");
-            header("location: index.php?success=".$success_message);
+            header("location: index.php?success_message=".$success_message);
             exit;
         }
-
-
     }
 
     // Creates the form_type in the database based on an $update array ($column_name => $value)
