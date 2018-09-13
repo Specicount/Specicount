@@ -116,20 +116,6 @@ $sample_count_form = new Sample_Count_Form();
     The Form
 ================================================== */
 
-$filter = $sample_count_form->getFilterArray();
-$sql =  "SELECT  s.specimen_id, s.project_id as s_project_id, s.family, s.genus, s.species, s.plant_function_type, ".
-    "fs.sample_id, fs.core_id, fs.project_id, fs.count  ".
-    "FROM specimens AS s JOIN found_specimens as fs ".
-    "ON s.specimen_id = fs.specimen_id AND s.project_id = fs.specimen_project_id ".
-    "HAVING sample_id = ".$filter["sample_id"]." AND core_id = ".$filter["core_id"]." AND project_id = ".$filter["project_id"]." ".
-    "ORDER BY `order` DESC";
-$db = new Mysql();
-$db->query($sql);
-$db->selectRows("samples", $filter);
-$sample_data = $db->recordsArray();
-print_r($sample_data[0]["lycopodium"]);
-
-
 $form = new Form($sample_count_form->getFormName(), 'vertical', 'class=mb-5, novalidate', 'bs4');
 
 #######################
