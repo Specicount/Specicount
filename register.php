@@ -38,7 +38,7 @@ class Register_Form extends Abstract_Form {
         $this->update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
     }
 
-    protected function delete() {
+    protected function create() {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->insertRow($this->table_name, $this->update);
             printDbErrors($this->db, 'User: ' . $_POST["username"] . ' added successfully!', "Username already exists!");
@@ -47,7 +47,7 @@ class Register_Form extends Abstract_Form {
         }
     }
 
-    protected function update($db, $update, $filter) {
+    protected function update() {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->updateRows($this->table_name, $this->update, $this->filter);
             printDbErrors($this->db, 'User: ' . $_POST["username"] . ' information updated!');

@@ -51,7 +51,7 @@ if (!empty($_GET["sample_id"])) {
                     echo "<a href='#".$project["project_id"]."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fas fa-folder'></i>  ".$project["project_id"]."</a>
                             <ul id='".$project["project_id"]."' class='list-unstyled collapse ".$toggle_expand_child."'>
                             <li><a href='add_new_project.php?edit=true&project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit Project</a></li>
-                            <li><a href='project_access.php?edit=true&project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit User Access</a></li>
+                            <li><a href='project_access.php?project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit User Access</a></li>
                             <li><a href='add_new_specimen.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
                             <li><a href='add_new_core.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Core</a></li>";
 

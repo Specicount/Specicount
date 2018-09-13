@@ -19,6 +19,16 @@ use function functions\printError;
 
 //require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
+/**
+ * Class Abstract_Form
+ * @package classes
+ *
+ * On instantiation, this class will:
+ *      - Fill in a form that you are editing with database values
+ *      - Deal with forms posted back to the server by:
+ *          - Validating them
+ *          - Applying the appropriate post action to the database based on the button that was pressed on the form
+ */
 abstract class Abstract_Form {
 
     protected $form_type;  // E.g. project, core, sample etc
@@ -39,61 +49,78 @@ abstract class Abstract_Form {
         $this->setSqlTableName();
         $this->setFilterArray();
         $this->setUpdateArray();
+        $this->registerPostActions();
         $this->db = new Mysql();
-
-        // Boolean expressions constructed such that only one of them is ever called at a time
-        $this->registerPostAction("create", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" && !isset($_GET["edit"]));
-        $this->registerPostAction("update", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" &&  isset($_GET["edit"]));
-        $this->registerPostAction("delete", isset($_POST["delete-btn"]) && $_POST["delete-btn"] == "delete");
-
 
         //unset($_SESSION[$this->form_name]); // Remove
 
-        // If the form has been posted (saved, deleted, etc) back to the server
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken($this->form_name) === true) {
-
-            // PERMISSIONS CHECK
-            // -----------------
-            // If trying to interact with a page related to a project
-            if (isset($_GET["project_id"])) {
-                $page = strtok(basename($_SERVER['HTTP_REFERER']), "?");
-                // If not just trying to create a new project (all users are allowed to do that)
-                if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {;
-                    $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-                    $filter["username"] = Mysql::SQLValue($_SESSION["username"]);
-                    $this->db->selectRows("user_project_access", $filter);
-                    $user = $this->db->recordsArray()[0];
-                    // If user is only a visitor
-                    if ($user["access_level"] == "visitor") {
-                        // Deny their changes and redirect them to home page
-                        $error_message = urlencode("You do not have the correct permissions to perform those changes");
-                        header("location: index.php?error_message=".$error_message);
-                        exit;
-                    }
-
-                }
-            }
-            // -----------------
-
-            // If posted form has been filled out correctly
-            $validator = Form::validate($this->form_name);
-            if ($validator->hasErrors()) {
-                $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
+        // FILL FORM
+        // ------------------------------
+        // If editing a form, then populate the fields with the current database values
+        if ($_GET["edit"]) {
+            $this->db->selectRows($this->table_name, $this->filter);
+            // If could not find the object in the database with which to fill in the form
+            if ($this->db->rowCount() == 0) {
+                // By convention, the most specific identifier is the last GET variable
+                $last_value = end(array_values($_GET));
+                printError("Could not find ".$last_value." in database");
             } else {
-                // Call any functions that should be called
-                foreach ($this->post_actions as $function_name => $should_call_function) {
-                    if ($should_call_function) {
-                        $this->$function_name();
-                    }
-                }
+                $this->fillFormWithDbValues($this->db->recordsArray()[0]);
             }
         }
 
-        // If editing, then fill in the fields with the current database values
-        if ($_GET["edit"]) {
-            $this->db->selectRows($this->table_name, $this->filter);
-            printDbErrors($this->db, null, null, true);
-            $this->fillFormWithDbValues($this->db->recordsArray()[0]);
+        // If the form has been posted (saved, deleted, etc) back to the server
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            //Security token is automatically added to each form.
+            //Token is valid for 1800 seconds (30mn) without refreshing page
+            if (Form::testToken($this->form_name) === true) {
+
+                // PERMISSIONS CHECK
+                // ------------------------------
+                // If trying to interact with a page related to a project
+                if (isset($_GET["project_id"])) {
+                    $page = strtok(basename($_SERVER['HTTP_REFERER']), "?");
+                    // If not just trying to create a new project (all users are allowed to do that)
+                    if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {
+                        ;
+                        $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
+                        $filter["username"] = Mysql::SQLValue($_SESSION["username"]);
+                        $this->db->selectRows("user_project_access", $filter);
+                        $user = $this->db->recordsArray()[0];
+                        // If user is only a visitor
+                        if ($user["access_level"] == "visitor") {
+                            // Deny their changes and redirect them to home page
+                            $error_message = urlencode("You do not have the correct permissions to perform those changes");
+                            header("location: index.php?error_message=" . $error_message);
+                            exit;
+                        }
+
+                    }
+                }
+
+                // POST ACTIONS
+                // ------------------------------
+                // Call any post actions that don't require validation (e.g. delete actions)
+                foreach ($this->post_actions["no_valid"] as $function_name => $should_call_function) {
+                    if ($should_call_function) {
+                        $this->$function_name();
+                        return; // Currently there's no need to execute more than one function per form posted back to server
+                    }
+                }
+                // Validate form -> check if it has been filled out correctly
+                $validator = Form::validate($this->form_name);
+                if ($validator->hasErrors()) {
+                    $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
+                } else {
+                    // Call any post actions that require validation
+                    foreach ($this->post_actions["valid"] as $function_name => $should_call_function) {
+                        if ($should_call_function) {
+                            $this->$function_name();
+                            return; // Currently there's no need to execute more than one function per form posted back to server
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -133,8 +160,21 @@ abstract class Abstract_Form {
     // Register a new post action that will call the function identified by the string $function_name when $bool = true
     // All post action functions should take in three arguments: $db, $update and $filter, regardless
     // of whether the function uses them or not since some functions need all three arguments (e.g. update)
-    protected function registerPostAction($function_name, $bool) {
-        $this->post_actions[$function_name] = $bool;
+    protected function registerPostAction($function_name, $bool, $validation_required=true) {
+        if ($validation_required) {
+            $this->post_actions["valid"][$function_name] = $bool;
+        } else {
+            $this->post_actions["no_valid"][$function_name] = $bool;
+        }
+
+    }
+
+
+    // Boolean expressions constructed such that only one of them is ever true at a single time
+    protected function registerPostActions() {
+        $this->registerPostAction("create", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" && !isset($_GET["edit"]));
+        $this->registerPostAction("update", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" &&  isset($_GET["edit"]));
+        $this->registerPostAction("delete", isset($_POST["delete-btn"]) && $_POST["delete-btn"] == "delete", false);
     }
 
     protected function setUpdateArray() {
