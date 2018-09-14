@@ -103,8 +103,9 @@ $form->endFieldset();
 
 $form->startFieldset('Edit Current Users');
 
+$filter = $access_form->getFilterArray();
 $db = new Mysql();
-$db->selectRows($access_form->getTableName(), $access_form->getFilterArray());
+$db->selectRows($access_form->getTableName(), $filter);
 foreach ($db->recordsArray() as $user) {
     $username_input = 'username,'.$user["username"];
     $access_input = 'access_level,'.$user["username"];

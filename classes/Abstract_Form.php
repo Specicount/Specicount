@@ -195,7 +195,9 @@ abstract class Abstract_Form {
         // Create an array which stores the posted values of the primary keys to identify which row to update
         $primary_keys = getPrimaryKeys($this->table_name);
         foreach ($primary_keys as $pk) {
-            $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
+            if (isset($_GET[$pk])) {
+                $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
+            }
         }
         $this->filter = $filter;
     }
