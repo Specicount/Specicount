@@ -99,9 +99,7 @@ $form->addHelper('Password Confirmation', 'password_conf');
 $form->addInput('password', 'password_conf', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long, class=col-4');
 
 // Captcha if we decide to allow any user to register
-/*$key = rand_char(15);
-$form->addHtml('<input id="captcha_code" name="captcha_code" type="hidden" value="'.$key.'">');
-$form->addRecaptcha($key);*/
+$form->addRecaptcha('6Ldg0QkUAAAAABmXaV1b9qdOnyIwVPRRAs4ldoxe', 'recaptcha2', true);
 
 #######################
 # Clear/Save

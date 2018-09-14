@@ -26,8 +26,8 @@ use function functions\getTopMostScript;
 // Add required files
 $current_dir = __DIR__;
 include_once $current_dir.'/../phpformbuilder/Form.php';
-require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
+require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../page-components/functions.php';
 require_once $current_dir.'/../page-components/functions.php';
 
