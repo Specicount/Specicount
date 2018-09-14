@@ -103,7 +103,6 @@ abstract class Abstract_Form {
                 foreach ($this->post_actions["no_valid"] as $function_name => $should_call_function) {
                     if ($should_call_function) {
                         $this->$function_name();
-                        return; // Currently there's no need to execute more than one function per form posted back to server
                     }
                 }
                 // Validate form -> check if it has been filled out correctly
@@ -115,7 +114,6 @@ abstract class Abstract_Form {
                     foreach ($this->post_actions["valid"] as $function_name => $should_call_function) {
                         if ($should_call_function) {
                             $this->$function_name();
-                            return; // Currently there's no need to execute more than one function per form posted back to server
                         }
                     }
                 }

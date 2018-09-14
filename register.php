@@ -59,6 +59,7 @@ class Register_Form extends Abstract_Form {
     protected function fillFormWithDbValues($record_array) {
         parent::fillFormWithDbValues($record_array);
         unset($_SESSION[$this->form_name]["password"]);
+        print_r($_SESSION[$this->form_name]);
     }
 }
 
@@ -71,7 +72,7 @@ $register_form = new Register_Form();
 ================================================== */
 //
 
-
+Form::clear($register_form->getFormName());
 $form = new Form($register_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
 
 $form->setCols(0, 12);
