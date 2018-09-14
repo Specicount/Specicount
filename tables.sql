@@ -13,7 +13,7 @@ specific thing that identifies a sample because it lives in a hierarchy of proje
 
 CREATE DATABASE BioBase;
 
--- USE BioBase; -- Uncomment this line if you want to execute this script in your SQL server
+USE BioBase; -- Uncomment this line if you want to execute this script in your SQL server
 
 -- All the information we store about users
 CREATE TABLE IF NOT EXISTS users (
