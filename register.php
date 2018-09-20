@@ -17,21 +17,13 @@ use phpformbuilder\database\Mysql;
 }*/
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Post_Form.php";
 require_once "page-components/functions.php";
-use classes\Abstract_Form;
+use classes\Post_Form;
 use function functions\printDbErrors;
 use function functions\printError;
 
-class Register_Form extends Abstract_Form {
-    public function setFormType() {
-        $this->form_type = "register";
-    }
-
-    public function setSqlTableName() {
-        $this->table_name = "users";
-    }
-
+class Register_Form extends Post_Form {
     protected function setUpdateArray() {
         parent::setUpdateArray();
         // Create encrypted password
@@ -58,12 +50,10 @@ class Register_Form extends Abstract_Form {
 
     protected function fillFormWithDbValues($record_array) {
         parent::fillFormWithDbValues($record_array);
-        unset($_SESSION[$this->form_name]["password"]);
-        print_r($_SESSION[$this->form_name]);
+        unset($_SESSION[$this->form_ID]["password"]);
+        print_r($_SESSION[$this->form_ID]);
     }
 }
-
-$register_form = new Register_Form();
 
 //$validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
 
@@ -72,8 +62,8 @@ $register_form = new Register_Form();
 ================================================== */
 //
 
-Form::clear($register_form->getFormName());
-$form = new Form($register_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
+Form::clear("register");
+$form = new Register_Form("register","users", 'horizontal', 'novalidate', 'bs4');
 
 $form->setCols(0, 12);
 
@@ -117,7 +107,7 @@ $form->addPlugin('formvalidation', '#register', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($register_form->getPageTitle());
+$page_render->setPageTitle($form->getPageTitle());
 $page_render->noLoginRequired();
 $page_render->disableSidebar();
 $page_render->renderPage();

@@ -4,17 +4,12 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
 use function functions\printDbErrors;
-use classes\Abstract_Add_New_Form;
+use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Add_New_Form.php";
+require_once "classes/Add_New_Post_Form.php";
 
-
-class Sample_Form extends Abstract_Add_New_Form {
-    public function setFormType() {
-        $this->form_type = "sample";
-    }
-
+class Sample_Form extends Add_New_Post_Form {
     protected function create() {
         $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
@@ -29,14 +24,11 @@ class Sample_Form extends Abstract_Add_New_Form {
     }
 }
 
-$sample_form = new Sample_Form();
-
-
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($sample_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
+$form = new Sample_Form("sample", "samples",'horizontal', 'novalidate', 'bs4');
 
 $form->addHelper('Sample ID', 'sample_id');
 
@@ -78,5 +70,5 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($sample_form->getPageTitle());
+$page_render->setPageTitle($form->getPageTitle());
 $page_render->renderPage();

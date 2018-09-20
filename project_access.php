@@ -9,28 +9,19 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-use classes\Abstract_Form;
+use classes\Post_Form;
 use function functions\printDbErrors;
 
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Post_Form.php";
 
 //$db = new Mysql();
-//$form_name = "project-access";
+//$form_ID = "project-access";
 //$table_name = "user_project_access";
-//unset($_SESSION[$form_name]); // To ensure that other users aren't accidentally added as admin
+//unset($_SESSION[$form_ID]); // To ensure that other users aren't accidentally added as admin
 
-class Access_Form extends Abstract_Form {
-
-    public function setFormType() {
-        $this->form_name = "project-access";
-    }
-
-    public function setSqlTableName() {
-        $this->table_name = "user_project_access";
-    }
-
+class Access_Form extends Post_Form {
     protected function registerPostActions() {
         parent::registerPostActions();
         $this->registerPostAction("update", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
@@ -72,13 +63,11 @@ class Access_Form extends Abstract_Form {
     }
 }
 
-$access_form = new Access_Form();
-
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($access_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
+$form = new Access_Form("project-access", "user_project_access", 'horizontal', 'novalidate', 'bs4');
 $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be printed on the same row as the other inputs
 
 $form->startFieldset('Add New User to Project');
@@ -103,9 +92,9 @@ $form->endFieldset();
 
 $form->startFieldset('Edit Current Users');
 
-$filter = $access_form->getFilterArray();
+$filter = $form->getFilterArray();
 $db = new Mysql();
-$db->selectRows($access_form->getTableName(), $filter);
+$db->selectRows($form->getTableName(), $filter);
 foreach ($db->recordsArray() as $user) {
     $username_input = 'username,'.$user["username"];
     $access_input = 'access_level,'.$user["username"];
@@ -117,7 +106,7 @@ foreach ($db->recordsArray() as $user) {
     $form->addInput('text', $username_input, $user['username'], '', 'readonly="readonly"');
 
     $form->setCols(0,2);
-    $_SESSION[$access_form->getFormName()][$access_input] = $user['access_level']; // Fill in access level from db
+    $_SESSION[$form->getFormName()][$access_input] = $user['access_level']; // Fill in access level from db
     $form->addHelper('Access Level', $access_input);
     $form->addOption($access_input, 'visitor', 'Visitor', '', '');
     $form->addOption($access_input, 'collaborator', 'Collaborator', '', '');

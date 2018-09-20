@@ -20,7 +20,7 @@ use function functions\printError;
 //require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
 /**
- * Class Abstract_Form
+ * Class Post_Form
  * @package classes
  *
  * On instantiation, this class will:
@@ -29,30 +29,26 @@ use function functions\printError;
  *          - Validating them
  *          - Applying the appropriate post action to the database based on the button that was pressed on the form
  */
-abstract class Abstract_Form {
+abstract class Post_Form extends Form {
 
-    protected $form_type;  // E.g. project, core, sample etc
-    protected $form_name;  // A string that uniquely identifies the form for phpformbuilder
     protected $page_title; // What gets displayed on the browser tab and on the navbar
     protected $table_name;
     protected $update, $filter;
     protected $post_actions;
     protected $db;
 
-    public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
-    public abstract function setSqlTableName(); //Set the $table_name variable to a string, e.g. 'projects', 'cores', 'samples', etc
+    //public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
 
-    public function __construct() {
-        $this->setFormType();
-        $this->setFormName();
+    public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
+        $this->form_ID = $form_ID;
+        $this->table_name = $table_name;
+        $this->db = new Mysql();
         $this->setPageTitle();
-        $this->setSqlTableName();
         $this->setFilterArray();
         $this->setUpdateArray();
         $this->registerPostActions();
-        $this->db = new Mysql();
 
-        //unset($_SESSION[$this->form_name]); // Remove
+        //unset($_SESSION[$this->form_ID]); // Remove
 
         // FILL FORM
         // ------------------------------
@@ -73,7 +69,7 @@ abstract class Abstract_Form {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //Security token is automatically added to each form.
             //Token is valid for 1800 seconds (30mn) without refreshing page
-            if (Form::testToken($this->form_name) === true) {
+            if (Form::testToken($this->form_ID) === true) {
                 // PERMISSIONS CHECK
                 // ------------------------------
                 // If trying to interact with a page related to a project
@@ -106,9 +102,9 @@ abstract class Abstract_Form {
                     }
                 }
                 // Validate form -> check if it has been filled out correctly
-                $validator = Form::validate($this->form_name);
+                $validator = Form::validate($this->form_ID);
                 if ($validator->hasErrors()) {
-                    $_SESSION['errors'][$this->form_name] = $validator->getAllErrors();
+                    $_SESSION['errors'][$this->form_ID] = $validator->getAllErrors();
                 } else {
                     // Call any post actions that require validation
                     foreach ($this->post_actions["valid"] as $function_name => $should_call_function) {
@@ -119,16 +115,18 @@ abstract class Abstract_Form {
                 }
             }
         }
+
+        parent::__construct($form_ID, $layout, $attr, $framework);
     }
 
     // If editing a form, fill in the fields with the current database values
     protected function fillFormWithDbValues($record_array) {
         foreach($record_array as $column_name => $value) {
-            $_SESSION[$this->form_name][$column_name] = $value;
+            $_SESSION[$this->form_ID][$column_name] = $value;
         }
     }
 
-    // Deletes the form_type from the database based on a filter (primary keys)
+    // Deletes the form_ID from the database based on a filter (primary keys)
     // If you override this function you must not call the parent function, otherwise the redirect will not execute
     // the rest of your code
     protected function delete() {
@@ -136,22 +134,24 @@ abstract class Abstract_Form {
         if ($this->db->error()) {
             printDbErrors($this->db);
         } else {
-            $success_message = urlencode(ucwords($this->form_type) . " successfully deleted!");
+            $success_message = urlencode(ucwords($this->form_ID) . " successfully deleted!");
             header("location: index.php?success_message=".$success_message);
             exit;
         }
     }
 
-    // Creates the form_type in the database based on an $update array ($column_name => $value)
+    // Creates the form_ID in the database based on an $update array ($column_name => $value)
     protected function create() {
+        print_r("creating new core with ");
+        print_r($this->update);
         $this->db->insertRow($this->table_name, $this->update);
-        printDbErrors($this->db, "New " . $this->form_type . " successfully created!");
+        printDbErrors($this->db, "New " . $this->form_ID . " successfully created!");
     }
 
-    // Updates the form_type in the database identified by $filter with values from $update
+    // Updates the form_ID in the database identified by $filter with values from $update
     protected function update() {
         $this->db->updateRows($this->table_name, $this->update, $this->filter);
-        printDbErrors($this->db, ucwords($this->form_type) . " successfully updated!");
+        printDbErrors($this->db, ucwords($this->form_ID) . " successfully updated!");
     }
 
     // Register a new post action that will call the function identified by the string $function_name when $bool = true
@@ -205,19 +205,15 @@ abstract class Abstract_Form {
     }
 
     protected function setPageTitle() {
-        $this->page_title = ucwords($this->form_type) . " Form";
+        $this->page_title = ucwords($this->form_ID) . " Form";
     }
 
     public function getPageTitle() {
         return $this->page_title;
     }
 
-    protected function setFormName() {
-        $this->form_name = $this->form_type;
-    }
-
     public function getFormName() {
-        return $this->form_name;
+        return $this->form_ID;
     }
 
     public function getTableName() {

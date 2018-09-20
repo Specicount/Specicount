@@ -3,25 +3,19 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
-use classes\Abstract_Add_New_Form;
+use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Add_New_Form.php";
-
-class Core_Form extends Abstract_Add_New_Form {
-    public function setFormType() {
-        $this->form_type = "core";
-    }
-}
+require_once "classes/Add_New_Post_Form.php";
 
 
-$core_form = new Core_Form();
+
+$form = new Add_New_Post_Form("core", "cores", 'horizontal', 'novalidate', 'bs4');
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($core_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
 
 $form->addHelper('Core ID', 'core_id');
 
@@ -51,5 +45,5 @@ $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($core_form->getPageTitle());
+$page_render->setPageTitle($form->getPageTitle());
 $page_render->renderPage();

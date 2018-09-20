@@ -2,7 +2,7 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-use classes\Abstract_Form;
+use classes\Post_Form;
 use function functions\printDbErrors;
 use function functions\printError;
 
@@ -11,16 +11,9 @@ use function functions\printError;
 ============================================= */
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Post_Form.php";
 
-class Sample_Count_Form extends Abstract_Form {
-    public function setFormType() {
-        $this->form_type = "sample_count";
-    }
-
-    public function setSqlTableName() {
-        $this->table_name = "samples";
-    }
+class Sample_Count_Form extends Post_Form {
 
     protected function registerPostActions() {
         $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
@@ -109,14 +102,12 @@ class Sample_Count_Form extends Abstract_Form {
     }
 }
 
-$sample_count_form = new Sample_Count_Form();
-
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($sample_count_form->getFormName(), 'vertical', 'class=mb-5, novalidate', 'bs4');
+$form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5, novalidate', 'bs4');
 
 #######################
 # Sample grid
@@ -169,7 +160,7 @@ $form->addHtml("</div></div>");
 
 $db = new Mysql();
 
-$filter = $sample_count_form->getFilterArray();
+$filter = $form->getFilterArray();
 $sql =  "SELECT s.specimen_id, s.project_id as specimen_project_id, s.image_folder, s.primary_image, fs.sample_id, fs.core_id, fs.project_id, fs.count ".
         "FROM specimens AS s JOIN found_specimens as fs ".
         "ON s.specimen_id = fs.specimen_id AND s.project_id = fs.specimen_project_id ".
