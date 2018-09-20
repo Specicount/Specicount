@@ -51,7 +51,6 @@ class Register_Form extends Post_Form {
     protected function fillFormWithDbValues($record_array) {
         parent::fillFormWithDbValues($record_array);
         unset($_SESSION[$this->form_ID]["password"]);
-        print_r($_SESSION[$this->form_ID]);
     }
 }
 

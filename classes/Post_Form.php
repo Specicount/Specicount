@@ -142,8 +142,6 @@ abstract class Post_Form extends Form {
 
     // Creates the form_ID in the database based on an $update array ($column_name => $value)
     protected function create() {
-        print_r("creating new core with ");
-        print_r($this->update);
         $this->db->insertRow($this->table_name, $this->update);
         printDbErrors($this->db, "New " . $this->form_ID . " successfully created!");
     }
