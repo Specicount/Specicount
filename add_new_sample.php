@@ -10,13 +10,6 @@ require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";
 
 class Sample_Form extends Add_New_Post_Form {
-    protected function create() {
-        $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-        $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $this->db->insertRow($this->table_name, $this->update);
-        printDbErrors($this->db, "Successfully created new sample!");
-    }
-
     protected function setUpdateArray() {
         parent::setUpdateArray();
         $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
