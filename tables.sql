@@ -17,13 +17,13 @@ USE BioBase; -- Uncomment this line if you want to execute this script in your S
 
 -- All the information we store about users
 CREATE TABLE IF NOT EXISTS users (
-  username VARCHAR(30) NOT NULL,
-  `password` CHAR(128) NOT NULL,
   email VARCHAR(50) NOT NULL,
+  `password` CHAR(128) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
   institution VARCHAR(100),
-  PRIMARY KEY (username)
+  is_trusted BOOLEAN DEFAULT FALSE, -- Determines whether the specimens they create count as trusted data
+  PRIMARY KEY (email)
 );
 
 -- This contains all the information relating to the project
@@ -39,11 +39,11 @@ CREATE TABLE IF NOT EXISTS projects (
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS user_project_access (
   project_id VARCHAR (150) NOT NULL,
-  username VARCHAR(30) NOT NULL,
-  access_level ENUM('visitor','collaborator','admin') NOT NULL,
-  PRIMARY KEY (project_id, username),
+  email VARCHAR(30) NOT NULL,
+  access_level ENUM('visitor','collaborator','admin', 'owner') NOT NULL,
+  PRIMARY KEY (project_id, email),
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- This contains all the information relating to the core
