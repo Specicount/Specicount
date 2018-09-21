@@ -68,6 +68,7 @@ abstract class Post_Form extends Form {
             // Security token is automatically added to each form.
             // Token is valid for 1800 seconds (30mn) without refreshing page
             if (Form::testToken($this->form_ID) === true) {
+                $execute_post_actions = true;
                 // PERMISSIONS CHECK
                 // ------------------------------
                 // If trying to interact with a page related to a project
@@ -82,10 +83,9 @@ abstract class Post_Form extends Form {
                         $user = $this->db->recordsArray()[0];
                         // If user is only a visitor
                         if ($user["access_level"] == "visitor") {
-                            // Deny their changes and redirect them to home page
-                            $error_message = urlencode("You do not have the correct permissions to perform those changes");
-                            header("location: index.php?error_message=" . $error_message);
-                            exit;
+                            // Deny their changes
+                            $this->storeErrorMsg("You do not have the correct permissions to perform those changes");
+                            $execute_post_actions = false;
                         }
 
                     }
@@ -93,28 +93,16 @@ abstract class Post_Form extends Form {
 
                 // POST ACTIONS
                 // ------------------------------
-                // Call any post actions that don't require validation (e.g. delete actions)
-                foreach ($this->post_actions["no_valid"] as $function_name => $should_call_function) {
-                    if ($should_call_function) {
-                        if (is_callable($function_name)) {
-                            $this->$function_name();
-                        } else {
-                            $this->storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
-                        }
-                    }
-                }
-                // Validate form -> check if it has been filled out correctly
-                $this->validator = Form::validate($this->form_ID);
-                if ($this->validator->hasErrors()) {
-                    $_SESSION['errors'][$this->form_ID] = $this->validator->getAllErrors();
-                } else {
-                    // Call any post actions that require validation
-                    foreach ($this->post_actions["valid"] as $function_name => $should_call_function) {
-                        if (is_callable($function_name)) {
-                            $this->$function_name();
-                        } else {
-                            $this->storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
-                        }
+                if ($execute_post_actions) {
+                    // Call any post actions that don't require validation (e.g. delete actions)
+                    $this->executePostActions($this->post_actions["no_valid"]);
+                    // Validate form -> check if it has been filled out correctly
+                    $this->validator = Form::validate($this->form_ID);
+                    if ($this->validator->hasErrors()) {
+                        $_SESSION['errors'][$this->form_ID] = $this->validator->getAllErrors();
+                    } else {
+                        // Call any post actions that require validation
+                        $this->executePostActions($this->post_actions["valid"]);
                     }
                 }
             }
@@ -129,6 +117,18 @@ abstract class Post_Form extends Form {
     protected function fillFormWithDbValues($record_array) {
         foreach($record_array as $column_name => $value) {
             $_SESSION[$this->form_ID][$column_name] = $value;
+        }
+    }
+
+    private function executePostActions($post_actions) {
+        foreach ($post_actions as $function_name => $should_call_function) {
+            if ($should_call_function) {
+                if (method_exists($this,$function_name)) {
+                    $this->$function_name();
+                } else {
+                    $this->storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
+                }
+            }
         }
     }
 
@@ -183,8 +183,10 @@ abstract class Post_Form extends Form {
     protected function setUpdateArray() {
         $column_names = getColumnNames($this->table_name);
         foreach ($column_names as $column_name) {
-            if(isset($_POST[$column_name])) {
+            if (isset($_POST[$column_name])) {
                 $this->update[$column_name] = Mysql::SQLValue($_POST[$column_name]);
+            } else if (isset($_GET[$column_name])) {
+                $this->update[$column_name] = Mysql::SQLValue($_GET[$column_name]);
             }
         }
     }
