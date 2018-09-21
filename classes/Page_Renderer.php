@@ -257,12 +257,15 @@ class Page_Renderer {
                     <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
                         <?php
                         //$sent_message refers to any message thrown by PHPFormBuilder
-                        //$msg refers to any message thrown by the SQL query
-                        global $sent_message, $msg;
+                        global $sent_message;
 
                         // Print message from user
 
-
+                        //$msg refers to any message thrown by the form during a post action
+                        $msg = $this->form->getMsg();
+                        if (isset($msg)) {
+                            echo $msg;
+                        }
                         // Print login message
                         if (isset($login_msg)){
                             echo $login_msg;
