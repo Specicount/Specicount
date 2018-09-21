@@ -261,11 +261,14 @@ class Page_Renderer {
 
                         // Print message from user
 
-                        //$msg refers to any message thrown by the form during a post action
-                        $msg = $this->form->getMsg();
-                        if (isset($msg)) {
-                            echo $msg;
+                        // Print any messages from the form
+                        if (isset($this->form)) {
+                            $msg = $this->form->getMsg();
+                            if (isset($msg)) {
+                                echo $msg;
+                            }
                         }
+
                         // Print login message
                         if (isset($login_msg)){
                             echo $login_msg;
