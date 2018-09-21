@@ -1,7 +1,5 @@
 <?php
 require_once 'classes/Page_Renderer.php';
-use function functions\printError;
-use function functions\printSuccess;
 
 // Render Page
 $page_render = new \classes\Page_Renderer();

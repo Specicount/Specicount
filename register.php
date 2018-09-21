@@ -20,8 +20,6 @@ require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
 require_once "page-components/functions.php";
 use classes\Post_Form;
-use function functions\printDbErrors;
-use function functions\printError;
 
 class Register_Form extends Post_Form {
     protected function setUpdateArray() {
@@ -31,20 +29,22 @@ class Register_Form extends Post_Form {
     }
 
     protected function create() {
+        // TODO: Implement captcha
+        //$this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->insertRow($this->table_name, $this->update);
-            printDbErrors($this->db, 'User: ' . $_POST["username"] . ' added successfully!', "Username already exists!");
+            $this->storeDbMsg('User: ' . $_POST["username"] . ' added successfully!', "Username already exists!");
         } else {
-            printError("Passwords do not match!");
+            $this->storeErrorMsg("Passwords do not match!");
         }
     }
 
     protected function update() {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->updateRows($this->table_name, $this->update, $this->filter);
-            printDbErrors($this->db, 'User: ' . $_POST["username"] . ' information updated!');
+            $this->storeDbMsg('User: ' . $_POST["username"] . ' information updated!');
         } else {
-            printError("Passwords do not match!");
+            $this->storeErrorMsg("Passwords do not match!");
         }
     }
 
@@ -53,8 +53,6 @@ class Register_Form extends Post_Form {
         unset($_SESSION[$this->form_ID]["password"]);
     }
 }
-
-//$validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
 
 /* ==================================================
     The Form

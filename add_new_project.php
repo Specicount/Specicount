@@ -4,7 +4,6 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
 use classes\Add_New_Post_Form;
-use function functions\printDbErrors;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";

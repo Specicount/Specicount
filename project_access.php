@@ -10,8 +10,6 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
-use function functions\printDbErrors;
-
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
@@ -30,7 +28,7 @@ class Access_Form extends Post_Form {
 
     protected function create() {
         $this->db->insertRow($this->table_name, $this->update);
-        printDbErrors($this->db, "Successfully added " . $this->update["username"] . " to the project!", "User already added or does not exist");
+        $this->storeDbMsg("Successfully added " . $this->update["username"] . " to the project!", "User already added or does not exist");
     }
 
     protected function delete() {
@@ -38,7 +36,7 @@ class Access_Form extends Post_Form {
         $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
         $filter["username"] = Mysql::SQLValue($username);
         $this->db->deleteRows($this->table_name, $filter);
-        printDbErrors($this->db, "Successfully deleted " . $username . " from access list!");
+        $this->storeDbMsg("Successfully deleted " . $username . " from access list!");
     }
 
     // Update all users access levels
@@ -59,7 +57,7 @@ class Access_Form extends Post_Form {
                 $this->db->updateRows($this->table_name, $update, $filter);
             }
         }
-        printDbErrors($this->db, "Changes have been saved!");
+        $this->storeDbMsg("Changes have been saved!");
     }
 }
 

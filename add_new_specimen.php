@@ -10,7 +10,6 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
-use function functions\printDbErrors;
 use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
@@ -46,7 +45,7 @@ class Specimen_Form extends Add_New_Post_Form {
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
         if ($this->db->error()) {
-            printDbErrors($this->db);
+            $this->storeDbMsg();
         } else {
             global $image_folder;
             delete_files($image_folder . $_POST["specimen_id"]. "/");
@@ -69,7 +68,7 @@ class Specimen_Form extends Add_New_Post_Form {
                 $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
                 $update_found["count"] = Mysql::SQLValue(1);
                 $this->db->insertRow('found_specimens', $update_found);
-                printDbErrors($this->db);
+                $this->storeDbMsg();
 
                 # Do concentration curve
                 $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
@@ -82,7 +81,7 @@ class Specimen_Form extends Add_New_Post_Form {
                 $unique_spec = $this->db->recordsArray()[0]["amount"];
                 $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
                 $this->db->insertRow('concentration_curve', $update_curve);
-                printDbErrors($this->db, "Specimen successfully added to project and to sample!");
+                $this->storeDbMsg("Specimen successfully added to project and to sample!");
             }
         }
     }

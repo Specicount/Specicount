@@ -8,7 +8,6 @@ use phpformbuilder\database\Mysql;
 ============================================= */
 
 require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
-use function functions\printDbErrors;
 
 include_once 'phpformbuilder/Form.php';
 require_once 'phpformbuilder/database/db-connect.php';
@@ -92,10 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('search-form-1') ===
     }
     $project_id_sql = Mysql::SQLValue($project_id);
     $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col); // . " AND project_id=". $project_id_sql;
-
-    //echo $sql;
     $db->query($sql);
-    //printDbErrors($db);
     if ($db->rowCount() > 0) {
         $results = $db->recordsArray();
     }

@@ -69,39 +69,6 @@ function arrayToString($arr) {
     return $str;
 }
 
-// Prints any database errors to the user
-// Usually executed after any calls to the database
-// If no success or fail message given then it will print the debug backtrace
-// Optional redirect to index.php on db success
-function printDbErrors($db, $success_msg = null, $fail_msg = null, $errors_only = false) {
-    global $msg; // This variable is printed in the Page_Renderer class
-    // If the database has thrown any errors
-    if ($db->error()) {
-        // If a fail message hasn't been set
-        if ($fail_msg == null) {
-            // Set the fail message to the given database error
-            $fail_msg = $db->error() . '<br>' . $db->getLastSql();
-        }
-        $msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
-    } else if (!$errors_only) {
-        if ($success_msg == null) {
-            $msg .= '<p class="alert alert-success">Success!</br>' . $db->getLastSql() . '</p>';
-        } else {
-            $msg = '<p class="alert alert-success">' . $success_msg . '</p>';
-        }
-    }
-}
-
-function printError($error_msg) {
-    global $msg;
-    $msg = '<p class="alert alert-danger">' . $error_msg . '</p>';
-}
-
-function printSuccess($success_msg) {
-    global $msg;
-    $msg = '<p class="alert alert-success">' . $success_msg . '</p>';
-}
-
 
 // Get parent most script (used to test if login script)
 // E.g. if you navigated to server/index.php it would return /var/www/html/index.php

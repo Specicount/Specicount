@@ -14,8 +14,6 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getPrimaryKeys;
 use function functions\getColumnNames;
-use function functions\printDbErrors;
-use function functions\printError;
 
 //require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
@@ -36,6 +34,8 @@ abstract class Post_Form extends Form {
     protected $update, $filter;
     protected $post_actions;
     protected $db;
+    protected $validator;
+    protected $msg;
 
     //public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
 
@@ -59,7 +59,7 @@ abstract class Post_Form extends Form {
             if ($this->db->rowCount() == 0) {
                 // By convention, the most specific identifier is the last GET variable
                 $last_value = end(array_values($_GET));
-                printError("Could not find ".$last_value." in database");
+                $this->storeErrorMsg("Could not find ".$last_value." in database");
             } else {
                 $this->fillFormWithDbValues($this->db->recordsArray()[0]);
             }
@@ -67,8 +67,8 @@ abstract class Post_Form extends Form {
 
         // If the form has been posted (saved, deleted, etc) back to the server
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            //Security token is automatically added to each form.
-            //Token is valid for 1800 seconds (30mn) without refreshing page
+            // Security token is automatically added to each form.
+            // Token is valid for 1800 seconds (30mn) without refreshing page
             if (Form::testToken($this->form_ID) === true) {
                 // PERMISSIONS CHECK
                 // ------------------------------
@@ -98,24 +98,32 @@ abstract class Post_Form extends Form {
                 // Call any post actions that don't require validation (e.g. delete actions)
                 foreach ($this->post_actions["no_valid"] as $function_name => $should_call_function) {
                     if ($should_call_function) {
-                        $this->$function_name();
+                        if (is_callable($function_name)) {
+                            $this->$function_name();
+                        } else {
+                            $this->storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
+                        }
                     }
                 }
                 // Validate form -> check if it has been filled out correctly
-                $validator = Form::validate($this->form_ID);
-                if ($validator->hasErrors()) {
-                    $_SESSION['errors'][$this->form_ID] = $validator->getAllErrors();
+                $this->validator = Form::validate($this->form_ID);
+                if ($this->validator->hasErrors()) {
+                    $_SESSION['errors'][$this->form_ID] = $this->validator->getAllErrors();
                 } else {
                     // Call any post actions that require validation
                     foreach ($this->post_actions["valid"] as $function_name => $should_call_function) {
-                        if ($should_call_function) {
+                        if (is_callable($function_name)) {
                             $this->$function_name();
+                        } else {
+                            $this->storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
                         }
                     }
                 }
             }
         }
 
+        // This has to be done after Form::testToken validation because
+        // creating a new Form updates the SESSION token and then it doesn't match with the POST token
         parent::__construct($form_ID, $layout, $attr, $framework);
     }
 
@@ -132,7 +140,7 @@ abstract class Post_Form extends Form {
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
         if ($this->db->error()) {
-            printDbErrors($this->db);
+            $this->storeDbMsg();
         } else {
             $success_message = urlencode(ucwords($this->form_ID) . " successfully deleted!");
             header("location: index.php?success_message=".$success_message);
@@ -143,13 +151,13 @@ abstract class Post_Form extends Form {
     // Creates the form_ID in the database based on an $update array ($column_name => $value)
     protected function create() {
         $this->db->insertRow($this->table_name, $this->update);
-        printDbErrors($this->db, "New " . $this->form_ID . " successfully created!");
+        $this->storeDbMsg("New " . $this->form_ID . " successfully created!");
     }
 
     // Updates the form_ID in the database identified by $filter with values from $update
     protected function update() {
         $this->db->updateRows($this->table_name, $this->update, $this->filter);
-        printDbErrors($this->db, ucwords($this->form_ID) . " successfully updated!");
+        $this->storeDbMsg(ucwords($this->form_ID) . " successfully updated!");
     }
 
     // Register a new post action that will call the function identified by the string $function_name when $bool = true
@@ -220,6 +228,40 @@ abstract class Post_Form extends Form {
 
     protected function raiseNotImplemented() {
         $calling_method_name = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
-        printError($calling_method_name. " function not implemented!");
+        $this->storeErrorMsg($calling_method_name. " function not implemented!");
+    }
+
+    // Prints any database errors to the user
+    // Usually executed after any calls to the database
+    // If no success or fail message given then it will print the debug backtrace
+    // Optional redirect to index.php on db success
+    protected function storeDbMsg($success_msg = null, $fail_msg = null, $errors_only = false) {
+        // If the database has thrown any errors
+        if ($this->db->error()) {
+            // If a fail message hasn't been set
+            if ($fail_msg == null) {
+                // Set the fail message to the given database error
+                $fail_msg = $this->db->error() . '<br>' . $this->db->getLastSql();
+            }
+            $this->msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
+        } else if (!$errors_only) {
+            if ($success_msg == null) {
+                $this->msg .= '<p class="alert alert-success">Success!</br>' . $this->db->getLastSql() . '</p>';
+            } else {
+                $this->msg = '<p class="alert alert-success">' . $success_msg . '</p>';
+            }
+        }
+    }
+
+    protected function storeErrorMsg($error_msg) {
+        $this->msg = '<p class="alert alert-danger">' . $error_msg . '</p>';
+    }
+
+    protected function storeSuccessMsg($success_msg) {
+        $this->msg = '<p class="alert alert-success">' . $success_msg . '</p>';
+    }
+
+    public function getMsg() {
+        return $this->msg;
     }
 }
