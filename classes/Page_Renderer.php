@@ -216,7 +216,13 @@ class Page_Renderer {
         <!DOCTYPE html>
         <html lang="en">
         <head>
-            <title><?= $this->page_title ?></title>
+            <title><?php
+                if ($this->page_title == "UNTITLED" && isset($form)) {
+                    echo $this->form->getPageTitle();
+                }  else {
+                    echo $this->page_title;
+                }
+            ?></title>
             <?php
             if ($this->render_header) {
                 $render_side = $this->render_sidebar;

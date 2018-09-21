@@ -78,5 +78,4 @@ $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($form->getPageTitle());
 $page_render->renderPage();
