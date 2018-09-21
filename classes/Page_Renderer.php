@@ -22,6 +22,7 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getTopMostScript;
+use function getLoginForm;
 
 // Add required files
 $current_dir = __DIR__;
@@ -151,67 +152,27 @@ class Page_Renderer {
         // Login form modal variable
         $login_form = null;
 
-        // Test if user is logged in
-        if (!isset($_SESSION['username'])) {
-            $page_access = !$this->require_login;
+        // If user is logged in
+        if (isset($_SESSION['username'])) {
+            // If trying to access a page connected to a project
+            if ($_GET["project_id"]) {
+                $filter["project_id"] = Mysql::SqlValue($_GET["project_id"]);
+                $filter["username"] = Mysql::SqlValue($_SESSION["username"]);
 
-            // Login error messages
-            if (isset($_POST['do-login'])) {
-                if (!$_POST['username']) {
-                    $errors['username'] = "Please enter a username";
-                    $login_msg = '<p class="alert alert-danger">Please enter a username</p>';
+                // If the user does not have access to that project
+                if ($db->querySingleRowArray("user_project_access", $filter)) {
+                    // Redirect to home page
+                    $page_access = false;
                 }
-
-                if (!$_POST['password']) {
-                    $errors['password'] = "Please enter a password";
-                    $login_msg = '<p class="alert alert-danger">Please enter a password</p>';
-                }
-
-
-
-                $db->selectRows('users', array('username' => Mysql::SQLValue($_POST['username'])), null, null, true, 1);
-                $user = $db->recordsArray()[0];
-
-                if (password_verify($_POST['password'], $user["password"])) {
-                    $_SESSION['username'] = $_POST['username'];
-                    if (basename(getTopMostScript(), ".php") == "register") {
-                        header("location: index.php");
-                    }
-                } else {
-                    $errors['username'] = "Incorrect username or password";
-                    $login_msg = '<p class="alert alert-danger">Incorrect username or password</p>';
-                }
-            } else if ($this->require_login) {
-                $login_msg = '<p class="alert alert-danger">You do not have access to this page</p>';
             }
-
-            // Create form for login modal
-            $login_form = new Form("login", 'horizontal', 'novalidate', 'bs4');
-            $login_form->startFieldset("Login");
-            $login_form->setCols(0,12);
-            $login_form->addInput("hidden", "do-login", 1);
-            $login_form->addHelper("Username", "username");
-            $login_form->addInput('text', 'username', '', '', 'required, class=col-4');
-            $login_form->addHelper("Password", "password");
-            $login_form->addInput('password', 'password', '', '', 'required, class=col-4');
-            $login_form->addBtn('submit', 'submit-btn', "login", 'Log In', 'class=btn btn-success ladda-button, data-style=zoom-in');
-            $login_form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
-            $login_form->modal('#modal-login-target');
-            $login_form->addPlugin('formvalidation', '#login', 'bs4');
-            $login_form->endFieldset();
-
-        // If trying to access a page connected to a project
-        } else if ($_GET["project_id"]) {
-            $filter["project_id"] = Mysql::SqlValue($_GET["project_id"]);
-            $filter["username"] = Mysql::SqlValue($_SESSION["username"]);
-
-            // If the user does not have access to that project
-            if ($db->querySingleRowArray("user_project_access", $filter)) {
-                // Redirect to home page
-                $login_msg = '<p class="alert alert-danger">You do not have access to this page</p>';
-                $page_access = !$this->require_login;
+        } else {
+            require_once $_SERVER["DOCUMENT_ROOT"]."/login_modal.php";
+            $login_form = getLoginForm();
+            if ($this->require_login) {
+                $page_access = false;
             }
         }
+
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -259,28 +220,14 @@ class Page_Renderer {
                         //$sent_message refers to any message thrown by PHPFormBuilder
                         global $sent_message;
 
-                        // Print message from user
+                        if (isset($login_form)) $this->renderForm($login_form);
 
-                        // Print any messages from the form
-                        if (isset($this->form)) {
-                            $msg = $this->form->getMsg();
-                            if (isset($msg)) {
-                                echo $msg;
-                            }
-                        }
-
-                        // Print login message
-                        if (isset($login_msg)){
-                            echo $login_msg;
-                        }
-                        if ($login_form) $this->renderForm($login_form);
-
-                        // Don't render if user is not set
+                        // Don't render the page if the user is not allowed access
                         if ($page_access) {
                             if (isset($sent_message)) {
                                 echo $sent_message;
-                            } elseif (isset($msg)) {
-                                echo $msg;
+                            } elseif (isset($this->form)) {
+                                echo $this->form->getMsg();
                             }
                             $this->renderForm($this->form);
 
@@ -288,6 +235,8 @@ class Page_Renderer {
                             if ($this->html_string) {
                                 echo $this->html_string;
                             }
+                        } else {
+                            echo '<p class="alert alert-danger">You do not have access to this page</p>';
                         }
                         ?>
                     </div>
