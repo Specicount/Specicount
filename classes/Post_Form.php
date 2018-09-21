@@ -29,15 +29,13 @@ use function functions\getColumnNames;
  */
 abstract class Post_Form extends Form {
 
-    protected $page_title; // What gets displayed on the browser tab and on the navbar
-    protected $table_name;
-    protected $update, $filter;
-    protected $post_actions;
-    protected $db;
-    protected $validator;
-    protected $msg;
-
-    //public abstract function setFormType(); //Set the $form_type variable to a string, e.g. 'project', 'core', 'sample', etc
+    protected $page_title;      // An optional title provided by this form that the page renderer can use if it wants to
+    protected $table_name;      // The SQL table name that the post actions will interact with
+    protected $update;          // An array of column_name => value which can be used to update a row in the database
+    protected $filter;          // An array of primary_key => value which can be used to select a row in the database
+    protected $post_actions;    // An associative array of function_name => boolean where true means function_name will be executed
+    protected $db, $validator;  // PHPFormBuilder variables needed to interact with the database and validate forms
+    protected $msg;             // Any error or success message thrown by this class
 
     public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
         $this->form_ID = $form_ID;
@@ -48,7 +46,7 @@ abstract class Post_Form extends Form {
         $this->setUpdateArray();
         $this->registerPostActions();
 
-        //unset($_SESSION[$this->form_ID]); // Remove
+        //unset($_SESSION[$this->form_ID]); // Debug purposes
 
         // FILL FORM
         // ------------------------------
@@ -173,37 +171,32 @@ abstract class Post_Form extends Form {
     }
 
 
-    // Boolean expressions constructed such that only one of them is ever true at a single time
+    // This function determines which other functions should be executed (when the form is posted) and under what specific conditions
+    // Boolean expressions should be constructed such that only one of them is ever true at a single time
     protected function registerPostActions() {
         $this->registerPostAction("create", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" && !isset($_GET["edit"]));
         $this->registerPostAction("update", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save" &&  isset($_GET["edit"]));
         $this->registerPostAction("delete", isset($_POST["delete-btn"]) && $_POST["delete-btn"] == "delete", false);
     }
 
+    // Sets the $update array variable based on the values in the posted form
     protected function setUpdateArray() {
-        // Get all the column names of the given table
         $column_names = getColumnNames($this->table_name);
-        // Create an array which stores the new values to update for each column
         foreach ($column_names as $column_name) {
             if(isset($_POST[$column_name])) {
-                $update[$column_name] = Mysql::SQLValue($_POST[$column_name]);
-            } else if (isset($_GET[$column_name])) {
-                $update[$column_name] = Mysql::SQLValue($_GET[$column_name]);
+                $this->update[$column_name] = Mysql::SQLValue($_POST[$column_name]);
             }
         }
-
-        $this->update = $update;
     }
 
+    // Sets the $filter array variable based on the value of the primary keys in the GET variables.
     protected function setFilterArray() {
-        // Create an array which stores the posted values of the primary keys to identify which row to update
         $primary_keys = getPrimaryKeys($this->table_name);
         foreach ($primary_keys as $pk) {
             if (isset($_GET[$pk])) {
-                $filter[$pk] = Mysql::SQLValue($_GET[$pk]);
+                $this->filter[$pk] = Mysql::SQLValue($_GET[$pk]);
             }
         }
-        $this->filter = $filter;
     }
 
     public function getFilterArray() {
@@ -226,15 +219,15 @@ abstract class Post_Form extends Form {
         return $this->table_name;
     }
 
+
+    // Call this function in a post action if you haven't implemented that post action yet
     protected function raiseNotImplemented() {
         $calling_method_name = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
         $this->storeErrorMsg($calling_method_name. " function not implemented!");
     }
 
-    // Prints any database errors to the user
-    // Usually executed after any calls to the database
-    // If no success or fail message given then it will print the debug backtrace
-    // Optional redirect to index.php on db success
+    // Stores a success or fail message to the user based on the results of a database query
+    // If no fail message given then it will store the SQL error
     protected function storeDbMsg($success_msg = null, $fail_msg = null, $errors_only = false) {
         // If the database has thrown any errors
         if ($this->db->error()) {
@@ -246,7 +239,7 @@ abstract class Post_Form extends Form {
             $this->msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
         } else if (!$errors_only) {
             if ($success_msg == null) {
-                $this->msg .= '<p class="alert alert-success">Success!</br>' . $this->db->getLastSql() . '</p>';
+                $this->msg .= '<p class="alert alert-success">Success!</p>';
             } else {
                 $this->msg = '<p class="alert alert-success">' . $success_msg . '</p>';
             }
@@ -261,6 +254,7 @@ abstract class Post_Form extends Form {
         $this->msg = '<p class="alert alert-success">' . $success_msg . '</p>';
     }
 
+    // Primarily used by the Page_Renderer to print any messages
     public function getMsg() {
         return $this->msg;
     }
