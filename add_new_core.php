@@ -1,7 +1,4 @@
 <?php
-use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
-use phpformbuilder\database\Mysql;
 
 use classes\Add_New_Post_Form;
 
@@ -10,12 +7,11 @@ require_once "classes/Add_New_Post_Form.php";
 
 
 
-$form = new Add_New_Post_Form("core", "cores", 'horizontal', 'novalidate', 'bs4');
-
 /* ==================================================
     The Form
 ================================================== */
 
+$form = new Add_New_Post_Form("core", "cores", 'horizontal', 'novalidate', 'bs4');
 
 $form->addHelper('Core ID', 'core_id');
 

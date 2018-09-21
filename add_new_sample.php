@@ -1,8 +1,6 @@
 <?php
-use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
-use phpformbuilder\database\Mysql;
 
+use phpformbuilder\database\Mysql;
 use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";

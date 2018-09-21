@@ -1,8 +1,6 @@
 <?php
-use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
-use phpformbuilder\database\Mysql;
 
+use phpformbuilder\database\Mysql;
 use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
@@ -18,12 +16,13 @@ class Project_Form extends Add_New_Post_Form {
     }
 }
 
-$form = new Project_Form("project","projects", 'horizontal', 'novalidate', 'bs4');
+
 
 /* ==================================================
     The Form
 ================================================== */
 
+$form = new Project_Form("project","projects", 'horizontal', 'novalidate', 'bs4');
 
 $form->startFieldset('Project Data');
 $form->setCols(6, 6);
