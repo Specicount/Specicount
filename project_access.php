@@ -10,6 +10,7 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
+use function functions\getAccessLevel;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
@@ -21,12 +22,33 @@ require_once "classes/Post_Form.php";
 
 class Access_Form extends Post_Form {
     protected function registerPostActions() {
-        $this->registerPostAction("create", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "add-new-user");
-        $this->registerPostAction("update", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
-        $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
+        $this->registerPostAction("addUser", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "add-new-user");
+        $this->registerPostAction("saveChanges", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
+        $this->registerPostAction("deleteUser", isset($_POST["delete-btn"]));
     }
 
-    protected function create() {
+    protected function additionalValidation() {
+        $my_access_level = getAccessLevel();
+        if ($my_access_level == '' || $my_access_level == "visitor" || $my_access_level == "collaborator") {
+            $this->storeErrorMsg("You must be an owner or admin to make those changes");
+            return false;
+        }
+        return true;
+    }
+
+    protected function addUser() {
+        // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        if ($_POST["new_access_level"] == "owner") {
+            $this->storeErrorMsg("There can only be one owner of a project");
+            return;
+        }
+        if ($_POST["new_access_level"] == "admin" && $my_access_level != "owner") {
+            $this->storeErrorMsg("You have to be the owner to add new admins to the project");
+            return;
+        }
+
+        // -------- ADD USER --------
         $update["project_id"] = Mysql::sqlValue($_GET["project_id"]);
         $update["email"] = Mysql::sqlValue($_POST["new_email"]);
         $update["access_level"] = Mysql::sqlValue($_POST["new_access_level"]);
@@ -34,7 +56,23 @@ class Access_Form extends Post_Form {
         $this->storeDbMsg("Successfully added " . $update["email"] . " to the project!", "User already added or does not exist");
     }
 
-    protected function delete() {
+    protected function deleteUser() {
+        // ---- VALIDATION ----
+        $my_access_level = getAccessLevel();
+        $deleted_user_email = $_POST["delete-btn"];
+        $deleted_user_access_level = getAccessLevel($deleted_user_email);
+        // Make sure the owner cannot be deleted
+        if ($deleted_user_access_level == "owner") {
+            $this->storeErrorMsg("You cannot delete the owner");
+            return;
+        }
+        // Make sure an admin cannot delete other admins
+        if ($deleted_user_access_level == "admin" && $my_access_level == "admin") {
+            $this->storeErrorMsg("You cannot delete other admins");
+            return;
+        }
+
+        // -------- DELETE --------
         $email = $_POST["delete-btn"];
         $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
         $filter["email"] = Mysql::SQLValue($email);
@@ -43,8 +81,46 @@ class Access_Form extends Post_Form {
     }
 
     // Update all users access levels
-    protected function update() {
+    protected function saveChanges() {
+        // -------- VALIDATION --------
+        foreach($_POST["access_level"] as $key => $value) {
+            $access_levels[$key] = lcfirst($value); // This array is needed for readonly inputs
+        }
         $num_users = count($_POST["email"]);
+        for ($i=0; $i<$num_users; $i++) {
+            $new_access_level[$_POST["email"][$i]] = $access_levels[$i];
+        }
+        $filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
+        $this->db->selectRows($this->table_name, $filter);
+        $db_users = $this->db->recordsArray();
+        $my_access_level = getAccessLevel();
+        foreach ($db_users as $db_user) {
+            $email = $db_user["email"];
+            $old_access_level = $db_user["access_level"];
+            // Make sure that nobody changes the access level of the owner
+            if ($old_access_level == "owner" && $old_access_level != $new_access_level[$email]) {
+                $this->storeErrorMsg("You cannot change the access level of the owner");
+                return;
+            }
+            // Make sure no user is ever given the owner access level, unless they are already the owner
+            if ($old_access_level != "owner" && $new_access_level[$email] == "owner") {
+                $this->storeErrorMsg("There can only be one owner of a project");
+                return;
+            }
+            // Make sure only the owner can change the access level of admins
+            if ($old_access_level == "admin" && $old_access_level != $new_access_level[$email] && $my_access_level != "owner") {
+                $this->storeErrorMsg("Only the owner can change the access level of other admins");
+                return;
+            }
+            // Make sure only the owner can upgrade non-admins to admins
+            if ($old_access_level != "admin" && $new_access_level[$email] == "admin" && $my_access_level != "owner") {
+                $this->storeErrorMsg("Only the owner can upgrade non-admins to admins");
+                return;
+            }
+
+        }
+
+        // -------- SAVE CHANGES ------------
         for ($i=0; $i<$num_users; $i++) {
             $update["access_level"] = Mysql::SQLValue($_POST["access_level"][$i]);
             $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
@@ -59,13 +135,14 @@ class Access_Form extends Post_Form {
     The Form
 ================================================== */
 $form = new Access_Form("project-access", "user_project_access", 'horizontal', 'novalidate', 'bs4');
-
 Form::clear($form->getFormName());
 $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be printed on the same row as the other inputs
 
+$my_access_level = getAccessLevel();
+
 $form->startFieldset('Add New User to Project');
 
-$form->setCols(0,5);
+$form->setCols(0,6);
 $form->groupInputs('new_email', 'new_access_level', 'submit-btn');
 $form->addHelper('Email', 'new_email');
 $form->addInput('text', 'new_email');
@@ -74,10 +151,12 @@ $form->setCols(0,2);
 $form->addHelper('Access Level', 'new_access_level');
 $form->addOption('new_access_level', 'visitor', 'Visitor');
 $form->addOption('new_access_level', 'collaborator', 'Collaborator');
-$form->addOption('new_access_level', 'admin', 'Admin');
+if ($my_access_level == "owner") {
+    $form->addOption('new_access_level', 'admin', 'Admin');
+}
 $form->addSelect('new_access_level');
 
-$form->setCols(0,5);
+$form->setCols(0,4);
 $form->addBtn('submit', 'submit-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'add-group');
 $form->printBtnGroup('add-group');
 
@@ -85,21 +164,26 @@ $form->endFieldset();
 
 $form->startFieldset('Edit Current Users');
 
-$filter = $form->getFilterArray();
+// These options and helper texts only need to be added once, otherwise they duplicate due to each input having the same name (e.g. email[])
+$form->addOption("access_level[]", 'visitor', 'Visitor');
+$form->addOption("access_level[]", 'collaborator', 'Collaborator');
+if ($my_access_level == "owner") {
+    $form->addOption("access_level[]", 'admin', 'Admin');
+}
+$form->addHelper('First Name', 'first_name[]');
+$form->addHelper('Last Name', 'last_name[]');
+$form->addHelper('Access Level', 'access_level[]');
+$form->setOptions(array('elementsWrapper'=>'')); // So that the select inputs can be printed on the same row as the other inputs
+
+
+
 $db = new Mysql();
+$filter = array();
+$filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
 $sql =  "SELECT email, first_name, last_name, access_level FROM users NATURAL JOIN user_project_access ".
         Mysql::buildSQLWhereClause($filter).
         " ORDER BY access_level";
 $db->query($sql);
-
-$form->addOption("access_level[]", 'visitor', 'Visitor');
-$form->addOption("access_level[]", 'collaborator', 'Collaborator');
-$form->addOption("access_level[]", 'admin', 'Admin');
-$form->addHelper('First Name', 'first_name[]');
-$form->addHelper('Last Name', 'last_name[]');
-$form->addHelper('Access Level', 'access_level[]');
-
-$i = 0;
 foreach ($db->recordsArray() as $user) {
     $form->startFieldset('');
     $form->addHtml('<div class="form-group row justify-content-end">');
@@ -110,21 +194,34 @@ foreach ($db->recordsArray() as $user) {
     $form->addInput("text", "last_name[]", $user["last_name"], '', 'readonly="readonly"');
 
     $form->setCols(0,2);
-    $form->setOptions(array('elementsWrapper'=>''));
     $_SESSION[$form->getFormName()]["access_level"] = $user['access_level']; // Fill in access level from db
     if ($user["access_level"] == "owner") {
+        // Always grey out the owner of the project
         $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
-    } else {
-        $form->addSelect("access_level[]");
-    }
-    $form->setOptions(array('elementsWrapper'=>'<div class="form-group"></div>'));
+        $form->addHtml('<div class=" col-sm-4"></div>'); // Space filler for where the delete button would be
+    } else if ($user["access_level"] == "admin") {
+        // If I'm the owner of the project
+        if ($my_access_level == "owner") {
+            // Give me the ability to delete or change the access level of admin users
+            $form->addSelect("access_level[]");
+            $form->setCols(0,4);
+            $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
+            $form->printBtnGroup('delete-btn-'.$user["email"]);
+        } else {
+            // I must be an admin of the project, so don't give me those abilities
+            $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
+            $form->addHtml('<div class=" col-sm-4"></div>'); // Space filler for where the delete button would be
+        }
 
-    $form->setCols(0,4);
-    $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
-    $form->printBtnGroup('delete-btn-'.$user["email"]);
+    } else {  // I must be an admin
+        $form->addSelect("access_level[]");
+        $form->setCols(0,4);
+        $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
+        $form->printBtnGroup('delete-btn-'.$user["email"]);
+    }
+
     $form->addHtml('</div>');
     $form->endFieldset();
-    $i++;
 }
 $form->endFieldset();
 $form->startFieldset('');
@@ -132,7 +229,6 @@ $form->setCols(0,12);
 $form->addHtml("<br>");
 $form->setOptions(array('buttonWrapper'=>'<div class="form-group row justify-content-end"></div>'));
 $form->addBtn('submit', 'submit-btn', "save-multiple", '<i class="fa fa-save" aria-hidden="true"></i> Save Changes', 'class=btn btn-success ladda-button, data-style=zoom-in', 'save-group');
-$form->addBtn('reset', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'save-group');
 $form->printBtnGroup('save-group');
 
 $form->endFieldset();

@@ -22,7 +22,9 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getTopMostScript;
+use function functions\getAccessLevel;
 use function getLoginForm;
+
 
 // Add required files
 $current_dir = __DIR__;
@@ -150,8 +152,6 @@ class Page_Renderer {
             }
         }
 
-        $db = new Mysql();
-
         // Get current folder
         $current_dir = __DIR__;
 
@@ -164,14 +164,16 @@ class Page_Renderer {
         // If user is logged in
         if (isset($_SESSION['email'])) {
             // If trying to access a page connected to a project
-            if ($_GET["project_id"]) {
-                $filter["project_id"] = Mysql::SqlValue($_GET["project_id"]);
-                $filter["email"] = Mysql::SqlValue($_SESSION["email"]);
-
-                // If the user does not have access to that project
-                if ($db->querySingleRowArray("user_project_access", $filter)) {
-                    // Redirect to home page
-                    $page_access = false;
+            if (isset($_GET["project_id"])) {
+                // Check if that page exists in the database
+                if (false) {
+                    // TODO: Implement
+                } else {
+                    $my_access_level = getAccessLevel();
+                    // If the user does not have access to that project
+                    if (!$my_access_level) {
+                        $page_access = false;
+                    }
                 }
             }
         } else {

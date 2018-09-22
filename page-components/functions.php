@@ -80,3 +80,37 @@ function getTopMostScript() {
     $top_frame = array_pop($backtrace);
     return basename($top_frame['file']);
 }
+
+// Gets the access level of the user ($email) in a project ($project_id)
+// If no arguments given, will return the access level of the logged in user for the project page they have navigated to
+function getAccessLevel($email = null, $project_id = null) {
+    if (isset($_SESSION["email"])) {
+
+        if (!isset($project_id)) {
+            if (isset($_GET["project_id"])) {
+                $project_id = $_GET["project_id"];
+            } else {
+                return false;
+            }
+        }
+
+        if (!isset($email)) {
+            if (isset($_SESSION["email"])) {
+                $email = $_SESSION["email"];
+            } else {
+                return false;
+            }
+        }
+
+
+        $db = new Mysql();
+        $filter["project_id"] = Mysql::sqlValue($project_id);
+        $filter["email"] = Mysql::sqlValue($email);
+        $sql = "SELECT access_level FROM user_project_access ".Mysql::buildSQLWhereClause($filter);
+        $my_access_level = $db->querySingleValue($sql);
+        return $my_access_level;
+    } else {
+        return false;
+    }
+
+}

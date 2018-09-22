@@ -9,11 +9,13 @@
 namespace classes;
 
 
+
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getPrimaryKeys;
 use function functions\getColumnNames;
+use function functions\getAccessLevel;
 
 //require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
@@ -47,6 +49,11 @@ abstract class Post_Form extends Form {
         $this->registerPostActions();
 
 //        unset($_SESSION[$this->form_ID]); // Debug purposes
+//        $_SESSION["email"] = "alex@niven.com";
+//        $_SESSION["email"] = "elliott.wagener@hotmail.com";
+//        $_SESSION["email"] = "matthew.knill@hotmail.com";
+//        $_SESSION["email"] = "gay@fools.com";
+
 
         // FILL FORM
         // ------------------------------
@@ -76,13 +83,9 @@ abstract class Post_Form extends Form {
                     $page = strtok(basename($_SERVER['HTTP_REFERER']), "?");
                     // If not just trying to create a new project (all users are allowed to do that)
                     if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {
-                        ;
-                        $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-                        $filter["email"] = Mysql::SQLValue($_SESSION["email"]);
-                        $this->db->selectRows("user_project_access", $filter);
-                        $user = $this->db->recordsArray()[0];
+                        $my_access_level = getAccessLevel();
                         // If user is only a visitor
-                        if ($user["access_level"] == "visitor") {
+                        if ($my_access_level == "" || $my_access_level == "visitor" || $my_access_level == "collaborator") {
                             // Deny their changes
                             $this->storeErrorMsg("You do not have the correct permissions to perform those changes");
                             $execute_post_actions = false;
@@ -99,11 +102,10 @@ abstract class Post_Form extends Form {
                     // Create validator and auto-validate required fields
                     $this->validator = Form::validate($this->form_ID);
                     // Make any other validations such as email, password matching, etc
-                    $this->additionalValidation();
-                    if ($this->validator->hasErrors()) {
+                    $validation_succeeded = $this->additionalValidation();
+                    if (!$validation_succeeded || $this->validator->hasErrors()) {
                         // TODO: Should probably show the user the error message at some point
                         $_SESSION['errors'][$this->form_ID] = $this->validator->getAllErrors();
-                        print_r($_SESSION['errors'][$this->form_ID]);
                     } else {
                         // Call any post actions that require validation (e.g. register user)
                         $this->executePostActions($this->post_actions["valid"]);
@@ -124,8 +126,12 @@ abstract class Post_Form extends Form {
         }
     }
 
-    // It's blank because it depends entirely on the form being filled out
-    protected function additionalValidation() {}
+    // This function should use the $validator class variable to validate the form
+    // Must return true if validation succeeded
+    // It can also return false if some other method of validation failed
+    protected function additionalValidation() {
+        return true;
+    }
 
     private function executePostActions($post_actions) {
         foreach ($post_actions as $function_name => $should_call_function) {
