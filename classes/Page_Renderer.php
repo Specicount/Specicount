@@ -141,10 +141,13 @@ class Page_Renderer {
     // Create the page
     public function renderPage() {
 
-        if (!isset($this->page_title) && isset($this->form)) {
-            $this->page_title = $this->form->getPageTitle();
-        }  else {
-            $this->page_title = "UNTITLED";
+        // Use the form's default page title if a page title hasn't been explicitly set
+        if (!isset($this->page_title)) {
+            if (isset($this->form)) {
+                $this->page_title = $this->form->getPageTitle();
+            } else {
+                $this->page_title = "UNTITLED";
+            }
         }
 
         $db = new Mysql();
