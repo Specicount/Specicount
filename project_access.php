@@ -94,9 +94,11 @@ $db->query($sql);
 $form->addOption("access_level[]", 'visitor', 'Visitor');
 $form->addOption("access_level[]", 'collaborator', 'Collaborator');
 $form->addOption("access_level[]", 'admin', 'Admin');
+$form->addHelper('First Name', 'first_name[]');
+$form->addHelper('Last Name', 'last_name[]');
+$form->addHelper('Access Level', 'access_level[]');
+
 $i = 0;
-
-
 foreach ($db->recordsArray() as $user) {
     $form->startFieldset('');
     $form->addHtml('<div class="form-group row justify-content-end">');
@@ -114,8 +116,8 @@ foreach ($db->recordsArray() as $user) {
     } else {
         $form->addSelect("access_level[]");
     }
-
     $form->setOptions(array('elementsWrapper'=>'<div class="form-group"></div>'));
+
     $form->setCols(0,4);
     $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
     $form->printBtnGroup('delete-btn-'.$user["email"]);
