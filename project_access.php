@@ -96,53 +96,31 @@ $sql =  "SELECT email, first_name, last_name, access_level FROM users NATURAL JO
         Mysql::buildSQLWhereClause($filter).
         " ORDER BY access_level";
 $db->query($sql);
-$i = 0;
-print_r($db->error());
-print_r($db->recordsArray());
-print_r($_POST);
 foreach ($db->recordsArray() as $user) {
     $form->startFieldset('');
-
-
+    $form->addHtml('<div class="form-group row justify-content-end">');
     $form->setCols(0,3);
-    $form->groupInputs("email[]", "first_name[]", "last_name[]", "submit-btn");
+    $form->groupInputs("email[]", "first_name[]", "last_name[]", "delete-btn[]");
     $form->addInput("hidden", "email[]", $user["email"]);
     $form->addInput("text", "first_name[]", $user["first_name"], '', 'readonly="readonly"');
     $form->addInput("text", "last_name[]", $user["last_name"], '', 'readonly="readonly"');
-    $form->addHelper('Access Level', "access_level[]");
 
     $form->setCols(0,2);
+    $form->setOptions(array('elementsWrapper'=>''));
     if ($user["access_level"] === "owner") {
         $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
     } else {
-        $form->addOption("access_level[]", 'visitor', 'Visitor', '', '');
-        $form->addOption("access_level[]", 'collaborator', 'Collaborator', '', '');
-        $form->addOption("access_level[]", 'admin', 'Admin', '', '');
+        $form->addOption("access_level[]", 'visitor', 'Visitor');
+        $form->addOption("access_level[]", 'collaborator', 'Collaborator');
+        $form->addOption("access_level[]", 'admin', 'Admin');
         $form->addSelect("access_level[]");
     }
-
-
-
-//
-//    $form->addInput("text", $email_input, $user["email"]);
-//    $form->addHelper('Username', $username_input);
-//    $form->addInput('text', $username_input, $user['username'], '', 'readonly="readonly"');
-//
-//    $form->setCols(0,2);
-//    $_SESSION[$form->getFormName()]["access_level"][$i] = $user['access_level']; // Fill in access level from db
-//    $form->addHelper('Access Level', $access_input);
-//    $form->addOption($access_input, 'visitor', 'Visitor', '', '');
-//    $form->addOption($access_input, 'collaborator', 'Collaborator', '', '');
-//    $form->addOption($access_input, 'admin', 'Admin', '', '');
-//    $form->addSelect($access_input, '', '');
-
-
+    $form->setOptions(array('elementsWrapper'=>'<div class="form-group"></div>'));
     $form->setCols(0,4);
     $form->addBtn('submit', 'delete-btn[]', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
     $form->printBtnGroup('delete-btn-'.$user["email"]);
-
+    $form->addHtml('</div>');
     $form->endFieldset();
-    $i++;
 }
 
 $form->endFieldset();
