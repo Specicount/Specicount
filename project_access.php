@@ -21,41 +21,35 @@ require_once "classes/Post_Form.php";
 
 class Access_Form extends Post_Form {
     protected function registerPostActions() {
-        parent::registerPostActions();
+        $this->registerPostAction("create", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "add-new-user");
         $this->registerPostAction("update", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
         $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
     }
 
     protected function create() {
-        $this->db->insertRow($this->table_name, $this->update);
-        $this->storeDbMsg("Successfully added " . $this->update["username"] . " to the project!", "User already added or does not exist");
+        $update["project_id"] = Mysql::sqlValue($_GET["project_id"]);
+        $update["email"] = Mysql::sqlValue($_POST["new_email"]);
+        $update["access_level"] = Mysql::sqlValue($_POST["new_access_level"]);
+        $this->db->insertRow($this->table_name, $update);
+        $this->storeDbMsg("Successfully added " . $update["email"] . " to the project!", "User already added or does not exist");
     }
 
     protected function delete() {
-        $username = $_POST["delete-btn"];
+        $email = $_POST["delete-btn"];
         $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-        $filter["username"] = Mysql::SQLValue($username);
+        $filter["email"] = Mysql::SQLValue($email);
         $this->db->deleteRows($this->table_name, $filter);
-        $this->storeDbMsg("Successfully deleted " . $username . " from access list!");
+        $this->storeDbMsg("Successfully deleted " . $email . " from access list!");
     }
 
     // Update all users access levels
     protected function update() {
-        foreach (array_keys($_POST) as $key) {
-            if (strpos($key, "access_level") !== false) {
-                // TODO: May cause problems if usernames can have commas
-                $username = explode(',', $key)[1];
-                $access_level = $_POST[$key];
-
-                $update["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-                $update["username"] = Mysql::SQLValue($username);
-                $update["access_level"] = Mysql::SQLValue($access_level);
-
-                $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-                $filter["username"] = Mysql::SQLValue($username);
-
-                $this->db->updateRows($this->table_name, $update, $filter);
-            }
+        $num_users = count($_POST["email"]);
+        for ($i=0; $i<$num_users; $i++) {
+            $update["access_level"] = Mysql::SQLValue($_POST["access_level"][$i]);
+            $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
+            $filter["email"] = Mysql::SQLValue($_POST["email"][$i]);
+            $this->db->updateRows($this->table_name, $update, $filter);
         }
         $this->storeDbMsg("Changes have been saved!");
     }
@@ -64,8 +58,8 @@ class Access_Form extends Post_Form {
 /* ==================================================
     The Form
 ================================================== */
-
 $form = new Access_Form("project-access", "user_project_access", 'horizontal', 'novalidate', 'bs4');
+Form::clear($form->getFormName());
 $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be printed on the same row as the other inputs
 
 $form->startFieldset('Add New User to Project');
@@ -83,7 +77,7 @@ $form->addOption('new_access_level', 'admin', 'Admin');
 $form->addSelect('new_access_level');
 
 $form->setCols(0,5);
-$form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'add-group');
+$form->addBtn('submit', 'submit-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'add-group');
 $form->printBtnGroup('add-group');
 
 $form->endFieldset();
@@ -96,6 +90,13 @@ $sql =  "SELECT email, first_name, last_name, access_level FROM users NATURAL JO
         Mysql::buildSQLWhereClause($filter).
         " ORDER BY access_level";
 $db->query($sql);
+
+$form->addOption("access_level[]", 'visitor', 'Visitor');
+$form->addOption("access_level[]", 'collaborator', 'Collaborator');
+$form->addOption("access_level[]", 'admin', 'Admin');
+$i = 0;
+
+
 foreach ($db->recordsArray() as $user) {
     $form->startFieldset('');
     $form->addHtml('<div class="form-group row justify-content-end">');
@@ -107,20 +108,20 @@ foreach ($db->recordsArray() as $user) {
 
     $form->setCols(0,2);
     $form->setOptions(array('elementsWrapper'=>''));
-    if ($user["access_level"] === "owner") {
+    $_SESSION[$form->getFormName()]["access_level"][$i] = $user['access_level']; // Fill in access level from db
+    if ($user["access_level"] == "owner") {
         $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
     } else {
-        $form->addOption("access_level[]", 'visitor', 'Visitor');
-        $form->addOption("access_level[]", 'collaborator', 'Collaborator');
-        $form->addOption("access_level[]", 'admin', 'Admin');
         $form->addSelect("access_level[]");
     }
+
     $form->setOptions(array('elementsWrapper'=>'<div class="form-group"></div>'));
     $form->setCols(0,4);
-    $form->addBtn('submit', 'delete-btn[]', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
+    $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
     $form->printBtnGroup('delete-btn-'.$user["email"]);
     $form->addHtml('</div>');
     $form->endFieldset();
+    $i++;
 }
 
 $form->endFieldset();
