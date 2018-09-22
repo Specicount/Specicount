@@ -28,21 +28,23 @@ class Register_Form extends Post_Form {
         $this->update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
     }
 
-    protected function create() {
-        // TODO: Implement captcha
+    protected function additionalValidation() {
+        $this->validator->email()->validate('email');
+        $this->validator->hasUppercase()->hasLowercase()->hasNumber()->minLength(8)->validate('password');
+        $this->validator->matches('password')->validate('password_conf');
+        //TODO: Implement recaptcha
         //$this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
-        if ($_POST["password"] == $_POST["password_conf"]) {
-            $this->db->insertRow($this->table_name, $this->update);
-            $this->storeDbMsg('User: ' . $_POST["username"] . ' added successfully!', "Username already exists!");
-        } else {
-            $this->storeErrorMsg("Passwords do not match!");
-        }
+    }
+
+    protected function create() {
+        $this->db->insertRow($this->table_name, $this->update);
+        $this->storeDbMsg('User: ' . $_POST["email"] . ' added successfully!', "That email already exists!");
     }
 
     protected function update() {
         if ($_POST["password"] == $_POST["password_conf"]) {
             $this->db->updateRows($this->table_name, $this->update, $this->filter);
-            $this->storeDbMsg('User: ' . $_POST["username"] . ' information updated!');
+            $this->storeDbMsg('Information updated!');
         } else {
             $this->storeErrorMsg("Passwords do not match!");
         }
@@ -51,55 +53,43 @@ class Register_Form extends Post_Form {
     protected function fillFormWithDbValues($record_array) {
         parent::fillFormWithDbValues($record_array);
         unset($_SESSION[$this->form_ID]["password"]);
+        unset($_SESSION[$this->form_ID]["password_conf"]);
     }
 }
 
 /* ==================================================
     The Form
 ================================================== */
-//
 
 Form::clear("register");
 $form = new Register_Form("register","users", 'horizontal', 'novalidate', 'bs4');
 
-$form->setCols(0, 12);
+$form->setCols(3, 9);
 
-$form->addHelper('Username', 'username');
-$form->addInput('text', 'username', '', '', 'required, class=col-4');
+$form->addInput('email', 'email', '', 'Email', 'required, class=col-4');
+$form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-4');
+$form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-4');
+$form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-4");
+$form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter and 1 symbol", "password");
+$form->addInput('password', 'password', '', 'Password', 'required, class=col-4,
+                data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
+$form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-4,
+                data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 
-$form->addHelper('First Name', 'first_name');
-$form->addInput('text', 'first_name', '', '', 'required, class=col-4');
-
-$form->addHelper('Last Name', 'last_name');
-$form->addInput('text', 'last_name', '', '', 'required, class=col-4');
-
-$form->addHelper('Email', 'email');
-$form->addInput('email', 'email', '', '', 'required, placeholder=Email, class=col-4');
-
-$form->addHelper('Your Institution/Company', 'institution');
-$form->addInput('text', 'institution', '', '', "class=col-4");
-
-$form->addHelper('Password', 'password');
-$form->addInput('password', 'password', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long, class=col-4');
-
-$form->addHelper('Password Confirmation', 'password_conf');
-$form->addInput('password', 'password_conf', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long, class=col-4');
-
-// Captcha if we decide to allow any user to register
 $form->addRecaptcha('6Ldg0QkUAAAAABmXaV1b9qdOnyIwVPRRAs4ldoxe', 'recaptcha2', true);
 
-#######################
-# Clear/Save
-#######################
-$form->addBtn('submit', 'submit-btn', "save", 'Register User <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-user-plus" aria-hidden="true"></i> Register', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('reset', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {
-    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'my-btn-group');
+    $form->addBtn('submit', 'delete-btn', "delete", '<i class="fa fa-trash" aria-hidden="true"></i> Delete', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'my-btn-group');
 }
 $form->printBtnGroup('my-btn-group');
 
 // jQuery validation
-$form->addPlugin('formvalidation', '#register', 'bs4');
+$form->addPlugin("formvalidation","#".$form->getFormName(), "bs4");
+
+// Captcha if we decide to allow any user to register
+
 
 // Render Page
 $page_render = new \classes\Page_Renderer();

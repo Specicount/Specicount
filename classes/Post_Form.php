@@ -46,7 +46,7 @@ abstract class Post_Form extends Form {
         $this->setUpdateArray();
         $this->registerPostActions();
 
-        //unset($_SESSION[$this->form_ID]); // Debug purposes
+//        unset($_SESSION[$this->form_ID]); // Debug purposes
 
         // FILL FORM
         // ------------------------------
@@ -78,7 +78,7 @@ abstract class Post_Form extends Form {
                     if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {
                         ;
                         $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
-                        $filter["username"] = Mysql::SQLValue($_SESSION["username"]);
+                        $filter["email"] = Mysql::SQLValue($_SESSION["email"]);
                         $this->db->selectRows("user_project_access", $filter);
                         $user = $this->db->recordsArray()[0];
                         // If user is only a visitor
@@ -96,12 +96,16 @@ abstract class Post_Form extends Form {
                 if ($execute_post_actions) {
                     // Call any post actions that don't require validation (e.g. delete actions)
                     $this->executePostActions($this->post_actions["no_valid"]);
-                    // Validate form -> check if it has been filled out correctly
+                    // Create validator and auto-validate required fields
                     $this->validator = Form::validate($this->form_ID);
+                    // Make any other validations such as email, password matching, etc
+                    $this->additionalValidation();
                     if ($this->validator->hasErrors()) {
+                        // TODO: Should probably show the user the error message at some point
                         $_SESSION['errors'][$this->form_ID] = $this->validator->getAllErrors();
+                        print_r($_SESSION['errors'][$this->form_ID]);
                     } else {
-                        // Call any post actions that require validation
+                        // Call any post actions that require validation (e.g. register user)
                         $this->executePostActions($this->post_actions["valid"]);
                     }
                 }
@@ -119,6 +123,9 @@ abstract class Post_Form extends Form {
             $_SESSION[$this->form_ID][$column_name] = $value;
         }
     }
+
+    // It's blank because it depends entirely on the form being filled out
+    protected function additionalValidation() {}
 
     private function executePostActions($post_actions) {
         foreach ($post_actions as $function_name => $should_call_function) {

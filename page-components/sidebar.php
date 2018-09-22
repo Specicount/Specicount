@@ -31,7 +31,7 @@ if (!empty($_GET["sample_id"])) {
         <ul class="list-unstyled">
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
             <?php
-                if (isset($_SESSION["username"])) {
+                if (isset($_SESSION["email"])) {
                     echo '<li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>';
                 }
             ?>
@@ -39,8 +39,8 @@ if (!empty($_GET["sample_id"])) {
                 <?php
 
                 $db = new Mysql();
-                $username = Mysql::SQLValue($_SESSION['username']);
-                $sql = "SELECT project_id FROM user_project_access NATURAL JOIN projects WHERE username =".$username." ORDER BY project_id";
+                $email = Mysql::SQLValue($_SESSION['email']);
+                $sql = "SELECT project_id FROM user_project_access NATURAL JOIN projects WHERE email =".$email." ORDER BY project_id";
                 $db->query($sql);
                 foreach ($db->recordsArray() as $project) {
                     $toggle_expand_parent = $toggle_expand_child = "";

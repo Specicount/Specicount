@@ -37,7 +37,7 @@ session_start();
 
 class Page_Renderer {
 
-    private $page_title = "UNTITLED";
+    private $page_title;
 
     //Whether the page requires a user to be logged in to view its contents
     private $require_login;
@@ -141,6 +141,12 @@ class Page_Renderer {
     // Create the page
     public function renderPage() {
 
+        if (!isset($this->page_title) && isset($this->form)) {
+            $this->page_title = $this->form->getPageTitle();
+        }  else {
+            $this->page_title = "UNTITLED";
+        }
+
         $db = new Mysql();
 
         // Get current folder
@@ -153,11 +159,11 @@ class Page_Renderer {
         $login_form = null;
 
         // If user is logged in
-        if (isset($_SESSION['username'])) {
+        if (isset($_SESSION['email'])) {
             // If trying to access a page connected to a project
             if ($_GET["project_id"]) {
                 $filter["project_id"] = Mysql::SqlValue($_GET["project_id"]);
-                $filter["username"] = Mysql::SqlValue($_SESSION["username"]);
+                $filter["email"] = Mysql::SqlValue($_SESSION["email"]);
 
                 // If the user does not have access to that project
                 if ($db->querySingleRowArray("user_project_access", $filter)) {
@@ -177,13 +183,7 @@ class Page_Renderer {
         <!DOCTYPE html>
         <html lang="en">
         <head>
-            <title><?php
-                if ($this->page_title == "UNTITLED" && isset($form)) {
-                    echo $this->form->getPageTitle();
-                }  else {
-                    echo $this->page_title;
-                }
-            ?></title>
+            <title><?=$this->page_title?></title>
             <?php
             if ($this->render_header) {
                 $render_side = $this->render_sidebar;
