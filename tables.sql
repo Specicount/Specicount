@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS projects (
 CREATE TABLE IF NOT EXISTS user_project_access (
   project_id VARCHAR (150) NOT NULL,
   email VARCHAR(30) NOT NULL,
-  access_level ENUM('visitor','collaborator','admin', 'owner') NOT NULL,
+  access_level ENUM('owner','admin','collaborator','visitor') NOT NULL,
   PRIMARY KEY (project_id, email),
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE ON UPDATE CASCADE

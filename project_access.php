@@ -59,6 +59,7 @@ class Access_Form extends Post_Form {
     The Form
 ================================================== */
 $form = new Access_Form("project-access", "user_project_access", 'horizontal', 'novalidate', 'bs4');
+
 Form::clear($form->getFormName());
 $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be printed on the same row as the other inputs
 
@@ -110,7 +111,7 @@ foreach ($db->recordsArray() as $user) {
 
     $form->setCols(0,2);
     $form->setOptions(array('elementsWrapper'=>''));
-    $_SESSION[$form->getFormName()]["access_level"][$i] = $user['access_level']; // Fill in access level from db
+    $_SESSION[$form->getFormName()]["access_level"] = $user['access_level']; // Fill in access level from db
     if ($user["access_level"] == "owner") {
         $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
     } else {
@@ -125,7 +126,6 @@ foreach ($db->recordsArray() as $user) {
     $form->endFieldset();
     $i++;
 }
-
 $form->endFieldset();
 $form->startFieldset('');
 $form->setCols(0,12);
