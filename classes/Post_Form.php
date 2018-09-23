@@ -59,11 +59,12 @@ abstract class Post_Form extends Form {
 
 //        unset($_SESSION[$this->form_ID]); // Debug purposes
 //        $_SESSION["email"] = "alex@niven.com";
-        $_SESSION["email"] = "elliott.wagener@hotmail.com";
-//        $_SESSION["email"] = "matthew.knill@hotmail.com";
+//        $_SESSION["email"] = "elliott.wagener@hotmail.com";
+        $_SESSION["email"] = "matthew.knill@hotmail.com";
 //        $_SESSION["email"] = "gay@fools.com";
 
-        print_r($_SESSION["email"]. " is ".getAccessLevel());
+
+        print_r($_SESSION["email"]." is ".getAccessLevel());
 
         // FILL FORM
         // ------------------------------
@@ -237,7 +238,7 @@ abstract class Post_Form extends Form {
 
     // A user must have one of these access levels if they are to post this form
     protected function setRequiredAccessLevelsForPost() {
-        $this->post_required_access_levels = array("owner","admin");
+        $this->post_required_access_levels = array("owner","admin","collaborator");
     }
 
     public function getRequiredAccessLevelsForPost() {

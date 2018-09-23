@@ -3,6 +3,7 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
+use function functions\getAccessLevel;
 
 /* =============================================
     start session and include form class
@@ -12,6 +13,9 @@ require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
 
 class Sample_Count_Form extends Post_Form {
+    protected function setRequiredAccessLevelsForPost() {
+        $this->post_required_access_levels = array("owner","admin","collaborator","visitor");
+    }
 
     protected function registerPostActions() {
         $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
@@ -21,6 +25,14 @@ class Sample_Count_Form extends Post_Form {
     }
 
     protected function delete() {
+        // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        if ($my_access_level == "visitor") {
+            $this->storeErrorMsg("You cannot do that as visitor");
+            return;
+        }
+
+        // -------- DELETE --------
         $specimen_pkeys = explode(',',trim(base64_decode(str_replace("-", "=", $_POST["delete"]))));
         $specimen_project_id = $specimen_pkeys[0];
         $specimen_id = $specimen_pkeys[1];
@@ -64,6 +76,14 @@ class Sample_Count_Form extends Post_Form {
     }
 
     protected function update() {
+        // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        if ($my_access_level == "visitor") {
+            $this->storeErrorMsg("You cannot do that as visitor");
+            return;
+        }
+
+        // -------- UPDATE --------
         $sample_data = $this->db->selectRows("samples", $this->filter);
         // Concurrency control - if this sample was last updated by this device
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) {
@@ -92,12 +112,21 @@ class Sample_Count_Form extends Post_Form {
     }
 
     protected function updateReorder() {
+        // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        if ($my_access_level == "visitor") {
+            $this->storeErrorMsg("You cannot do that as visitor");
+            return;
+        }
+
+        // -------- UPDATE REORDER --------
         $this->update();
         $where_clause = Mysql::buildSQLWhereClause($this->filter);
         $sql = "UPDATE BioBase.found_specimens SET `order` = `count` ".$where_clause;
         $this->db->query($sql);
         $this->storeDbMsg("Successfully updated and reordered the sample!");
     }
+
 }
 
 
@@ -113,6 +142,7 @@ $form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5
 $form->addInput('hidden','last_edit');
 $form->addHtml("<div class='row'>");
 $form->addHtml("<div class='col-sm'>");
+
 #######################
 # Clear/Save
 #######################
@@ -122,27 +152,41 @@ $form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download
 $form->addBtn('submit', 'submit-btn', "save-reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
 
-# Lycopodium
+#############################
+# Lycopodium/Charcoal Counts
+#############################
+$db = new Mysql();
+$db->selectRows($form->getTableName(), $form->getFilterArray());
+$sample = $db->recordsArray()[0];
+$lycopodium_count = $sample["lycopodium"];
+$charcoal_count = $sample["charcoal"];
 
+#######################
+# Lycopodium
+#######################
 $form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
 $form->addHtml('<text style="font-weight: bold;padding: 5px">Lycopodium</text>');
 $form->addHtml("<table style='width: 100%'>");
 $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
 $form->addBtn('button', 'lycopodium_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'lycopodium\')');
 $form->addHtml("</td><td>");
+$_SESSION[$form->getFormName()]["lycopodium"] = $lycopodium_count; //Fill in the lycopodium input with database count
 $form->addInput('number', 'lycopodium', '', '', 'required');
 $form->addHtml("</td><td style='text-align: right'>");
 $form->addBtn('button', 'lycopodium_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'lycopodium\')');
 $form->addHtml("</td></tr></table>");
 $form->addHtml('</div>');
 
+#######################
 # Charcoal
+#######################
 $form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
 $form->addHtml('<text style="font-weight: bold;padding: 5px">Charcoal</text>');
 $form->addHtml("<table style='width: 100%'>");
 $form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
 $form->addBtn('button', 'charcoal_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'charcoal\')');
 $form->addHtml("</td><td>");
+$_SESSION[$form->getFormName()]["charcoal"] = $charcoal_count; //Fill in the charcoal input with database count
 $form->addInput('number', 'charcoal', '', '', 'required');
 $form->addHtml("</td><td style='text-align: right'>");
 $form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'charcoal\')');
@@ -167,7 +211,9 @@ $sql =  "SELECT s.specimen_id, s.project_id as specimen_project_id, s.image_fold
 $db->query($sql);
 $specimen_data = $db->recordsArray();
 
-//print_r($specimen_data);
+#######################
+# Specimen Grid
+#######################
 if($db->rowCount() > 0) {
 
     //$form->addHtml('<hr>');
