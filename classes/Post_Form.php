@@ -38,6 +38,8 @@ abstract class Post_Form extends Form {
     protected $post_actions;    // An associative array of function_name => boolean where true means function_name will be executed
     protected $db, $validator;  // PHPFormBuilder variables needed to interact with the database and validate forms
     protected $msg;             // Any error or success message thrown by this class
+    protected $post_required_access_levels; // A user must have one of these access levels if they want to post the form
+    protected $view_required_access_levels; // A user must have one of these access levels if they want to view the form
 
     public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
         $this->form_ID = $form_ID;
@@ -46,14 +48,18 @@ abstract class Post_Form extends Form {
         $this->setPageTitle();
         $this->setFilterArray();
         $this->setUpdateArray();
+        $this->setRequiredAccessLevelsForView();
+        $this->setRequiredAccessLevelsForPost();
         $this->registerPostActions();
+
 
 //        unset($_SESSION[$this->form_ID]); // Debug purposes
 //        $_SESSION["email"] = "alex@niven.com";
 //        $_SESSION["email"] = "elliott.wagener@hotmail.com";
 //        $_SESSION["email"] = "matthew.knill@hotmail.com";
-//        $_SESSION["email"] = "gay@fools.com";
+        $_SESSION["email"] = "gay@fools.com";
 
+        print_r($_SESSION["email"]. " is ".getAccessLevel());
 
         // FILL FORM
         // ------------------------------
@@ -80,17 +86,11 @@ abstract class Post_Form extends Form {
                 // ------------------------------
                 // If trying to interact with a page related to a project
                 if (isset($_GET["project_id"])) {
-                    $page = strtok(basename($_SERVER['HTTP_REFERER']), "?");
-                    // If not just trying to create a new project (all users are allowed to do that)
-                    if (!($page == "add_new_project.php" && !isset($_GET["edit"]))) {
-                        $my_access_level = getAccessLevel();
-                        // If user is only a visitor
-                        if ($my_access_level == "" || $my_access_level == "visitor" || $my_access_level == "collaborator") {
-                            // Deny their changes
-                            $this->storeErrorMsg("You do not have the correct permissions to perform those changes");
-                            $execute_post_actions = false;
-                        }
-
+                    $my_access_level = getAccessLevel();
+                    print_r("access levels required for post: ".$this->post_required_access_levels);
+                    if (!in_array($my_access_level, $this->post_required_access_levels)) {
+                        $this->storeErrorMsg("You do not have the correct permissions to perform those changes");
+                        $execute_post_actions = false;
                     }
                 }
 
@@ -216,6 +216,20 @@ abstract class Post_Form extends Form {
 
     public function getFilterArray() {
         return $this->filter;
+    }
+
+    // A user must have one of these access levels if they are to view this form
+    protected function setRequiredAccessLevelsForView() {
+        $this->view_required_access_levels = array("owner","admin","collaborator","visitor");
+    }
+
+    public function getRequiredAccessLevelsForView() {
+        return $this->view_required_access_levels;
+    }
+
+    // A user must have one of these access levels if they are to post this form
+    protected function setRequiredAccessLevelsForPost() {
+        $this->post_required_access_levels = array("owner","admin","collaborator");
     }
 
     protected function setPageTitle() {
