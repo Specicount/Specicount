@@ -42,12 +42,7 @@ class Register_Form extends Post_Form {
     }
 
     protected function update() {
-        if ($_POST["password"] == $_POST["password_conf"]) {
-            $this->db->updateRows($this->table_name, $this->update, $this->filter);
-            $this->storeDbMsg('Information updated!');
-        } else {
-            $this->storeErrorMsg("Passwords do not match!");
-        }
+        $this->raiseNotImplemented();
     }
 
     protected function fillFormWithDbValues($record_array) {
