@@ -224,17 +224,21 @@ class Page_Renderer {
                         <?php
                         //$sent_message refers to any message thrown by PHPFormBuilder
                         global $sent_message;
+                        if (isset($sent_message)) {
+                            echo $sent_message;
+                        }
 
-                        if (isset($login_form)) $this->renderForm($login_form);
+                        if (isset($login_form)) {
+                            echo $login_form->getMsg();
+                            $this->renderForm($login_form);
+                        }
 
                         // Don't render the page if the user is not allowed access
                         if ($page_access) {
-                            if (isset($sent_message)) {
-                                echo $sent_message;
-                            } elseif (isset($this->form)) {
+                             if (isset($this->form)) {
                                 echo $this->form->getMsg();
+                                $this->renderForm($this->form);
                             }
-                            $this->renderForm($this->form);
 
                             //Check whether $html_string has been initialised so we can render
                             if ($this->html_string) {
