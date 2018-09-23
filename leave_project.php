@@ -18,6 +18,7 @@ require_once "classes/Post_Form.php";
 class Leave_Form extends Post_Form {
 
     protected function setRequiredAccessLevelsForPost() {
+        // Any member can leave a project
         $this->post_required_access_levels = array("owner","admin","collaborator", "visitor");
     }
 
@@ -27,7 +28,6 @@ class Leave_Form extends Post_Form {
     }
 
     protected function additionalValidation() {
-        print_r($this->post_actions);
         $my_access_level = getAccessLevel();
         if (!$my_access_level) {
             $this->storeDbMsg("You must be a member of the project before you can leave it!");
@@ -37,7 +37,6 @@ class Leave_Form extends Post_Form {
     }
 
     protected function leave() {
-        print_r("hello");
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "owner") {

@@ -171,7 +171,7 @@ class Page_Renderer {
                 } else {
                     $my_access_level = getAccessLevel();
                     // If the user does not have access to that project
-                    if (!in_array($my_access_level,$this->form->getRequiredAccessLevelsForView())) {
+                    if (!$my_access_level) {
                         $page_access = false;
                     }
                 }

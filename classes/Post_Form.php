@@ -41,8 +41,6 @@ abstract class Post_Form extends Form {
     protected $required_get_variables; // The GET variables that must be set for the form to interact with the database properly
     // A user must have one of the access levels from this array if they want to post the form (only affects forms related to a project, might want to create a new subclass for this)
     protected $post_required_access_levels;
-    // A user must have one of the access levels from this array if they want to view the form (only affects forms related to a project, might want to create a new subclass for this)
-    protected $view_required_access_levels;
 
 
     public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
@@ -52,7 +50,6 @@ abstract class Post_Form extends Form {
         $this->setPageTitle();
         $this->setFilterArray();
         $this->setUpdateArray();
-        $this->setRequiredAccessLevelsForView();
         $this->setRequiredAccessLevelsForPost();
         $this->registerPostActions();
 
@@ -92,7 +89,6 @@ abstract class Post_Form extends Form {
                 // If trying to interact with a page related to a project
                 if (isset($_GET["project_id"])) {
                     $my_access_level = getAccessLevel();
-                    print_r("access levels required for post: ".$this->post_required_access_levels);
                     if (!in_array($my_access_level, $this->post_required_access_levels)) {
                         $this->storeErrorMsg("You do not have the correct permissions to perform those changes");
                         $execute_post_actions = false;
@@ -225,15 +221,6 @@ abstract class Post_Form extends Form {
 
     protected function setRequiredGetVariables() {
         return getPrimaryKeys($this->table_name);
-    }
-
-    // A user must have one of these access levels if they are to view this form
-    protected function setRequiredAccessLevelsForView() {
-        $this->view_required_access_levels = array("owner","admin","collaborator","visitor");
-    }
-
-    public function getRequiredAccessLevelsForView() {
-        return $this->view_required_access_levels;
     }
 
     // A user must have one of these access levels if they are to post this form
