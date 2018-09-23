@@ -66,20 +66,19 @@ $form = new Register_Form("register","users", 'horizontal', 'novalidate', 'bs4')
 
 $form->setCols(3, 9);
 
-$form->addInput('email', 'email', '', 'Email', 'required, class=col-4');
-$form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-4');
-$form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-4');
-$form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-4");
+$form->addInput('email', 'email', '', 'Email', 'required, class=col-5');
+$form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-5');
+$form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-5');
+$form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-5");
 $form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter and 1 symbol", "password");
-$form->addInput('password', 'password', '', 'Password', 'required, class=col-4,
+$form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
-$form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-4,
+$form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 
 $form->addRecaptcha('6Ldg0QkUAAAAABmXaV1b9qdOnyIwVPRRAs4ldoxe', 'recaptcha2', true);
 
 $form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-user-plus" aria-hidden="true"></i> Register', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('reset', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {
     $form->addBtn('submit', 'delete-btn', "delete", '<i class="fa fa-trash" aria-hidden="true"></i> Delete', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'my-btn-group');
 }
