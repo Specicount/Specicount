@@ -19,7 +19,7 @@ if (!empty($_GET["sample_id"])) {
         <ul class="list-unstyled">
             <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-edit"></i> Edit Sample</a></li>
-            <li><a href="sample.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-stopwatch"></i> Sample Count</a></li>
+            <li><a href="sample.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fas fa-stopwatch"></i> Sample Count</a></li>
             <li><a href="search_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>
             <li><a href="add_new_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-plus"></i> Add New Specimen</a></li>
         </ul>
@@ -46,7 +46,7 @@ if (!empty($_GET["sample_id"])) {
                 $sql = "SELECT project_id FROM user_project_access NATURAL JOIN projects WHERE email =".$email." ORDER BY project_id";
                 $db->query($sql);
                 foreach ($db->recordsArray() as $project) {
-                    $my_access_level = getAccessLevel(null, $project["project_id"]);
+                    $my_access_level = getAccessLevel($email, $project["project_id"]);
                     // If currently on a page that is connected to this project, expand the project dropdown
                     $toggle_expand_parent = $toggle_expand_child = "";
                     if ($_GET["project_id"] == $project["project_id"]) {

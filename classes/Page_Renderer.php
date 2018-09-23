@@ -19,6 +19,7 @@
 namespace classes;
 
 use phpformbuilder\Form;
+use classes\Post_Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getTopMostScript;
@@ -29,9 +30,9 @@ use function getLoginForm;
 // Add required files
 $current_dir = __DIR__;
 include_once $current_dir.'/../phpformbuilder/Form.php';
+require_once $current_dir.'/../classes/Post_Form.php';
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
-require_once $current_dir.'/../page-components/functions.php';
 require_once $current_dir.'/../page-components/functions.php';
 
 session_start();
@@ -236,7 +237,9 @@ class Page_Renderer {
                         // Don't render the page if the user is not allowed access
                         if ($page_access) {
                              if (isset($this->form)) {
-                                echo $this->form->getMsg();
+                                 if (method_exists($this->form, "getMsg")) {
+                                     echo $this->form->getMsg();
+                                 }
                                 $this->renderForm($this->form);
                             }
 

@@ -68,7 +68,7 @@ class Leave_Form extends Post_Form {
         }
 
         // -------- LEAVE AS OWNER --------
-
+        //TODO: autoinsertupdate
         $filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
         $this->db->selectRows($this->table_name, $filter);
         // If new owner is already in the project

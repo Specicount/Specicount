@@ -196,7 +196,8 @@ $form->addHtml('</div>');
 $form->addHtml("</div><div class='col-sm'>");
 
 // Concentration curve div
-$form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
+//$form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
+// TODO: Fix concentration curve
 
 $form->addHtml("</div></div>");
 
