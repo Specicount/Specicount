@@ -21,19 +21,14 @@ require_once "classes/Post_Form.php";
 //unset($_SESSION[$form_ID]); // To ensure that other users aren't accidentally added as admin
 
 class Access_Form extends Post_Form {
+    protected function setRequiredAccessLevelsForPost() {
+        $this->post_required_access_levels = array("owner","admin");
+    }
+
     protected function registerPostActions() {
         $this->registerPostAction("addUser", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "add-new-user");
         $this->registerPostAction("saveChanges", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
         $this->registerPostAction("deleteUser", isset($_POST["delete-btn"]));
-    }
-
-    protected function additionalValidation() {
-        $my_access_level = getAccessLevel();
-        if ($my_access_level == '' || $my_access_level == "visitor" || $my_access_level == "collaborator") {
-            $this->storeErrorMsg("You must be an owner or admin to make those changes");
-            return false;
-        }
-        return true;
     }
 
     protected function addUser() {
@@ -140,29 +135,35 @@ $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be prin
 
 $my_access_level = getAccessLevel();
 
-$form->startFieldset('Add New User to Project');
+if (in_array($my_access_level, $form->getRequiredAccessLevelsForPost())) {
+    $form->startFieldset('Add New User to Project');
 
-$form->setCols(0,6);
-$form->groupInputs('new_email', 'new_access_level', 'submit-btn');
-$form->addHelper('Email', 'new_email');
-$form->addInput('text', 'new_email');
+    $form->setCols(0,6);
+    $form->groupInputs('new_email', 'new_access_level', 'submit-btn');
+    $form->addHelper('Email', 'new_email');
+    $form->addInput('text', 'new_email');
 
-$form->setCols(0,2);
-$form->addHelper('Access Level', 'new_access_level');
-$form->addOption('new_access_level', 'visitor', 'Visitor');
-$form->addOption('new_access_level', 'collaborator', 'Collaborator');
-if ($my_access_level == "owner") {
-    $form->addOption('new_access_level', 'admin', 'Admin');
+    $form->setCols(0,2);
+    $form->addHelper('Access Level', 'new_access_level');
+    $form->addOption('new_access_level', 'visitor', 'Visitor');
+    $form->addOption('new_access_level', 'collaborator', 'Collaborator');
+    if ($my_access_level == "owner") {
+        $form->addOption('new_access_level', 'admin', 'Admin');
+    }
+    $form->addSelect('new_access_level');
+
+    $form->setCols(0,4);
+    $form->addBtn('submit', 'submit-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'add-group');
+    $form->printBtnGroup('add-group');
+
+    $form->endFieldset();
+    $form->startFieldset('Edit Current Users');
+} else {
+    $form->startFieldset('View Current Users');
 }
-$form->addSelect('new_access_level');
 
-$form->setCols(0,4);
-$form->addBtn('submit', 'submit-btn', "add-new-user", '<i class="fa fa-plus" aria-hidden="true"></i> Add New User', 'class=btn btn-success ladda-button, data-style=zoom-in', 'add-group');
-$form->printBtnGroup('add-group');
 
-$form->endFieldset();
 
-$form->startFieldset('Edit Current Users');
 
 // These options and helper texts only need to be added once, otherwise they duplicate due to each input having the same name (e.g. email[])
 $form->addOption("access_level[]", 'visitor', 'Visitor');
@@ -174,8 +175,6 @@ $form->addHelper('First Name', 'first_name[]');
 $form->addHelper('Last Name', 'last_name[]');
 $form->addHelper('Access Level', 'access_level[]');
 $form->setOptions(array('elementsWrapper'=>'')); // So that the select inputs can be printed on the same row as the other inputs
-
-
 
 $db = new Mysql();
 $filter = array();
@@ -196,42 +195,49 @@ foreach ($db->recordsArray() as $user) {
     $form->setCols(0,2);
     $_SESSION[$form->getFormName()]["access_level"] = $user['access_level']; // Fill in access level from db
     if ($user["access_level"] == "owner") {
-        // Always grey out the owner of the project
+        // Always grey out the owner
         $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
-        $form->addHtml('<div class=" col-sm-4"></div>'); // Space filler for where the delete button would be
-    } else if ($user["access_level"] == "admin") {
-        // If I'm the owner of the project
-        if ($my_access_level == "owner") {
-            // Give me the ability to delete or change the access level of admin users
-            $form->addSelect("access_level[]");
-            $form->setCols(0,4);
-            $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
-            $form->printBtnGroup('delete-btn-'.$user["email"]);
-        } else {
-            // I must be an admin of the project, so don't give me those abilities
-            $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
-            $form->addHtml('<div class=" col-sm-4"></div>'); // Space filler for where the delete button would be
-        }
-
-    } else {  // I must be an admin
+        $form->addHtml('<div class="col-sm-4"></div>'); // Space filler for where the delete button would be
+    } else if ($my_access_level == "owner") {
+        // Give me the ability to delete or change the access level of any other user
         $form->addSelect("access_level[]");
         $form->setCols(0,4);
         $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
         $form->printBtnGroup('delete-btn-'.$user["email"]);
+    } else if ($my_access_level == "admin") {
+        if ($user["access_level"] == "admin") {
+            // Don't allow admins to change/delete other admins
+            $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
+            $form->addHtml('<div class="col-sm-4"></div>'); // Space filler for where the delete button would be
+        } else {
+            // Allow admins to change/delete other users
+            $form->addSelect("access_level[]");
+            $form->setCols(0,4);
+            $form->addBtn('submit', 'delete-btn', $user['email'], '<i class="fa fa-trash" aria-hidden="true"></i> Remove User', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to remove this user from your project?\')', 'delete-btn-'.$user["email"]);
+            $form->printBtnGroup('delete-btn-'.$user["email"]);
+        }
+    } else {
+        // If you not an admin or owner, then grey out other users
+        $form->addInput("text", "access_level[]", ucwords($user["access_level"]), '', 'readonly="readonly"');
+        $form->addHtml('<div class="col-sm-4"></div>'); // Space filler for where the delete button would be
     }
 
     $form->addHtml('</div>');
     $form->endFieldset();
 }
 $form->endFieldset();
-$form->startFieldset('');
-$form->setCols(0,12);
-$form->addHtml("<br>");
-$form->setOptions(array('buttonWrapper'=>'<div class="form-group row justify-content-end"></div>'));
-$form->addBtn('submit', 'submit-btn', "save-multiple", '<i class="fa fa-save" aria-hidden="true"></i> Save Changes', 'class=btn btn-success ladda-button, data-style=zoom-in', 'save-group');
-$form->printBtnGroup('save-group');
 
-$form->endFieldset();
+if (in_array($my_access_level, $form->getRequiredAccessLevelsForPost())) {
+    $form->startFieldset('');
+    $form->setCols(0,12);
+    $form->addHtml("<br>");
+    $form->setOptions(array('buttonWrapper'=>'<div class="form-group row justify-content-end"></div>'));
+    $form->addBtn('submit', 'submit-btn', "save-multiple", '<i class="fa fa-save" aria-hidden="true"></i> Save Changes', 'class=btn btn-success ladda-button, data-style=zoom-in', 'save-group');
+    $form->printBtnGroup('save-group');
+    $form->endFieldset();
+}
+
+
 
 // Render Page
 $page_render = new \classes\Page_Renderer();

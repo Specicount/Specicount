@@ -38,8 +38,12 @@ abstract class Post_Form extends Form {
     protected $post_actions;    // An associative array of function_name => boolean where true means function_name will be executed
     protected $db, $validator;  // PHPFormBuilder variables needed to interact with the database and validate forms
     protected $msg;             // Any error or success message thrown by this class
-    protected $post_required_access_levels; // A user must have one of these access levels if they want to post the form
-    protected $view_required_access_levels; // A user must have one of these access levels if they want to view the form
+    protected $required_get_variables; // The GET variables that must be set for the form to interact with the database properly
+    // A user must have one of the access levels from this array if they want to post the form (only affects forms related to a project, might want to create a new subclass for this)
+    protected $post_required_access_levels;
+    // A user must have one of the access levels from this array if they want to view the form (only affects forms related to a project, might want to create a new subclass for this)
+    protected $view_required_access_levels;
+
 
     public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
         $this->form_ID = $form_ID;
@@ -56,8 +60,8 @@ abstract class Post_Form extends Form {
 //        unset($_SESSION[$this->form_ID]); // Debug purposes
 //        $_SESSION["email"] = "alex@niven.com";
 //        $_SESSION["email"] = "elliott.wagener@hotmail.com";
-//        $_SESSION["email"] = "matthew.knill@hotmail.com";
-        $_SESSION["email"] = "gay@fools.com";
+        $_SESSION["email"] = "matthew.knill@hotmail.com";
+//        $_SESSION["email"] = "gay@fools.com";
 
         print_r($_SESSION["email"]. " is ".getAccessLevel());
 
@@ -218,6 +222,10 @@ abstract class Post_Form extends Form {
         return $this->filter;
     }
 
+    protected function setRequiredGetVariables() {
+        return getPrimaryKeys($this->table_name);
+    }
+
     // A user must have one of these access levels if they are to view this form
     protected function setRequiredAccessLevelsForView() {
         $this->view_required_access_levels = array("owner","admin","collaborator","visitor");
@@ -230,6 +238,10 @@ abstract class Post_Form extends Form {
     // A user must have one of these access levels if they are to post this form
     protected function setRequiredAccessLevelsForPost() {
         $this->post_required_access_levels = array("owner","admin","collaborator");
+    }
+
+    public function getRequiredAccessLevelsForPost() {
+        return $this->post_required_access_levels;
     }
 
     protected function setPageTitle() {
