@@ -10,6 +10,10 @@ namespace classes;
 require_once "Post_Form.php";
 
 class Add_New_Post_Form extends Post_Form {
+    protected function setRequiredAccessLevelsForPost() {
+        $this->post_required_access_levels = array("owner","admin","collaborator");
+    }
+
     protected function setPageTitle() {
         if (isset($_GET["edit"])) {
             $id = end($_GET); // Last element of array is always the most specific id

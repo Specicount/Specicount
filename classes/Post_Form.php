@@ -237,7 +237,7 @@ abstract class Post_Form extends Form {
 
     // A user must have one of these access levels if they are to post this form
     protected function setRequiredAccessLevelsForPost() {
-        $this->post_required_access_levels = array("owner","admin","collaborator");
+        $this->post_required_access_levels = array("owner","admin");
     }
 
     public function getRequiredAccessLevelsForPost() {

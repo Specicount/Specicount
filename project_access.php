@@ -21,10 +21,6 @@ require_once "classes/Post_Form.php";
 //unset($_SESSION[$form_ID]); // To ensure that other users aren't accidentally added as admin
 
 class Access_Form extends Post_Form {
-    protected function setRequiredAccessLevelsForPost() {
-        $this->post_required_access_levels = array("owner","admin");
-    }
-
     protected function registerPostActions() {
         $this->registerPostAction("addUser", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "add-new-user");
         $this->registerPostAction("saveChanges", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
