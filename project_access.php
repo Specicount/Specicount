@@ -159,7 +159,7 @@ if (in_array($my_access_level, $form->getRequiredAccessLevelsForPost())) {
     $form->endFieldset();
     $form->startFieldset('Edit Current Users');
 } else {
-    $form->startFieldset('View Current Users');
+    $form->startFieldset('Users');
 }
 
 

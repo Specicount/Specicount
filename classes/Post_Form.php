@@ -59,8 +59,8 @@ abstract class Post_Form extends Form {
 
 //        unset($_SESSION[$this->form_ID]); // Debug purposes
 //        $_SESSION["email"] = "alex@niven.com";
-//        $_SESSION["email"] = "elliott.wagener@hotmail.com";
-        $_SESSION["email"] = "matthew.knill@hotmail.com";
+        $_SESSION["email"] = "elliott.wagener@hotmail.com";
+//        $_SESSION["email"] = "matthew.knill@hotmail.com";
 //        $_SESSION["email"] = "gay@fools.com";
 
         print_r($_SESSION["email"]. " is ".getAccessLevel());
