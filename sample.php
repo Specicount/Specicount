@@ -19,9 +19,9 @@ class Sample_Count_Form extends Post_Form {
 
     protected function registerPostActions() {
         $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
-        $this->registerPostAction("export", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "export", false);
-        $this->registerPostAction("update", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save");
-        $this->registerPostAction("updateReorder", isset($_POST["submit-btn"]) && $_POST["submit-btn"] == "save-reorder");
+        $this->registerPostAction("export", isset($_POST["export-btn"]), false);
+        $this->registerPostAction("save", isset($_POST["save-btn"]));
+        $this->registerPostAction("saveReorder", isset($_POST["save-reorder-btn"]));
     }
 
     protected function delete() {
@@ -75,7 +75,7 @@ class Sample_Count_Form extends Post_Form {
         exit;
     }
 
-    protected function update() {
+    protected function save() {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "visitor") {
@@ -83,7 +83,7 @@ class Sample_Count_Form extends Post_Form {
             return;
         }
 
-        // -------- UPDATE --------
+        // -------- SAVE --------
         $sample_data = $this->db->selectRows("samples", $this->filter);
         // Concurrency control - if this sample was last updated by this device
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) {
@@ -111,7 +111,7 @@ class Sample_Count_Form extends Post_Form {
         }
     }
 
-    protected function updateReorder() {
+    protected function saveReorder() {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "visitor") {
@@ -119,7 +119,7 @@ class Sample_Count_Form extends Post_Form {
             return;
         }
 
-        // -------- UPDATE REORDER --------
+        // -------- SAVE REORDER --------
         $this->update();
         $where_clause = Mysql::buildSQLWhereClause($this->filter);
         $sql = "UPDATE BioBase.found_specimens SET `order` = `count` ".$where_clause;
@@ -146,10 +146,10 @@ $form->addHtml("<div class='col-sm'>");
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('submit', 'save-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('button', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
-$form->addBtn('submit', 'submit-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
-$form->addBtn('submit', 'submit-btn', "save-reorder", 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
+$form->addBtn('submit', 'export-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
+$form->addBtn('submit', 'save-reorder-btn', 1, 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
 
 #############################
