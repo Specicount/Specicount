@@ -18,8 +18,8 @@
 
 namespace classes;
 
-/*error_reporting(E_ALL);
-ini_set('display_errors', 1);*/
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 use phpformbuilder\Form;
 use classes\Post_Form;
@@ -209,9 +209,6 @@ class Page_Renderer {
             }
         }
 
-        // Get current folder
-        $current_dir = __DIR__;
-
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -248,11 +245,6 @@ class Page_Renderer {
                 <div class="row justify-content-center">
                     <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
                         <?php
-                        // $sent_message refers to any message thrown by PHPFormBuilder
-                        global $sent_message;
-                        if (isset($sent_message)) {
-                            echo $sent_message;
-                        }
 
                         // $messages refers to our own message passing system that is mostly utilised by our own custom forms
                         global $messages;

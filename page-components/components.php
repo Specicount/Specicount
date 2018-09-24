@@ -44,7 +44,7 @@ function getNavbar ($render_side, $navbar_text) {
     $output .= "<text class=\"text-center\">$navbar_text</text>
     </div>";
     // If a user is logged in
-    if (isset($_SESSION["username"])) {
+    if (isset($_SESSION["email"])) {
         $output .= '<a style="color:white; margin-right: 20px;text-decoration: none;" href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a>';
     } else {
         $output .= "<a style=\"color:white; margin-right: 20px;text-decoration: none;\" href='#' data-remodal-target=\"modal-login-target\"><i class=\"fa fa-sign-in-alt\"></i> Log In</a>";

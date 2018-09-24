@@ -132,7 +132,7 @@ function getAccessLevel($email = null, $project_id = null) {
             }
         }
 
-        if (!isset($email)) {
+        if (!$email) {
             if (isset($_SESSION["email"])) {
                 $email = $_SESSION["email"];
             } else {
