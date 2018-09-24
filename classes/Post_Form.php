@@ -9,13 +9,14 @@
 namespace classes;
 
 
-
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use function functions\getPrimaryKeys;
 use function functions\getColumnNames;
 use function functions\getAccessLevel;
+use function functions\storeDbMsg;
+use function functions\storeErrorMsg;
 
 //require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
@@ -37,7 +38,6 @@ abstract class Post_Form extends Form {
     protected $filter;          // An array of primary_key => value which can be used to select a row in the database
     protected $post_actions;    // An associative array of function_name => boolean where true means function_name will be executed
     protected $db, $validator;  // PHPFormBuilder variables needed to interact with the database and validate forms
-    protected $msg;             // Any error or success message thrown by this class
     protected $required_get_variables; // The GET variables that must be set for the form to interact with the database properly
     // A user must have one of the access levels from this array if they want to post the form (only affects forms related to a project, might want to create a new subclass for this)
     protected $post_required_access_levels;
@@ -72,7 +72,7 @@ abstract class Post_Form extends Form {
             if ($this->db->rowCount() == 0) {
                 // By convention, the most specific identifier is the last GET variable
                 $last_value = end(array_values($_GET));
-                $this->storeErrorMsg("Could not find ".$last_value." in database");
+                storeErrorMsg("Could not find ".$last_value." in database");
             } else {
                 $this->fillFormWithDbValues($this->db->recordsArray()[0]);
             }
@@ -90,7 +90,7 @@ abstract class Post_Form extends Form {
                 if (isset($_GET["project_id"])) {
                     $my_access_level = getAccessLevel();
                     if (!in_array($my_access_level, $this->post_required_access_levels)) {
-                        $this->storeErrorMsg("You do not have the correct permissions to perform those changes");
+                        storeErrorMsg("You do not have the correct permissions to perform those changes");
                         $execute_post_actions = false;
                     }
                 }
@@ -140,7 +140,7 @@ abstract class Post_Form extends Form {
                 if (method_exists($this,$function_name)) {
                     $this->$function_name();
                 } else {
-                    $this->storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
+                    storeErrorMsg("Function '".$function_name."' undefined or not implemented yet");
                 }
             }
         }
@@ -151,25 +151,19 @@ abstract class Post_Form extends Form {
     // the rest of your code
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
-        if ($this->db->error()) {
-            $this->storeDbMsg();
-        } else {
-            $success_message = urlencode(ucwords($this->form_ID) . " successfully deleted!");
-            header("location: index.php?success_message=".$success_message);
-            exit;
-        }
+        storeDbMsg($this->db);
     }
 
     // Creates the form_ID in the database based on an $update array ($column_name => $value)
     protected function create() {
         $this->db->insertRow($this->table_name, $this->update);
-        $this->storeDbMsg("New " . $this->form_ID . " successfully created!");
+        storeDbMsg($this->db,"New " . $this->form_ID . " successfully created!");
     }
 
     // Updates the form_ID in the database identified by $filter with values from $update
     protected function update() {
         $this->db->updateRows($this->table_name, $this->update, $this->filter);
-        $this->storeDbMsg(ucwords($this->form_ID) . " successfully updated!");
+        storeDbMsg($this->db,ucwords($this->form_ID) . " successfully updated!");
     }
 
     // Register a new post action that will call the function identified by the string $function_name when $bool = true
@@ -252,39 +246,6 @@ abstract class Post_Form extends Form {
     // Call this function in a post action if you haven't implemented that post action yet
     protected function raiseNotImplemented() {
         $calling_method_name = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
-        $this->storeErrorMsg($calling_method_name. " function not implemented!");
-    }
-
-    // Stores a success or fail message to the user based on the results of a database query
-    // If no fail message given then it will store the SQL error
-    protected function storeDbMsg($success_msg = null, $fail_msg = null, $errors_only = false) {
-        // If the database has thrown any errors
-        if ($this->db->error()) {
-            // If a fail message hasn't been set
-            if ($fail_msg == null) {
-                // Set the fail message to the given database error
-                $fail_msg = $this->db->error() . '<br>' . $this->db->getLastSql();
-            }
-            $this->msg .= '<p class="alert alert-danger">'.$fail_msg.'</p>';
-        } else if (!$errors_only) {
-            if ($success_msg == null) {
-                $this->msg .= '<p class="alert alert-success">Success!</p>';
-            } else {
-                $this->msg = '<p class="alert alert-success">' . $success_msg . '</p>';
-            }
-        }
-    }
-
-    protected function storeErrorMsg($error_msg) {
-        $this->msg = '<p class="alert alert-danger">' . $error_msg . '</p>';
-    }
-
-    protected function storeSuccessMsg($success_msg) {
-        $this->msg = '<p class="alert alert-success">' . $success_msg . '</p>';
-    }
-
-    // Primarily used by the Page_Renderer to print any messages
-    public function getMsg() {
-        return $this->msg;
+        storeErrorMsg($calling_method_name. " function not implemented!");
     }
 }

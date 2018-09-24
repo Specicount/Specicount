@@ -4,6 +4,9 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
 use function functions\getAccessLevel;
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 /* =============================================
     start session and include form class
@@ -38,7 +41,7 @@ class Search_Form extends Post_Form {
         $my_access_level = getAccessLevel();
         // Make sure that only the owner can transfer ownership
         if ($my_access_level == "visitor") {
-            $this->storeErrorMsg("You cannot do that as a visitor");
+            storeErrorMsg("You cannot do that as a visitor");
             return;
         }
 
@@ -57,9 +60,9 @@ class Search_Form extends Post_Form {
         $this->db->insertRow($this->getTableName(), $update);
         if (!empty($this->db->error())) {
             if (stripos($this->db->error(), "Duplicate") !== false) {
-                $this->storeErrorMsg("Specimen $specimen_id already added to sample");
+                storeErrorMsg("Specimen $specimen_id already added to sample");
             } else {
-                $this->storeDbMsg();
+                storeDbMsg($this->db);
             }
         } else {
             # Do concentration curve
@@ -71,7 +74,7 @@ class Search_Form extends Post_Form {
             $unique_spec = $this->db->recordsArray()[0]["amount"]; // Number of unique specimens in the sample
             $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
             $this->db->insertRow('concentration_curve', $update_curve);
-            $this->storeDbMsg("Successfully added specimen $specimen_id to sample!");
+            storeDbMsg($this->db,"Successfully added specimen $specimen_id to sample!");
         }
     }
 

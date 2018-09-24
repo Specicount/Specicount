@@ -3,6 +3,10 @@
 use phpformbuilder\database\Mysql;
 use classes\Add_New_Post_Form;
 
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
+
 require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";
 
@@ -60,4 +64,9 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
+if (isset($_GET["edit"])) {
+    $page_render->setPageAccess(true, true, true);
+} else {
+    $page_render->setPageAccess(true, true, false);
+}
 $page_render->renderPage();

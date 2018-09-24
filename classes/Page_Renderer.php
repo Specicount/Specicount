@@ -25,6 +25,7 @@ use phpformbuilder\database\Mysql;
 use function functions\getTopMostScript;
 use function functions\getAccessLevel;
 use function getLoginForm;
+use function functions\storeErrorMsg;
 
 
 // Add required files
@@ -34,6 +35,7 @@ require_once $current_dir.'/../classes/Post_Form.php';
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../page-components/functions.php';
+require_once $current_dir.'/../login_modal.php';
 
 session_start();
 // Test if the user is logged in
@@ -47,7 +49,10 @@ class Page_Renderer {
 
     //Variables that will store content to render on the page
     //Will only be rendered if not null
-    private $form, $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
+    private $form, $login_form, $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
+
+    // Determines whether the page will be rendered
+    private $page_access = true;
 
     // Archived: $php_filename
 
@@ -141,8 +146,55 @@ class Page_Renderer {
         }
     }
 
+    public function setPageAccess($project = false, $core = false, $sample = false) {
+        // If user is logged in
+        if (isset($_SESSION['email'])) {
+            $project_id = Mysql::SqlValue($_GET["project_id"]);
+            $core_id = Mysql::SqlValue($_GET["core_id"]);
+            $sample_id = Mysql::SqlValue($_GET["sample_id"]);
+
+            $db = new Mysql();
+
+            // If trying to access a sample
+            if ($sample && !$db->querySingleValue("SELECT sample_id FROM samples WHERE project_id=$project_id AND core_id=$core_id AND sample_id=$sample_id")) {
+                storeErrorMsg("Sample not found in database");
+                $this->page_access = false;
+            }
+            // If trying to access a core
+            else if ($core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")){
+                storeErrorMsg("Core not found in database");
+                $this->page_access = false;
+            }
+            // If trying to access a project
+            else if ($project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")){
+                storeErrorMsg("Project not found in database");
+                $this->page_access = false;
+            }
+
+            // If trying to access any page connected to a project and the page's database equivalent exists
+            if ($project && $this->page_access) {
+                $my_access_level = getAccessLevel();
+                // If the user does not have access to that project
+                if (!$my_access_level) {
+                    $this->page_access = false;
+                }
+            }
+        }
+    }
+
     // Create the page
     public function renderPage() {
+
+        // The following code can't be in setPageAccess because you can't rely on that function always being called
+        // If user is not logged in
+        if (!isset($_SESSION['email'])) {
+            // Create login form
+            $this->login_form = getLoginForm();
+            // If this page requires a user to be logged in
+            if ($this->require_login) {
+                $this->page_access = false;
+            }
+        }
 
         // Use the form's default page title if a page title hasn't been explicitly set
         if (!isset($this->page_title)) {
@@ -156,35 +208,6 @@ class Page_Renderer {
         // Get current folder
         $current_dir = __DIR__;
 
-        // True if user is able to access page
-        $page_access = true;
-
-        // Login form modal variable
-        $login_form = null;
-
-        // If user is logged in
-        if (isset($_SESSION['email'])) {
-            // If trying to access a page connected to a project
-            if (isset($_GET["project_id"])) {
-                // Check if that page exists in the database
-                if (false) {
-                    // TODO: Implement
-                } else {
-                    $my_access_level = getAccessLevel();
-                    // If the user does not have access to that project
-                    if (!$my_access_level) {
-                        $page_access = false;
-                    }
-                }
-            }
-        } else {
-            require_once $_SERVER["DOCUMENT_ROOT"]."/login_modal.php";
-            $login_form = getLoginForm();
-            if ($this->require_login) {
-                $page_access = false;
-            }
-        }
-
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -197,8 +220,8 @@ class Page_Renderer {
             }
 
             //Check whether $form has been initialised so we can add the relevant css files
-            if ($login_form) $this->printCSS($login_form);
-            if ($page_access) $this->printCSS($this->form);
+            if (isset($this->login_form)) $this->printCSS($this->login_form);
+            if ($this->page_access) $this->printCSS($this->form);
 
             ?>
         </head>
@@ -223,23 +246,34 @@ class Page_Renderer {
                 <div class="row justify-content-center">
                     <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
                         <?php
-                        //$sent_message refers to any message thrown by PHPFormBuilder
+                        // $sent_message refers to any message thrown by PHPFormBuilder
                         global $sent_message;
                         if (isset($sent_message)) {
                             echo $sent_message;
                         }
 
-                        if (isset($login_form)) {
-                            echo $login_form->getMsg();
-                            $this->renderForm($login_form);
+                        // $messages refers to our own message passing system that is mostly utilised by our own custom forms
+                        global $messages;
+                        if (isset($messages["error"])) {
+                            $messages["error"] = array_unique($messages["error"]);
+                            foreach ($messages["error"] as $error_msg) {
+                                echo $error_msg;
+                            }
+                        } else if (isset($messages["success"])) {
+                            $messages["success"] = array_unique($messages["success"]);
+                            foreach ($messages["success"] as $success_msg) {
+                                echo $success_msg;
+                            }
+                        }
+
+                        // Render login form
+                        if (isset($this->login_form)) {
+                            $this->renderForm($this->login_form);
                         }
 
                         // Don't render the page if the user is not allowed access
-                        if ($page_access) {
+                        if ($this->page_access) {
                              if (isset($this->form)) {
-                                 if (method_exists($this->form, "getMsg")) {
-                                     echo $this->form->getMsg();
-                                 }
                                 $this->renderForm($this->form);
                             }
 
@@ -262,8 +296,8 @@ class Page_Renderer {
             require_once $current_dir.'/../page-components/scripts.php'; // Get scripts
         }
 
-        if ($login_form) $this->printScripts($login_form);
-        if ($page_access) $this->printScripts($this->form);
+        if (isset($this->login_form)) $this->printScripts($this->login_form);
+        if ($this->page_access) $this->printScripts($this->form);
 
         ?>
         </html>

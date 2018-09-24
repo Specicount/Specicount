@@ -81,6 +81,44 @@ function getTopMostScript() {
     return basename($top_frame['file']);
 }
 
+
+/**
+ * Stores a success or fail message to the user based on the results of a database query
+ * @param Mysql $db
+ * @param null $error_msg setting an error message will override the default database error message
+ * @param null $success_msg set a success message or none will get printed
+ * @return bool whether the database operation succeeded or not
+ */
+function storeDbMsg($db, $success_msg = null, $error_msg = null) {
+    // If the database has thrown any errors
+    if ($db->error()) {
+        // If a fail message hasn't been set
+        if ($error_msg == null) {
+            // Set the fail message to the given database error
+            $error_msg = $this->db->error() . '<br>' . $this->db->getLastSql();
+        }
+        storeErrorMsg($error_msg);
+        return false;
+    } else {
+        if (isset($success_msg)) {
+            storeSuccessMsg($success_msg);
+        }
+        return true;
+    }
+}
+
+function storeErrorMsg($error_msg) {
+    global $messages;
+    $error_msg_html = '<p class="alert alert-danger">'.$error_msg .'</p>';
+    array_push($messages["error"], $error_msg_html);
+}
+
+function storeSuccessMsg($success_msg) {
+    global $messages;
+    $success_msg_html = '<p class="alert alert-success">'.$success_msg .'</p>';
+    array_push($messages["success"],$success_msg_html);
+}
+
 // Gets the access level of the user ($email) in a project ($project_id)
 // If no arguments given, will return the access level of the logged in user for the project page they have navigated to
 function getAccessLevel($email = null, $project_id = null) {

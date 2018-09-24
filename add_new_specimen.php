@@ -9,6 +9,10 @@
 use phpformbuilder\database\Mysql;
 use classes\Add_New_Post_Form;
 
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
+
 require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";
 
@@ -42,7 +46,7 @@ class Specimen_Form extends Add_New_Post_Form {
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
         if ($this->db->error()) {
-            $this->storeDbMsg();
+            storeDbMsg($this->db);
         } else {
             global $image_folder;
             delete_files($image_folder . $_POST["specimen_id"]. "/");
@@ -65,7 +69,7 @@ class Specimen_Form extends Add_New_Post_Form {
                 $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
                 $update_found["count"] = Mysql::SQLValue(1);
                 $this->db->insertRow('found_specimens', $update_found);
-                $this->storeDbMsg();
+                storeDbMsg($this->db);
 
                 # Do concentration curve
                 $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
@@ -78,7 +82,7 @@ class Specimen_Form extends Add_New_Post_Form {
                 $unique_spec = $this->db->recordsArray()[0]["amount"];
                 $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
                 $this->db->insertRow('concentration_curve', $update_curve);
-                $this->storeDbMsg("Specimen successfully added to project and to sample!");
+                storeDbMsg($this->db,"Specimen successfully added to project and to sample!");
             }
         }
     }
@@ -694,6 +698,11 @@ $form->addPlugin('formvalidation', '#add-new', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
+if (isset($_GET["edit"])) {
+    $page_render->setPageAccess(true, false, false);
+} else {
+    $page_render->setPageAccess(true, false, false);
+}
 $page_render->renderPage();
 ?>
 <script>

@@ -11,6 +11,9 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
 use function functions\getAccessLevel;
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
@@ -31,11 +34,11 @@ class Access_Form extends Post_Form {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($_POST["new_access_level"] == "owner") {
-            $this->storeErrorMsg("There can only be one owner of a project");
+            storeErrorMsg("There can only be one owner of a project");
             return;
         }
         if ($_POST["new_access_level"] == "admin" && $my_access_level != "owner") {
-            $this->storeErrorMsg("You have to be the owner to add new admins to the project");
+            storeErrorMsg("You have to be the owner to add new admins to the project");
             return;
         }
 
@@ -44,7 +47,7 @@ class Access_Form extends Post_Form {
         $update["email"] = Mysql::sqlValue($_POST["new_email"]);
         $update["access_level"] = Mysql::sqlValue($_POST["new_access_level"]);
         $this->db->insertRow($this->table_name, $update);
-        $this->storeDbMsg("Successfully added " . $update["email"] . " to the project!", "User already added or does not exist");
+        storeDbMsg($this->db,"Successfully added " . $update["email"] . " to the project!", "User already added or does not exist");
     }
 
     protected function deleteUser() {
@@ -54,12 +57,12 @@ class Access_Form extends Post_Form {
         $deleted_user_access_level = getAccessLevel($deleted_user_email);
         // Make sure the owner cannot be deleted
         if ($deleted_user_access_level == "owner") {
-            $this->storeErrorMsg("You cannot delete the owner");
+            storeErrorMsg("You cannot delete the owner");
             return;
         }
         // Make sure an admin cannot delete other admins
         if ($deleted_user_access_level == "admin" && $my_access_level == "admin") {
-            $this->storeErrorMsg("You cannot delete other admins");
+            storeErrorMsg("You cannot delete other admins");
             return;
         }
 
@@ -68,7 +71,7 @@ class Access_Form extends Post_Form {
         $filter["project_id"] = Mysql::SQLValue($_GET["project_id"]);
         $filter["email"] = Mysql::SQLValue($email);
         $this->db->deleteRows($this->table_name, $filter);
-        $this->storeDbMsg("Successfully deleted " . $email . " from access list!");
+        storeDbMsg($this->db,"Successfully deleted " . $email . " from access list!");
     }
 
     // Update all users access levels
@@ -90,22 +93,22 @@ class Access_Form extends Post_Form {
             $old_access_level = $db_user["access_level"];
             // Make sure that nobody changes the access level of the owner
             if ($old_access_level == "owner" && $old_access_level != $new_access_level[$email]) {
-                $this->storeErrorMsg("You cannot change the access level of the owner");
+                storeErrorMsg("You cannot change the access level of the owner");
                 return;
             }
             // Make sure no user is ever given the owner access level, unless they are already the owner
             if ($old_access_level != "owner" && $new_access_level[$email] == "owner") {
-                $this->storeErrorMsg("There can only be one owner of a project");
+                storeErrorMsg("There can only be one owner of a project");
                 return;
             }
             // Make sure only the owner can change the access level of admins
             if ($old_access_level == "admin" && $old_access_level != $new_access_level[$email] && $my_access_level != "owner") {
-                $this->storeErrorMsg("Only the owner can change the access level of other admins");
+                storeErrorMsg("Only the owner can change the access level of other admins");
                 return;
             }
             // Make sure only the owner can upgrade non-admins to admins
             if ($old_access_level != "admin" && $new_access_level[$email] == "admin" && $my_access_level != "owner") {
-                $this->storeErrorMsg("Only the owner can upgrade non-admins to admins");
+                storeErrorMsg("Only the owner can upgrade non-admins to admins");
                 return;
             }
 
@@ -118,7 +121,7 @@ class Access_Form extends Post_Form {
             $filter["email"] = Mysql::SQLValue($_POST["email"][$i]);
             $this->db->updateRows($this->table_name, $update, $filter);
         }
-        $this->storeDbMsg("Changes have been saved!");
+        storeDbMsg($this->db,"Changes have been saved!");
     }
 }
 

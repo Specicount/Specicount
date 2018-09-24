@@ -10,6 +10,9 @@ use phpformbuilder\Form;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
 use function functions\getTopMostScript;
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
@@ -30,7 +33,7 @@ class Login_Form extends Post_Form {
                 header("location: index.php");
             }
         } else {
-            $this->storeErrorMsg("Incorrect email or password");
+            storeErrorMsg("Incorrect email or password");
         }
     }
 }

@@ -2,6 +2,9 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 /* =============================================
     start session and include form class
@@ -38,7 +41,7 @@ class Register_Form extends Post_Form {
 
     protected function create() {
         $this->db->insertRow($this->table_name, $this->update);
-        $this->storeDbMsg('User: ' . $_POST["email"] . ' added successfully!', "That email already exists!");
+        storeDbMsg($this->db,'User: ' . $_POST["email"] . ' added successfully!', "That email already exists!");
     }
 
     protected function update() {

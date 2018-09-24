@@ -4,6 +4,9 @@ use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
 use function functions\getAccessLevel;
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 /* =============================================
     start session and include form class
@@ -28,7 +31,7 @@ class Sample_Count_Form extends Post_Form {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "visitor") {
-            $this->storeErrorMsg("You cannot do that as visitor");
+            storeErrorMsg("You cannot do that as visitor");
             return;
         }
 
@@ -41,7 +44,7 @@ class Sample_Count_Form extends Post_Form {
         $this->filter["specimen_project_id"] = Mysql::SQLValue($specimen_project_id);
         $this->filter["specimen_id"] = Mysql::SQLValue($specimen_id);
         $this->db->deleteRows("found_specimens", $this->filter);
-        $this->storeDbMsg("Successfully deleted specimen " . $specimen_id . " from sample");
+        storeDbMsg($this->db,"Successfully deleted specimen " . $specimen_id . " from sample");
     }
 
     protected function export() {
@@ -79,7 +82,7 @@ class Sample_Count_Form extends Post_Form {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "visitor") {
-            $this->storeErrorMsg("You cannot do that as visitor");
+            storeErrorMsg("You cannot do that as visitor");
             return;
         }
 
@@ -105,9 +108,9 @@ class Sample_Count_Form extends Post_Form {
             $update_sample["lycopodium"] = Mysql::SQLValue($_POST["lycopodium"]);
             $update_sample["charcoal"] = Mysql::SQLValue($_POST["charcoal"]);
             $this->db->updateRows($this->table_name, $update_sample, $this->filter);
-            $this->storeDbMsg("Successfully updated sample!");
+            storeDbMsg($this->db,"Successfully updated sample!");
         } else {
-            $this->storeErrorMsg("Updated by another device, please reload the page again and try again. Warning: You will lose all your progress since your last save");
+            storeErrorMsg("Updated by another device, please reload the page again and try again. Warning: You will lose all your progress since your last save");
         }
     }
 
@@ -115,7 +118,7 @@ class Sample_Count_Form extends Post_Form {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "visitor") {
-            $this->storeErrorMsg("You cannot do that as visitor");
+            storeErrorMsg("You cannot do that as visitor");
             return;
         }
 
@@ -124,7 +127,7 @@ class Sample_Count_Form extends Post_Form {
         $where_clause = Mysql::buildSQLWhereClause($this->filter);
         $sql = "UPDATE BioBase.found_specimens SET `order` = `count` ".$where_clause;
         $this->db->query($sql);
-        $this->storeDbMsg("Successfully updated and reordered the sample!");
+        storeDbMsg($this->db,"Successfully updated and reordered the sample!");
     }
 
 }

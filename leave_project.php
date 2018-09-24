@@ -11,6 +11,9 @@ use phpformbuilder\database\Mysql;
 use classes\Post_Form;
 use function functions\getTopMostScript;
 use function functions\getAccessLevel;
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
@@ -30,7 +33,7 @@ class Leave_Form extends Post_Form {
     protected function additionalValidation() {
         $my_access_level = getAccessLevel();
         if (!$my_access_level) {
-            $this->storeDbMsg("You must be a member of the project before you can leave it!");
+            storeDbMsg($this->db,"You must be a member of the project before you can leave it!");
             return false;
         }
         return true;
@@ -40,7 +43,7 @@ class Leave_Form extends Post_Form {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "owner") {
-            $this->storeErrorMsg("You must transfer ownership to another user before you leave!");
+            storeErrorMsg("You must transfer ownership to another user before you leave!");
             return;
         }
 
@@ -48,7 +51,7 @@ class Leave_Form extends Post_Form {
         $filter["email"] = Mysql::sqlValue($_SESSION["email"]);
         $filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
         $this->db->deleteRows($this->table_name, $filter);
-        $this->storeDbMsg("You have successfully left the project");
+        storeDbMsg($this->db,"You have successfully left the project");
     }
 
     protected function leaveAsOwner() {
@@ -56,14 +59,14 @@ class Leave_Form extends Post_Form {
         $my_access_level = getAccessLevel();
         // Make sure that only the owner can transfer ownership
         if ($my_access_level != "owner") {
-            $this->storeErrorMsg("You must be the owner to do that");
+            storeErrorMsg("You must be the owner to do that");
             return;
         }
         // Make sure that the new owner exists
         $filter["email"] = Mysql::sqlValue($_POST["new-owner-email"]);
         $this->db->selectRows("user", $filter);
         if ($this->db->rowCount() == 0) {
-            $this->storeErrorMsg("That user does not exist");
+            storeErrorMsg("That user does not exist");
             return;
         }
 
@@ -82,12 +85,12 @@ class Leave_Form extends Post_Form {
             $update["access_level"] = Mysql::sqlValue("owner");
             $this->db->insertRow($this->table_name, $update);
         }
-        $this->storeDbMsg(null, null, true);
+        storeDbMsg($this->db);
 
         // Delete old owner from access list
         $filter["email"] = Mysql::sqlValue($_SESSION["email"]);
         $this->db->deleteRows($this->table_name, $filter);
-        $this->storeDbMsg("Successfully transferred ownership!");
+        storeDbMsg($this->db,"Successfully transferred ownership!");
     }
 
 

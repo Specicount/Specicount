@@ -4,6 +4,9 @@ use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";
+use function functions\storeErrorMsg;
+use function functions\storeSuccessMsg;
+use function functions\storeDbMsg;
 
 
 
@@ -41,4 +44,9 @@ $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
+if (isset($_GET["edit"])) {
+    $page_render->setPageAccess(true, true, false);
+} else {
+    $page_render->setPageAccess(true, false, false);
+}
 $page_render->renderPage();
