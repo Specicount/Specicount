@@ -5,7 +5,6 @@
  * Date: 9/09/2018
  * Time: 12:41 AM
  */
-namespace functions;
 use phpformbuilder\database\Mysql;
 use const phpformbuilder\database\DBNAME;
 

@@ -12,11 +12,6 @@ namespace classes;
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-use function functions\getPrimaryKeys;
-use function functions\getColumnNames;
-use function functions\getAccessLevel;
-use function functions\storeDbMsg;
-use function functions\storeErrorMsg;
 
 //require_once $_SERVER["DOCUMENT_ROOT"]."/page-components/functions.php";
 
@@ -106,6 +101,7 @@ abstract class Post_Form extends Form {
                     $validation_succeeded = $this->additionalValidation();
                     if (!$validation_succeeded || $this->validator->hasErrors()) {
                         // TODO: Should probably show the user the error message at some point
+                        // Yeah well if we use the validator
                         $_SESSION['errors'][$this->form_ID] = $this->validator->getAllErrors();
                     } else {
                         // Call any post actions that require validation (e.g. register user)

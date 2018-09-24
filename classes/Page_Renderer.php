@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: Elliott
- * Date: 25/08/2018
- * Time: 3:14 PM
- */
-
 /***
  * Class Page_Renderer
  * This class provides several options for dynamically rendering a page
@@ -18,17 +11,11 @@
 
 namespace classes;
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 use phpformbuilder\Form;
 use classes\Post_Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-use function functions\getTopMostScript;
-use function functions\getAccessLevel;
-use function getLoginForm;
-use function functions\storeErrorMsg;
 
 
 // Add required files
@@ -39,7 +26,6 @@ require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../page-components/functions.php';
 require_once $current_dir.'/../page-components/components.php';
-require_once $current_dir.'/../login_modal.php';
 
 session_start();
 // Test if the user is logged in
@@ -192,21 +178,60 @@ class Page_Renderer {
         // The following code can't be in setPageAccess because you can't rely on that function always being called
         // If user is not logged in
         if (!isset($_SESSION['email'])) {
-            // Create login form
-            $this->login_form = getLoginForm();
-            // If this page requires a user to be logged in
-            if ($this->require_login) {
-                $this->page_access = false;
+
+            $db = new Mysql();
+
+            $this->page_access = false;
+
+            // Set login form for each page
+            if (isset($_POST['do-login'])) {
+                if (!$_POST['email']) {
+                    $errors['email'] = "Please enter a email address";
+                    storeErrorMsg('Please enter a email address');
+                }
+
+                if (!$_POST['password']) {
+                    $errors['password'] = "Please enter a password";
+                    storeErrorMsg('Please enter a password');
+                }
+
+                $db->selectRows('users', array('email' => Mysql::SQLValue($_POST['email'])), null, null, true, 1);
+                $user = $db->recordsArray()[0];
+
+                if (password_verify($_POST['password'], $user["password"])) {
+                    $_SESSION['email'] = $_POST['email'];
+                    $this->page_access = true;
+                    if (basename(getTopMostScript(), ".php") == "register") {
+                        header("location: index.php");
+                    }
+                } else {
+                    $errors['email'] = "Incorrect username or password";
+                    storeErrorMsg('Incorrect username or password');
+                }
             }
+
+            // Login form
+            $this->login_form = new Form("login", 'horizontal', 'novalidate', 'bs4');
+            $this->login_form->startFieldset("Login");
+            $this->login_form->setCols(0,12);
+            $this->login_form->addInput("hidden", "do-login", 1);
+            $this->login_form->addHelper("Email", "email");
+            $this->login_form->addInput('text', 'email', '', '', 'required, class=col-4');
+            $this->login_form->addHelper("Password", "password");
+            $this->login_form->addInput('password', 'password', '', '', 'required, class=col-4');
+            $this->login_form->addBtn('submit', 'submit-btn', "login", 'Log In', 'class=btn btn-success ladda-button, data-style=zoom-in');
+            $this->login_form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
+            $this->login_form->modal('#modal-login-target');
+            $this->login_form->addPlugin('formvalidation', '#login', 'bs4');
+            $this->login_form->endFieldset();
+            
+            // Set the page accessible if it does not require login or we have verified the page access
+            $this->page_access = !$this->require_login || $this->page_access;
         }
 
         // Use the form's default page title if a page title hasn't been explicitly set
         if (!isset($this->page_title)) {
-            if (isset($this->form)) {
-                $this->page_title = $this->form->getPageTitle();
-            } else {
-                $this->page_title = "UNTITLED";
-            }
+            $this->page_title = isset($this->form) ? $this->form->getPageTitle() : "UNTITLED";
         }
 
         ?>
@@ -236,6 +261,8 @@ class Page_Renderer {
 
         <div class="d-flex">
             <?php
+
+            // Render the sidebar
             if ($this->render_sidebar) {
                 echo getSidebar();
             }
@@ -245,7 +272,6 @@ class Page_Renderer {
                 <div class="row justify-content-center">
                     <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
                         <?php
-
                         // $messages refers to our own message passing system that is mostly utilised by our own custom forms
                         global $messages;
                         if (isset($messages["error"])) {
@@ -286,10 +312,9 @@ class Page_Renderer {
 
 
         <?php
-        if ($this->render_scripts) {
-            echo getScripts();
-        }
 
+        // Get default scripts and form scripts
+        if ($this->render_scripts) echo getScripts();
         if (isset($this->login_form)) $this->printScripts($this->login_form);
         if ($this->page_access) $this->printScripts($this->form);
 

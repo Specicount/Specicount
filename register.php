@@ -2,9 +2,6 @@
 use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
-use function functions\storeErrorMsg;
-use function functions\storeSuccessMsg;
-use function functions\storeDbMsg;
 
 /* =============================================
     start session and include form class

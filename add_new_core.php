@@ -4,9 +4,6 @@ use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";
-use function functions\storeErrorMsg;
-use function functions\storeSuccessMsg;
-use function functions\storeDbMsg;
 
 
 

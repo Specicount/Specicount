@@ -6,12 +6,12 @@
  * Time: 10:45 AM
  */
 
+use phpformbuilder\database\Mysql;
+
 $current_dir = __DIR__;
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/functions.php';
-
-use phpformbuilder\database\Mysql;
 
 # Return header
 function getHeader() {

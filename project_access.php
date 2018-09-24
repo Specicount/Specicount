@@ -10,10 +10,6 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
-use function functions\getAccessLevel;
-use function functions\storeErrorMsg;
-use function functions\storeSuccessMsg;
-use function functions\storeDbMsg;
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";

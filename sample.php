@@ -3,10 +3,6 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
-use function functions\getAccessLevel;
-use function functions\storeErrorMsg;
-use function functions\storeSuccessMsg;
-use function functions\storeDbMsg;
 
 /* =============================================
     start session and include form class
@@ -248,7 +244,7 @@ if($db->rowCount() > 0) {
     $form->addHtml('</div><br><br>');
 
 } else {
-    $form->addHtml('<p style="font-style: italic; margin-top:-200px;">No specimens added to this sample</p>');
+    $form->addHtml('<p style="font-style: italic;">No specimens added to this sample</p>');
 }
 
 // jQuery validation
