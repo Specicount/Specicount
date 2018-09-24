@@ -95,7 +95,7 @@ function storeDbMsg($db, $success_msg = null, $error_msg = null) {
         // If a fail message hasn't been set
         if ($error_msg == null) {
             // Set the fail message to the given database error
-            $error_msg = $this->db->error() . '<br>' . $this->db->getLastSql();
+            $error_msg = $db->error() . '<br>' . $db->getLastSql();
         }
         storeErrorMsg($error_msg);
         return false;
