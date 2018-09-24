@@ -37,6 +37,7 @@ class Register_Form extends Post_Form {
         $this->validator->matches('password')->validate('password_conf');
         //TODO: Implement recaptcha
         //$this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
+        return true;
     }
 
     protected function create() {
@@ -59,7 +60,7 @@ class Register_Form extends Post_Form {
     The Form
 ================================================== */
 
-Form::clear("register");
+//Form::clear("register");
 $form = new Register_Form("register","users", 'horizontal', 'novalidate', 'bs4');
 
 $form->setCols(3, 9);
@@ -74,7 +75,7 @@ $form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
 $form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 
-$form->addRecaptcha('6Ldg0QkUAAAAABmXaV1b9qdOnyIwVPRRAs4ldoxe', 'recaptcha2', true);
+//$form->addRecaptcha('6Ldg0QkUAAAAABmXaV1b9qdOnyIwVPRRAs4ldoxe', 'recaptcha2', true);
 
 $form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-user-plus" aria-hidden="true"></i> Register', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 if ($_GET["edit"]) {
