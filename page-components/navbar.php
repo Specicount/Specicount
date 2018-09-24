@@ -79,7 +79,7 @@
                 <a href="projects.php">My Projects</a>
                 <a href="#Recent_Projects">Recent Projects</a>
                 <a href="add_new_project.php">New Project</a>
-                <a href="#Share_Project">Share Project</a>
+                <a href="share_project.php">Share Project</a>
             </div>
         </div>
         <a class="ribbon-button" href="search_specimen.php" style="width:20%">Search</a>

@@ -1,26 +1,10 @@
 <?php
 use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
-use phpformbuilder\database\Mysql;
-
-/* =============================================
-    start session and include form class
-============================================= */
-
-// Captcha if we decide to allow any user to register
-/*function rand_char($length) {
-    $random = '';
-    for ($i = 0; $i < $length; $i++) {
-        $random .= chr(mt_rand(33, 126));
-    }
-    return $random;
-}*/
 
 require_once "classes/Page_Renderer.php";
 
 unset($_SESSION['bugreport']);
 
-$project = $_GET["project"];
 $form = new Form('bugreport', 'horizontal', 'novalidate', 'bs4');
 
 $form->setCols(0, 11);
