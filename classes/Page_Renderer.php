@@ -18,6 +18,9 @@
 
 namespace classes;
 
+/*error_reporting(E_ALL);
+ini_set('display_errors', 1);*/
+
 use phpformbuilder\Form;
 use classes\Post_Form;
 use phpformbuilder\Validator\Validator;
@@ -35,6 +38,7 @@ require_once $current_dir.'/../classes/Post_Form.php';
 require_once $current_dir.'/../phpformbuilder/database/Mysql.php';
 require_once $current_dir.'/../phpformbuilder/database/db-connect.php';
 require_once $current_dir.'/../page-components/functions.php';
+require_once $current_dir.'/../page-components/components.php';
 require_once $current_dir.'/../login_modal.php';
 
 session_start();
@@ -215,8 +219,7 @@ class Page_Renderer {
             <title><?=$this->page_title?></title>
             <?php
             if ($this->render_header) {
-                $render_side = $this->render_sidebar;
-                require_once $current_dir.'/../page-components/header.php';
+                echo getHeader();
             }
 
             //Check whether $form has been initialised so we can add the relevant css files
@@ -228,9 +231,8 @@ class Page_Renderer {
         <?php
         //Make it so the text on the navbar reflects the title of the page
         //This variable is used in the navbar's php file
-        $navbar_text = $this->page_title;
         if ($this->render_navbar) {
-            require_once $current_dir.'/../page-components/navbar.php'; // Add top navbar
+            echo getNavbar($this->render_sidebar, $this->page_title);
         }
 
         ?>
@@ -238,7 +240,7 @@ class Page_Renderer {
         <div class="d-flex">
             <?php
             if ($this->render_sidebar) {
-                require_once $current_dir.'/../page-components/sidebar.php'; // Add sidebar
+                echo getSidebar();
             }
 
             ?>
@@ -293,7 +295,7 @@ class Page_Renderer {
 
         <?php
         if ($this->render_scripts) {
-            require_once $current_dir.'/../page-components/scripts.php'; // Get scripts
+            echo getScripts();
         }
 
         if (isset($this->login_form)) $this->printScripts($this->login_form);
