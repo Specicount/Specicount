@@ -97,6 +97,7 @@
                 <a href="help.php?tab=FAQ">Frequently Asked Questions</a>
                 <a href="help.php?tab=Documentation">Documentation</a>
                 <a href="help.php?tab=User_Guide">How To Use</a>
+                <a href="report_a_bug.php">Report A Bug</a>
                 <a href="logout.php">[Temporary] Logout</a>
             </div>
         </div>
