@@ -15,7 +15,7 @@ class Project_Form extends Add_New_Post_Form {
         parent::create();
         $update_access['project_id'] = $this->update['project_id'];
         $update_access['email'] = Mysql::SQLValue($_SESSION['email']);
-        $update_access['access_level'] = Mysql::SQLValue('admin');
+        $update_access['access_level'] = Mysql::SQLValue('owner');
         $this->db->insertRow('user_project_access', $update_access);
     }
 }
