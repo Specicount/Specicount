@@ -95,7 +95,7 @@ function storeDbMsg($db, $success_msg = null, $error_msg = null) {
         // If a fail message hasn't been set
         if ($error_msg == null) {
             // Set the fail message to the given database error
-            $error_msg = $this->db->error() . '<br>' . $this->db->getLastSql();
+            $error_msg = $db->error() . '<br>' . $db->getLastSql();
         }
         storeErrorMsg($error_msg);
         return false;
@@ -110,13 +110,13 @@ function storeDbMsg($db, $success_msg = null, $error_msg = null) {
 function storeErrorMsg($error_msg) {
     global $messages;
     $error_msg_html = '<p class="alert alert-danger">'.$error_msg .'</p>';
-    array_push($messages["error"], $error_msg_html);
+    $messages["error"][] = $error_msg_html;
 }
 
 function storeSuccessMsg($success_msg) {
     global $messages;
     $success_msg_html = '<p class="alert alert-success">'.$success_msg .'</p>';
-    array_push($messages["success"],$success_msg_html);
+    $messages["success"][] = $success_msg_html;
 }
 
 // Gets the access level of the user ($email) in a project ($project_id)
