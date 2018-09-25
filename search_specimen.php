@@ -222,6 +222,6 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 $title = $_GET['project_id']." > ". $_GET['core_id']. " > ".$_GET['sample_id']." > Search Sample";
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageAccess(true, true, true);
+$page_render->setPageAccess(true, true, true, true);
 $page_render->setPageTitle($title);
 $page_render->renderPage();

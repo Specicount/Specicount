@@ -108,14 +108,12 @@ function storeDbMsg($db, $success_msg = null, $error_msg = null) {
 
 function storeErrorMsg($error_msg) {
     global $messages;
-    $error_msg_html = '<p class="alert alert-danger">'.$error_msg .'</p>';
-    $messages["error"][] = $error_msg_html;
+    $messages["error"][] = '<p class="alert alert-danger">'.$error_msg .'</p>';
 }
 
 function storeSuccessMsg($success_msg) {
     global $messages;
-    $success_msg_html = '<p class="alert alert-success">'.$success_msg .'</p>';
-    $messages["success"][] = $success_msg_html;
+    $messages["success"][] = '<p class="alert alert-success">'.$success_msg .'</p>';
 }
 
 // Gets the access level of the user ($email) in a project ($project_id)
