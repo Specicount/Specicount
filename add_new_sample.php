@@ -61,8 +61,8 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 if (isset($_GET["edit"])) {
-    $page_render->setPageAccess(true, true, true);
+    $page_render->setPageAccess(true, true, true, true);
 } else {
-    $page_render->setPageAccess(true, true, false);
+    $page_render->setPageAccess(true, true, true, false);
 }
 $page_render->renderPage();

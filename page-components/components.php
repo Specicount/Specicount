@@ -42,7 +42,9 @@ function getNavbar ($render_side, $navbar_text) {
         $output .= "<a class=\"sidebar-toggle text-light mr-3\"><i class=\"fa fa-bars\"></i></a>";
     }
     $output .= "<text class=\"text-center\">$navbar_text</text>
-    </div>";
+    </div>
+    <a style=\"color:white; padding-right: 20px;text-decoration: none;\" href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"><i class=\"fa fa-bug\"></i> Report Bug</a>
+    ";
     // If a user is logged in
     if (isset($_SESSION["email"])) {
         $output .= '<a style="color:white; margin-right: 20px;text-decoration: none;" href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a>';
@@ -64,6 +66,11 @@ function getScripts () {
         <script src="js/fontawesome-all.js"></script>
         <!--The following script is for the overlays for each specimen on the counting page (fiddly and a bit ugly but somewhat works be wary if playing with)-->
         <script>
+        
+        function navigate (link) {
+            window.location.href = link;
+        }
+        
         $(document).ready(function() {
             // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
             // If mouse intends to hover over specimen
@@ -107,9 +114,9 @@ function getSidebar () {
     $output = '';
     
     if (!empty($_GET["sample_id"])) {
-        $sample_id = $_GET["sample_id"];
-        $core_id = $_GET["core_id"];
-        $project_id = $_GET["project_id"];
+        $sample_id = rawurlencode($_GET["sample_id"]);
+        $core_id = rawurlencode($_GET["core_id"]);
+        $project_id = rawurlencode($_GET["project_id"]);
         $my_access_level = getAccessLevel();
         $output .= '<nav class="sidebar bg-dark">
             <ul class="list-unstyled">
@@ -134,44 +141,50 @@ function getSidebar () {
             $email = Mysql::SQLValue($_SESSION['email']);
             $sql = "SELECT project_id FROM user_project_access NATURAL JOIN projects WHERE email =".$email." ORDER BY project_id";
             $db->query($sql);
-            foreach ($db->recordsArray() as $project) {
-                $my_access_level = getAccessLevel($email, $project["project_id"]);
+            foreach ($db->recordsArray() as $project_array) {
+                $project = rawurlencode($project_array["project_id"]);
+
+                $my_access_level = getAccessLevel($email, $project);
                 // If currently on a page that is connected to this project, expand the project dropdown
                 $toggle_expand_parent = $toggle_expand_child = "";
-                if ($_GET["project_id"] == $project["project_id"]) {
+
+                if ($_GET["project_id"] == $project) {
                     $toggle_expand_parent = 'aria-expanded="true"';
                     $toggle_expand_child = 'show';
                 }
                 // Print the projects
-                $output .= "<a href='#".$project["project_id"]."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fas fa-folder'></i>  ".$project["project_id"]."</a>
-                        <ul id='".$project["project_id"]."' class='list-unstyled collapse ".$toggle_expand_child."'>
-                        <li><a href='leave_project.php?project_id=".$project["project_id"]."'><i class='fa fa-sign-out-alt'></i> Leave Project</a></li>
-                        <li><a href='project_access.php?project_id=".$project["project_id"]."'><i class='fa fa-users'></i> View Project Users</a></li>
-                        <li><a href='add_new_project.php?edit=true&project_id=".$project["project_id"]."'><i class='fa fa-edit'></i> Edit Project</a></li>";
+                $output .= "<a href='#".$project."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fas fa-folder'></i>  ".$project_array["project_id"]."</a>
+                        <ul id='".$project."' class='list-unstyled collapse ".$toggle_expand_child."'>
+                        <li><a href='leave_project.php?project_id=".$project."'><i class='fa fa-sign-out-alt'></i> Leave Project</a></li>
+                        <li><a href='project_access.php?project_id=".$project."'><i class='fa fa-users'></i> View Project Users</a></li>
+                        <li><a href='add_new_project.php?edit=true&project_id=".$project."'><i class='fa fa-edit'></i> Edit Project</a></li>";
                 if ($my_access_level != "visitor") {
-                    $output .= "<li><a href='add_new_specimen.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
-                            <li><a href='add_new_core.php?project_id=".$project["project_id"]."'><i class='fa fa-plus'></i> Add New Core</a></li>";
+                    $output .= "<li><a href='add_new_specimen.php?project_id=".$project."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
+                            <li><a href='add_new_core.php?project_id=".$project."'><i class='fa fa-plus'></i> Add New Core</a></li>";
                 }
-                $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project["project_id"])), "core_id", "core_id", true);
-                foreach ($db->recordsArray() as $core) {
+                $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project)), "core_id", "core_id", true);
+                foreach ($db->recordsArray() as $core_array) {
+                    $core = rawurlencode($core_array["core_id"]);
                     // If currently on a page that is connected to this core, expand the core dropdown
                     $toggle_expand_parent = $toggle_expand_child = "";
-                    if ($_GET["core_id"] == $core["core_id"]) {
+                    if ($_GET["core_id"] == $core) {
                         $toggle_expand_parent = 'aria-expanded="true"';
                         $toggle_expand_child = 'show';
                     }
                     // Print the cores
-                    $output .= "<a href='#".$core["core_id"]."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fa fa-database'></i> ".$core["core_id"]."</a>
-                            <ul id='".$core["core_id"]."' class='list-unstyled collapse ".$toggle_expand_child."'>
-                            <li><a href='add_new_core.php?edit=true&project_id=".$project["project_id"]."&core_id=".$core["core_id"]."'><i class='fa fa-edit'></i> Edit Core</a></li>";
+                    $output .= "<a href='#".$core."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fa fa-database'></i> ".$core_array["core_id"]."</a>
+                            <ul id='".$core."' class='list-unstyled collapse ".$toggle_expand_child."'>
+                            <li><a href='add_new_core.php?edit=true&project_id=".$project."&core_id=".$core."'><i class='fa fa-edit'></i> Edit Core</a></li>";
                     if ($my_access_level != "visitor") {
-                        $output .= "<li><a href='add_new_sample.php?project_id=".$project["project_id"]."&core_id=".$core["core_id"]."' data-parent='#".$core["core_id"]."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
+                        $output .= "<li><a href='add_new_sample.php?project_id=".$project."&core_id=".$core."' data-parent='#".$core."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
                     }
 
-                    $db->selectRows("samples", array("core_id" => Mysql::SQLValue($core["core_id"]), "project_id" => Mysql::SQLValue($project["project_id"])), "sample_id", "sample_id", true);
-                    foreach ($db->recordsArray() as $sample) {
+                    $db->selectRows("samples", array("core_id" => Mysql::SQLValue($core), "project_id" => Mysql::SQLValue($project)), "sample_id", "sample_id", true);
+                    foreach ($db->recordsArray() as $sample_array) {
+                        $sample = rawurlencode($sample_array["sample_id"]);
+
                         // Print the samples
-                        $output .= "<li><a href='sample.php?project_id=".$project["project_id"]."&core_id=".$core["core_id"]."&sample_id=".$sample["sample_id"]."'><i class='fa fa-flask'></i> ".$sample["sample_id"]."</a></li>";
+                        $output .= "<li><a href='sample.php?project_id=".$project."&core_id=".$core."&sample_id=".$sample."'><i class='fa fa-flask'></i> ".$sample_array["sample_id"]."</a></li>";
                     }
                     $output .= "</ul>";
                 }

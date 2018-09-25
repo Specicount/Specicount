@@ -23,7 +23,6 @@ class Register_Form extends Post_Form {
         $this->validator->email()->validate('email');
         $this->validator->hasUppercase()->hasLowercase()->hasNumber()->minLength(8)->validate('password');
         $this->validator->matches('password')->validate('password_conf');
-        //TODO: Implement recaptcha
         $this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
         return true;
     }
@@ -57,7 +56,8 @@ $form->addInput('email', 'email', '', 'Email', 'required, class=col-5');
 $form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-5');
 $form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-5');
 $form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-5");
-$form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter and 1 symbol", "password");
+
+$form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter", "password");
 $form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 $form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-5,
@@ -80,6 +80,6 @@ $form->addPlugin("formvalidation","#".$form->getFormName(), "bs4");
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->noLoginRequired();
+$page_render->setPageAccess(false);
 $page_render->disableSidebar();
 $page_render->renderPage();

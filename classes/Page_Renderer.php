@@ -39,13 +39,14 @@ class Page_Renderer {
 
     //Variables that will store content to render on the page
     //Will only be rendered if not null
-    private $form, $login_form, $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
+    private $form, $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
 
     // Determines whether the page will be rendered
     private $page_access = true;
 
-    // Archived: $php_filename
 
+    private $not_set = false;
+    // Archived: $php_filename
 
     public function __construct() {
         $this->render_header
@@ -54,10 +55,6 @@ class Page_Renderer {
         = $this->render_scripts
         = $this->require_login
         = true;
-    }
-
-    public function noLoginRequired() {
-        $this->require_login = false;
     }
 
     public function setPageTitle($title) {
@@ -136,44 +133,62 @@ class Page_Renderer {
         }
     }
 
-    public function setPageAccess($project = false, $core = false, $sample = false) {
-        // If user is logged in
-        if (isset($_SESSION['email'])) {
-            $project_id = Mysql::SqlValue($_GET["project_id"]);
-            $core_id = Mysql::SqlValue($_GET["core_id"]);
-            $sample_id = Mysql::SqlValue($_GET["sample_id"]);
+    /**
+     * Set access for page
+     * @param bool $require_login   whether the page requires a valid user login
+     * @param bool $project         whether the page requires a valid project
+     * @param bool $core            whether the page requires a valid core
+     * @param bool $sample          whether the page requires a valid sample
+     */
+    public function setPageAccess($require_login = true, $project = false, $core = false, $sample = false) {
 
-            $db = new Mysql();
+        $this->require_login = $require_login;
 
-            // If trying to access a sample
-            if ($sample && !$db->querySingleValue("SELECT sample_id FROM samples WHERE project_id=$project_id AND core_id=$core_id AND sample_id=$sample_id")) {
-                storeErrorMsg("Sample not found in database");
-                $this->page_access = false;
-            }
-            // If trying to access a core
-            else if ($core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")){
-                storeErrorMsg("Core not found in database");
-                $this->page_access = false;
-            }
-            // If trying to access a project
-            else if ($project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")){
-                storeErrorMsg("Project not found in database");
-                $this->page_access = false;
-            }
+        $project_id = Mysql::SqlValue($_GET["project_id"]);
+        $core_id = Mysql::SqlValue($_GET["core_id"]);
+        $sample_id = Mysql::SqlValue($_GET["sample_id"]);
 
-            // If trying to access any page connected to a project and the page's database equivalent exists
-            if ($project && $this->page_access) {
-                $my_access_level = getAccessLevel();
-                // If the user does not have access to that project
-                if (!$my_access_level) {
-                    $this->page_access = false;
-                }
+        $db = new Mysql();
+
+        // If trying to access a sample
+        if ($sample && !$db->querySingleValue("SELECT sample_id FROM samples WHERE project_id=$project_id AND core_id=$core_id AND sample_id=$sample_id")) {
+            storeErrorMsg("Sample not found in database");
+            $this->not_set = true;
+        }
+        // If trying to access a core
+        else if ($core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")){
+            storeErrorMsg("Core not found in database");
+            $this->not_set = true;
+        }
+        // If trying to access a project
+        else if ($project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")){
+            storeErrorMsg("Project not found in database");
+            $this->not_set = true;
+        }
+
+        // If trying to access any page connected to a project and the page's database equivalent exists
+        if ($project && $this->page_access) {
+            $my_access_level = getAccessLevel();
+            // If the user does not have access to that project
+            if (!$my_access_level) {
+                $this->page_access = false;
             }
         }
+
+        $this->page_access = !$this->not_set;
     }
 
     // Create the page
     public function renderPage() {
+
+        // Use the form's default page title if a page title hasn't been explicitly set
+        if (!isset($this->page_title)) {
+            if (isset($this->form)) {
+                $this->page_title = $this->form->getPageTitle();
+            } else {
+                $this->page_title = "UNTITLED";
+            }
+        }
 
         // The following code can't be in setPageAccess because you can't rely on that function always being called
         // If user is not logged in
@@ -211,28 +226,29 @@ class Page_Renderer {
             }
 
             // Login form
-            $this->login_form = new Form("login", 'horizontal', 'novalidate', 'bs4');
-            $this->login_form->startFieldset("Login");
-            $this->login_form->setCols(0,12);
-            $this->login_form->addInput("hidden", "do-login", 1);
-            $this->login_form->addHelper("Email", "email");
-            $this->login_form->addInput('text', 'email', '', '', 'required, class=col-4');
-            $this->login_form->addHelper("Password", "password");
-            $this->login_form->addInput('password', 'password', '', '', 'required, class=col-4');
-            $this->login_form->addBtn('submit', 'submit-btn', "login", 'Log In', 'class=btn btn-success ladda-button, data-style=zoom-in');
-            $this->login_form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
-            $this->login_form->modal('#modal-login-target');
-            $this->login_form->addPlugin('formvalidation', '#login', 'bs4');
-            $this->login_form->endFieldset();
+            $login_form = new Form("login", 'horizontal', 'novalidate', 'bs4');
+            $login_form->startFieldset("Login");
+            $login_form->setCols(0, 12);
+            $login_form->addInput("hidden", "do-login", 1);
+            $login_form->addHelper("Email", "email");
+            $login_form->addInput('text', 'email', '', '', 'required');
+            $login_form->addHelper("Password", "password");
+            $login_form->addInput('password', 'password', '', '', 'required');
+            $login_form->addHtml("<div class=\"btn-group\">");
+            $login_form->addBtn('submit', 'submit-btn', "login", '<i class="fa fa-sign-in-alt"></i> Log In', 'class=btn btn-success ladda-button, data-style=zoom-in', 'lor-group');
+            $login_form->addBtn('button', 'register-btn', "register", '<i class="fa fa-user-plus"></i> Register', 'class=btn btn-primary, data-style=zoom-in, onclick=navigate(\'register.php\')', 'lor-group');
+            //$login_form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
+            $login_form->printBtnGroup('lor-group');
+            $login_form->modal('#modal-login-target');
+            $login_form->addPlugin('formvalidation', '#login', 'bs4');
+            $login_form->endFieldset();
             
             // Set the page accessible if it does not require login or we have verified the page access
             $this->page_access = !$this->require_login || $this->page_access;
         }
 
-        // Use the form's default page title if a page title hasn't been explicitly set
-        if (!isset($this->page_title)) {
-            $this->page_title = isset($this->form) ? $this->form->getPageTitle() : "UNTITLED";
-        }
+        // Page access should not be changed from here
+        if (!$this->page_access && !$this->not_set) storeErrorMsg("You do not have access to this page");
 
         ?>
         <!DOCTYPE html>
@@ -245,7 +261,7 @@ class Page_Renderer {
             }
 
             //Check whether $form has been initialised so we can add the relevant css files
-            if (isset($this->login_form)) $this->printCSS($this->login_form);
+            if (isset($login_form)) $this->printCSS($login_form);
             if ($this->page_access) $this->printCSS($this->form);
 
             ?>
@@ -287,8 +303,8 @@ class Page_Renderer {
                         }
 
                         // Render login form
-                        if (isset($this->login_form)) {
-                            $this->renderForm($this->login_form);
+                        if (isset($login_form)) {
+                            $this->renderForm($login_form);
                         }
 
                         // Don't render the page if the user is not allowed access
@@ -301,8 +317,6 @@ class Page_Renderer {
                             if ($this->html_string) {
                                 echo $this->html_string;
                             }
-                        } else {
-                            echo '<p class="alert alert-danger">You do not have access to this page</p>';
                         }
                         ?>
                     </div>
@@ -315,7 +329,7 @@ class Page_Renderer {
 
         // Get default scripts and form scripts
         if ($this->render_scripts) echo getScripts();
-        if (isset($this->login_form)) $this->printScripts($this->login_form);
+        if (isset($login_form)) $this->printScripts($login_form);
         if ($this->page_access) $this->printScripts($this->form);
 
         ?>
