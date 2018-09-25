@@ -75,8 +75,6 @@ class Search_Form extends Post_Form {
     }
 
     protected function search() {
-        global $results;
-        $results = array();
         $search = trim($_POST["search-input"]);
         $search = explode(" ", $search);
         $search = array_map("trim", $search);
@@ -101,32 +99,86 @@ class Search_Form extends Post_Form {
             }
         }
 
-        // TODO: Implement search filters
-        $project_id_sql = Mysql::SQLValue($_GET["project_id"]);
-
-        $sql = "SELECT * FROM BioBase.specimens WHERE " . implode(" AND ", $col); // . " AND project_id=". $project_id_sql;
-        $this->db->query($sql);
-        if ($this->db->rowCount() > 0) {
-            $results = $this->db->recordsArray();
+        $my_email = Mysql::sqlValue($_SESSION["email"]);
+        $this_project_id = Mysql::sqlValue($_GET["project_id"]);
+        $sql = "";
+        switch ($_POST["project-filter"]) {
+            case "all": $sql = "SELECT DISTINCT * FROM
+                                (SELECT project_id FROM user_project_access WHERE email=$my_email) t1
+                                UNION
+                                (SELECT project_id FROM projects WHERE is_global=TRUE)"; break;
+            case "this-project": $sql = "SELECT project_id FROM projects WHERE project_id=$this_project_id"; break;
+            case "my-projects": $sql = "SELECT project_id FROM user_project_access WHERE email=$my_email AND access_level='owner'"; break;
+            case "shared-projects": $sql = "SELECT project_id FROM user_project_access WHERE email=$my_email AND access_level<>'owner'"; break;
+            case "global-projects": $sql = "SELECT project_id FROM projects WHERE is_global=TRUE"; break;
+            case "trusted-global-projects": $this->db->query("DROP TABLE IF EXISTS temp1, temp2");
+                                            $this->db->query("CREATE TEMPORARY TABLE temp1 AS
+                                                                  (SELECT DISTINCT project_id, is_trusted
+                                                                  FROM projects NATURAL JOIN user_project_access NATURAL JOIN users
+                                                                  WHERE is_global=TRUE)");
+                                            $this->db->query("CREATE TEMPORARY TABLE temp2 AS (SELECT * FROM temp1)");
+                                            $sql = "SELECT DISTINCT project_id FROM temp1
+                                                        WHERE is_trusted=TRUE AND project_id NOT IN 
+                                                        (SELECT DISTINCT project_id FROM temp2 WHERE is_trusted=FALSE)"; break;
         }
+        $this->db->query($sql);
+        $projects = $this->db->recordsArray();
+        if ($projects) {
+            foreach($projects as $project) {
+                $project_ids[] = Mysql::sqlValue($project["project_id"]);
+            }
+            $project_ids = " AND project_id IN (".implode(",",$project_ids).")";
+            $sql = "SELECT * FROM BioBase.specimens WHERE " .implode(" AND ", $col).$project_ids;
+            $this->db->query($sql);
+            if ($this->db->rowCount() > 0) {
+                global $results;
+                $results = $this->db->recordsArray();
+            }
+        }
+
+        //print_r($project_ids);
+
+//        $sql = "SELECT project_id FROM projects NATURAL JOIN user_project_access NATURAL JOIN users WHERE is_global=TRUE AND "; //Trusted global projects ???
+
+
+
     }
 }
+
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Search_Form('search-form', "found_specimens", 'vertical', 'class=mb-5, novalidate', 'bs4');
+$form = new Search_Form('search-form', "found_specimens", 'vertical', 'novalidate', 'bs4');
+
+// Since form is vertical it won't automatically print elements in a row
 $options = array(
-    'elementsWrapper' => '<div class="input-group"></div>'
+    'elementsWrapper' => '<div class="form-group row"></div>',
 );
 $form->setOptions($options);
-$form->groupInputs('search-input', 'search-btn');
-$form->addInputWrapper('<span class="input-group-btn"></span>', 'search-btn');
+$form->groupInputs("search-input","project-filter", "search-btn");
+$form->addInputWrapper('<div class="col-sm-5"></div>', "search-input");
+$form->addInputWrapper('<div class="col-sm-3"></div>', "project-filter");
+$form->addInputWrapper('<div class="col-sm-2"></div>', "search-btn");
 $form->addInput('text', 'search-input', '', '', 'placeholder=Search Attributes Here ...');
-$form->addBtn('submit', 'search-btn', 1, '<i class="fa fa-search" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in');
+$form->addHelper('Project Filter', 'project-filter');
+$form->addOption("project-filter", "this-project", "This project");
+$form->addOption("project-filter", "my-projects", "My projects");
+$form->addOption("project-filter", "shared-projects", "Shared projects");
+$form->addOption("project-filter", "global-projects", "Global projects");
+$form->addOption("project-filter", "trusted-global-projects", "Trusted global projects");
+$form->addOption("project-filter", "all", "All");
+$form->addSelect("project-filter", '', 'required');
+$form->addBtn('submit', 'search-btn', 1, '<i class="fa fa-search" aria-hidden="true"></i> Search', 'class=btn btn-success ladda-button, data-style=zoom-in');
+
 
 $form->addHtml('<br><br>');
+
+$options = array(
+    'elementsWrapper' => '<div class="form-group"></div>',
+);
+$form->setOptions($options);
 
 # Add in results
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -158,6 +210,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+
+
 // jQuery validation
 
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
@@ -168,4 +222,3 @@ $page_render->setForm($form);
 $page_render->setPageAccess(true, true, true);
 $page_render->setPageTitle($title);
 $page_render->renderPage();
-
