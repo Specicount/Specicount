@@ -150,18 +150,20 @@ class Search_Form extends Post_Form {
     The Form
 ================================================== */
 
-$form = new Search_Form('search-form', "found_specimens", 'vertical', 'novalidate', 'bs4');
+$form = new Search_Form('search-form', "found_specimens", 'horizontal', 'novalidate', 'bs4');
 
 // Since form is vertical it won't automatically print elements in a row
-$options = array(
+/*$options = array(
     'elementsWrapper' => '<div class="form-group row"></div>',
 );
-$form->setOptions($options);
+$form->setOptions($options);*/
 $form->groupInputs("search-input","project-filter", "search-btn");
-$form->addInputWrapper('<div class="col-sm-5"></div>', "search-input");
+/*$form->addInputWrapper('<div class="col-sm-5"></div>', "search-input");
 $form->addInputWrapper('<div class="col-sm-3"></div>', "project-filter");
-$form->addInputWrapper('<div class="col-sm-2"></div>', "search-btn");
-$form->addInput('text', 'search-input', '', '', 'placeholder=Search Attributes Here ...');
+$form->addInputWrapper('<div class="col-sm-2"></div>', "search-btn");*/
+
+$form->setCols(0, 6);
+$form->addInput('text', 'search-input', '', '', 'placeholder=Search Attributes Here...');
 $form->addHelper('Project Filter', 'project-filter');
 $form->addOption("project-filter", "this-project", "This project");
 $form->addOption("project-filter", "my-projects", "My projects");
@@ -169,11 +171,12 @@ $form->addOption("project-filter", "shared-projects", "Shared projects");
 $form->addOption("project-filter", "global-projects", "Global projects");
 $form->addOption("project-filter", "trusted-global-projects", "Trusted global projects");
 $form->addOption("project-filter", "all", "All");
+$form->setCols(0, 3);
 $form->addSelect("project-filter", '', 'required');
+$form->setCols(0, 3);
 $form->addBtn('submit', 'search-btn', 1, '<i class="fa fa-search" aria-hidden="true"></i> Search', 'class=btn btn-success ladda-button, data-style=zoom-in');
 
-
-$form->addHtml('<br><br>');
+$form->setCols(0, 6);
 
 $options = array(
     'elementsWrapper' => '<div class="form-group"></div>',

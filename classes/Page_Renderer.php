@@ -182,7 +182,7 @@ class Page_Renderer {
     public function renderPage() {
 
         // Use the form's default page title if a page title hasn't been explicitly set
-        if (!isset($this->page_title)) {
+        if (empty($this->page_title)) {
             if (isset($this->form)) {
                 $this->page_title = $this->form->getPageTitle();
             } else {
