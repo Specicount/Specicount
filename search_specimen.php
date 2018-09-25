@@ -162,8 +162,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 
-$title = "$project_id > $core_id > $sample_id > Search Sample";
+$title = $_GET['project_id']." > ". $_GET['core_id']. " > ".$_GET['sample_id']." > Search Sample";
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
+$page_render->setPageAccess(true, true, true);
 $page_render->setPageTitle($title);
 $page_render->renderPage();
+

@@ -82,7 +82,7 @@ abstract class Post_Form extends Form {
                 // PERMISSIONS CHECK
                 // ------------------------------
                 // If trying to interact with a page related to a project
-                if (isset($_GET["project_id"])) {
+                if (isset($_GET["project_id"]) && basename(getTopMostScript(), ".php") != "register") {
                     $my_access_level = getAccessLevel();
                     if (!in_array($my_access_level, $this->post_required_access_levels)) {
                         storeErrorMsg("You do not have the correct permissions to perform those changes");

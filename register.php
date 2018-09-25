@@ -7,15 +7,6 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-// Captcha if we decide to allow any user to register
-/*function rand_char($length) {
-    $random = '';
-    for ($i = 0; $i < $length; $i++) {
-        $random .= chr(mt_rand(33, 126));
-    }
-    return $random;
-}*/
-
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
 require_once "page-components/functions.php";
@@ -33,7 +24,7 @@ class Register_Form extends Post_Form {
         $this->validator->hasUppercase()->hasLowercase()->hasNumber()->minLength(8)->validate('password');
         $this->validator->matches('password')->validate('password_conf');
         //TODO: Implement recaptcha
-        //$this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
+        $this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
         return true;
     }
 
@@ -72,7 +63,7 @@ $form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
 $form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 
-//$form->addRecaptcha('6Ldg0QkUAAAAABmXaV1b9qdOnyIwVPRRAs4ldoxe', 'recaptcha2', true);
+$form->addRecaptcha('6Ley73EUAAAAAGlW8U8cgkYJ6k7fIDbTF5Am47Qj', 'recaptcha2', true);
 
 $form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-user-plus" aria-hidden="true"></i> Register', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 if ($_GET["edit"]) {
