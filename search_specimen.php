@@ -206,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $form->addHtml('</div><br><br>');
     } else {
-        $form->addHtml('<p style="text-align: center; color: red">No samples found</p>');
+        $form->addHtml('<p class="alert alert-danger col-sm-10">No samples found</p>');
     }
 }
 
