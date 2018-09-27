@@ -23,6 +23,7 @@ class Project_Form extends Add_New_Post_Form {
 ================================================== */
 
 $form = new Project_Form("project","projects", 'horizontal', 'novalidate', 'bs4');
+$my_access_level = getAccessLevel();
 
 $form->startFieldset('Project Data');
 $form->setCols(6, 6);
@@ -57,16 +58,25 @@ $form->addCountrySelect('country', '', '', array('flag_size' => 16, 'return_valu
 $form->setCols(0, 6);
 $form->addHelper('Region', 'region');
 $form->addInput('text', 'region', '', '', '');
-$form->setCols(6, 6);
+$options = array(
+    'elementsWrapper' => '<div class="form-group row"></div>',
+    'buttonWrapper' => '<div class="form-group row"></div>'
+);
+$form->setOptions($options);
+if ($my_access_level== "owner") {
+    $form->setCols(4, 2);
+    $form->addOption("is_global", 0, "No");
+    $form->addOption("is_global", 1, "Yes");
+    $form->addSelect("is_global","Enable global specimen visibility?");
+}
 
 $form->endFieldset();
-
 #######################
 # Clear/Save
 #######################
 $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
-if ($_GET["edit"]) {
+if ($_GET["edit"] && $my_access_level == "owner") {
     $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
 }
 $form->printBtnGroup('my-btn-group');
