@@ -44,7 +44,6 @@ function getNavbar ($render_side, $navbar_text) {
     }
     $output .= "<text class=\"text-center\">BioData - $navbar_text</text>
     </div>
-    <!--<a style=\"color:white; padding-right: 20px;text-decoration: none;\" href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"><i class=\"fa fa-bug\"></i> Report Bug</a>-->
     ";
     // If a user is logged in
     if (isset($_SESSION["email"])) {
@@ -80,7 +79,7 @@ function getNavbar ($render_side, $navbar_text) {
                 <a href=\"help.php?tab=FAQ\">Frequently Asked Questions</a>
                 <a href=\"help.php?tab=Documentation\">Documentation</a>
                 <a href=\"help.php?tab=User_Guide\">How To Use</a>
-                <a href=\"report_a_bug.php\">Report A Bug</a>
+                <a href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"></i> Report A Bug</a>
             </div>
         </div>
     </div>
