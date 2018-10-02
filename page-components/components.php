@@ -36,14 +36,15 @@ function getHeader() {
 
 # Return Navbar
 function getNavbar ($render_side, $navbar_text) {
-    $output = "<nav class=\"navbar navbar-expand\">
+    $output = "
+    <nav><div class=\"navbar navbar-expand\">
     <div class=\"navbar-nav mr-auto\">";
     if ($render_side) {
         $output .= "<a class=\"sidebar-toggle text-light mr-3\"><i class=\"fa fa-bars\"></i></a>";
     }
-    $output .= "<text class=\"text-center\">$navbar_text</text>
+    $output .= "<text class=\"text-center\">BioData - $navbar_text</text>
     </div>
-    <a style=\"color:white; padding-right: 20px;text-decoration: none;\" href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"><i class=\"fa fa-bug\"></i> Report Bug</a>
+    <!--<a style=\"color:white; padding-right: 20px;text-decoration: none;\" href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"><i class=\"fa fa-bug\"></i> Report Bug</a>-->
     ";
     // If a user is logged in
     if (isset($_SESSION["email"])) {
@@ -51,7 +52,41 @@ function getNavbar ($render_side, $navbar_text) {
     } else {
         $output .= "<a style=\"color:white; margin-right: 20px;text-decoration: none;\" href='#' data-remodal-target=\"modal-login-target\"><i class=\"fa fa-sign-in-alt\"></i> Log In</a>";
     }
-    $output .= "</nav>";
+    $output .= "</div>
+
+    <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">
+        <a class=\"ribbon-button\" href=\"index.php\" style=\"width:25%\"><i class=\"fa fa-home\"></i> Home</a>
+        <div class=\"dropdown\" style=\"width:25%\">
+            <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\">Projects</a>
+            <div class=\"dropdown-content\" style=\"width:100%\">
+                <a href=\"projects.php\">My Projects</a>
+                <a href=\"#Recent_Projects\">Recent Projects</a>
+                <a href=\"add_new_project.php\">New Project</a>
+                <a href=\"share_project.php\">Share Project</a>
+            </div>
+        </div>
+        <div class=\"dropdown\" style=\"width:25%\">
+        <a class=\"ribbon-button\" href=\"tools.php\">Tools</a>
+            <div class=\"dropdown-content\">
+                <a href=\"search_specimen.php\">Search</a>
+                <a href=\"#tool1\">Tool 1</a>
+                <a href=\"#tool2\">Tool 2</a>
+                <a href=\"#tool3\">Tool 3</a>
+            </div>
+        </div>
+        <div class=\"dropdown\" style=\"width:25%\">
+            <a href=\"help.php\"  class=\"ribbon-button\">Help</a>
+            <div class=\"dropdown-content\">
+                <a href=\"help.php?tab=FAQ\">Frequently Asked Questions</a>
+                <a href=\"help.php?tab=Documentation\">Documentation</a>
+                <a href=\"help.php?tab=User_Guide\">How To Use</a>
+                <a href=\"report_a_bug.php\">Report A Bug</a>
+            </div>
+        </div>
+    </div>
+    </nav>
+    
+    ";
     return $output;
 }
 
@@ -131,7 +166,7 @@ function getSidebar () {
     } else {
         $output .= '<nav class="sidebar bg-dark">
             <ul class="list-unstyled">
-            <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>';
+            <!--<li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>-->';
         if (isset($_SESSION["email"])) {
             $output .= '<li><a href="add_new_project.php"><i class="fa fa-plus"></i> Add New Project</a></li>';
         }

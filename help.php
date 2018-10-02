@@ -90,6 +90,5 @@ for (var i = 0; i < coll.length; i++) {
 }
 </script>
 ');
-$page_render->disableSidebar();
-$page_render->noLoginRequired();
+$page_render->setPageAccess(false);
 $page_render->renderPage();

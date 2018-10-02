@@ -255,6 +255,7 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageAccess(true, true, true, true);
 $page_render->setPageTitle($_GET['project_id']." > ". $_GET['core_id']. " > ".$_GET['sample_id']." > Sample Count");
+$page_render->enableSidebar();
 $page_render->renderPage();
 
 // Add concentration curve scripts

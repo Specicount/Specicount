@@ -22,5 +22,5 @@ $form->printBtnGroup('my-btn-group');
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle("Report A Bug");
-$page_render->disableSidebar();
+#$page_render->setPageAccess(false); #Logged in for bugs reports?
 $page_render->renderPage();

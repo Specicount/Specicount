@@ -89,7 +89,6 @@ foreach ($dir as $fileinfo) {
 
 $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Specimen Details");
-$page_render->disableSidebar();
 $page_render->disableNavbar();
 $page_render->setInnerHTML($output);
 $page_render->renderPage();
