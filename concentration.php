@@ -8,7 +8,8 @@
 
 use phpformbuilder\database\Mysql;
 
-$db->selectRows("concentration_curve", array("sample_id" => Mysql::SQLValue($sample), 'core_id' => Mysql::SQLValue($core), "project_id" => Mysql::SQLValue($project)));
+$filter = $form->getFilterArray();
+$db->selectRows("concentration_curve", $filter);
 
 $result = array();
 if (!$db->error()) {
@@ -24,8 +25,6 @@ $result_concentration = implode($result,", ");
 if ($db->rowCount() > 0) {
     echo "
         <script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>
-        <div style='height: 350px' id=\"chart_div\"></div><br/>
-        
         <script>
         google.charts.load('current', {packages: ['corechart', 'bar']});
         google.charts.setOnLoadCallback(drawBasic_concentration);
@@ -57,6 +56,17 @@ if ($db->rowCount() > 0) {
             var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
             
             chart.draw(data, options);
+            
+                    var ref = $(\"button[name='stats-btn']\");
+            var popup = $(\"#chart_div\");
+            var popper = new Popper(ref, popup, {
+                placement: 'bottom'
+            });
+    
+            ref.click(function() {
+                popup.toggle();
+                popper.scheduleUpdate();
+            });
         }
         </script>";
 }

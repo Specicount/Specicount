@@ -150,17 +150,17 @@ class Search_Form extends Post_Form {
     The Form
 ================================================== */
 
-$form = new Search_Form('search-form', "found_specimens", 'horizontal', 'novalidate', 'bs4');
+$form = new Search_Form('search-form', "found_specimens", 'vertical', 'novalidate', 'bs4');
 
 // Since form is vertical it won't automatically print elements in a row
-/*$options = array(
-    'elementsWrapper' => '<div class="form-group row"></div>',
+$options = array(
+    'elementsWrapper' => '<div class="form-group row justify-content-end"></div>',
 );
-$form->setOptions($options);*/
+$form->setOptions($options);
 $form->groupInputs("search-input","project-filter", "search-btn");
-/*$form->addInputWrapper('<div class="col-sm-5"></div>', "search-input");
+$form->addInputWrapper('<div class="col-sm-6"></div>', "search-input");
 $form->addInputWrapper('<div class="col-sm-3"></div>', "project-filter");
-$form->addInputWrapper('<div class="col-sm-2"></div>', "search-btn");*/
+$form->addInputWrapper('<div class="col-sm-3"></div>', "search-btn");
 
 $form->setCols(0, 6);
 $form->addInput('text', 'search-input', '', '', 'placeholder=Search Attributes Here...');
