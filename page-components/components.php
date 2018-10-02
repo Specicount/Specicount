@@ -149,8 +149,11 @@ function getSidebar () {
     
     if (!empty($_GET["sample_id"])) {
         $sample_id = rawurlencode($_GET["sample_id"]);
+        $sample_id = str_replace("%20", " ", $sample_id);
         $core_id = rawurlencode($_GET["core_id"]);
+        $core_id = str_replace("%20", " ", $core_id);
         $project_id = rawurlencode($_GET["project_id"]);
+        $project_id = str_replace("%20", " ", $project_id);
         $my_access_level = getAccessLevel();
         $output .= '<nav class="sidebar bg-dark">
             <ul class="list-unstyled">
@@ -177,6 +180,7 @@ function getSidebar () {
             $db->query($sql);
             foreach ($db->recordsArray() as $project_array) {
                 $project = rawurlencode($project_array["project_id"]);
+                $project = str_replace("%20", " ", $project);
 
                 $my_access_level = getAccessLevel($email, $project);
                 // If currently on a page that is connected to this project, expand the project dropdown
@@ -199,6 +203,7 @@ function getSidebar () {
                 $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project)), "core_id", "core_id", true);
                 foreach ($db->recordsArray() as $core_array) {
                     $core = rawurlencode($core_array["core_id"]);
+                    $core = str_replace("%20", " ", $core);
                     // If currently on a page that is connected to this core, expand the core dropdown
                     $toggle_expand_parent = $toggle_expand_child = "";
                     if ($_GET["core_id"] == $core) {
@@ -216,6 +221,7 @@ function getSidebar () {
                     $db->selectRows("samples", array("core_id" => Mysql::SQLValue($core), "project_id" => Mysql::SQLValue($project)), "sample_id", "sample_id", true);
                     foreach ($db->recordsArray() as $sample_array) {
                         $sample = rawurlencode($sample_array["sample_id"]);
+                        $sample = str_replace("%20", " ", $sample);
 
                         // Print the samples
                         $output .= "<li><a href='sample.php?project_id=".$project."&core_id=".$core."&sample_id=".$sample."'><i class='fa fa-flask'></i> ".$sample_array["sample_id"]."</a></li>";
