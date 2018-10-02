@@ -119,7 +119,7 @@ class Sample_Count_Form extends Post_Form {
         }
 
         // -------- SAVE REORDER --------
-        $this->update();
+        $this->save();
         $where_clause = Mysql::buildSQLWhereClause($this->filter);
         $sql = "UPDATE BioBase.found_specimens SET `order` = `count` ".$where_clause;
         $this->db->query($sql);
