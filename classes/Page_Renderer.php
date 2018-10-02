@@ -218,6 +218,7 @@ class Page_Renderer {
                     if (basename(getTopMostScript(), ".php") == "register") {
                         header("location: index.php");
                     }
+                    echo '<script>parent.window.location.reload();</script>';
                 } else {
                     $errors['email'] = "Incorrect username or password";
                     storeErrorMsg('Incorrect username or password');

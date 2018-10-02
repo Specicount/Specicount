@@ -239,4 +239,5 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle($_GET["project_id"]." > Edit User Access");
 $page_render->setPageAccess(true, true, false, false);
+$page_render->enableSidebar();
 $page_render->renderPage();

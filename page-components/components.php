@@ -62,11 +62,11 @@ function getNavbar ($render_side, $navbar_text) {
                 <a href=\"projects.php\">My Projects</a>
                 <a href=\"#Recent_Projects\">Recent Projects</a>
                 <a href=\"add_new_project.php\">New Project</a>
-                <a href=\"share_project.php\">Share Project</a>
+                <a href=\"project_access.php\">Share Project</a>
             </div>
         </div>
         <div class=\"dropdown\" style=\"width:25%\">
-        <a class=\"ribbon-button\" href=\"tools.php\">Tools</a>
+        <a class=\"ribbon-button\" href=\"#tools\">Tools</a>
             <div class=\"dropdown-content\">
                 <a href=\"search_specimen.php\">Search</a>
                 <a href=\"#tool1\">Tool 1</a>
