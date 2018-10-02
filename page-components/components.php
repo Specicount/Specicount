@@ -58,8 +58,7 @@ function getNavbar ($render_side, $navbar_text) {
         <div class=\"dropdown\" style=\"width:33.333%\">
             <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\">Projects</a>
             <div class=\"dropdown-content\" style=\"width:100%\">
-                <a href=\"projects.php\">My Projects</a>
-                <a href=\"#Recent_Projects\">Recent Projects</a>
+                <a href=\"projects.php\">Recent Projects</a>
                 <a href=\"add_new_project.php\">New Project</a>
                 <a href=\"project_access.php\">Share Project</a>
             </div>
@@ -145,7 +144,7 @@ function getSidebar () {
         $my_access_level = getAccessLevel();
         $output .= '<nav class="sidebar bg-dark">
             <ul class="list-unstyled">
-                <li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-mail-reply"></i>Return to Core</a></li>
+                <li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>
                 <li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-edit"></i> Edit Sample</a></li>
                 <li><a href="sample.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fas fa-stopwatch"></i> Sample Count</a></li>
                 <li><a href="search_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>
