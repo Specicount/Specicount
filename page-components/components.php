@@ -60,7 +60,6 @@ function getNavbar ($render_side, $navbar_text) {
             <div class=\"dropdown-content\" style=\"width:100%\">
                 <a href=\"projects.php\">Recent Projects</a>
                 <a href=\"add_new_project.php\">New Project</a>
-                <a href=\"project_access.php\">Share Project</a>
             </div>
         </div>
         <div class=\"dropdown\" style=\"width:33.334%\">
@@ -134,6 +133,8 @@ function getScripts () {
 # Return Sidebar
 function getSidebar () {
     // Sample Side Bar (shown if sample is selected)
+
+    if(!isset($_SESSION["email"])) return "";
 
     $output = '';
     
