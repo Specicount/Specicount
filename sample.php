@@ -138,19 +138,23 @@ $form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5
 #######################
 # Sample grid
 #######################
+$form->addHtml('<style>.input-group-text {padding:0; background-color:transparent; border:none;}</style>');
 $form->addInput('hidden','last_edit');
 $form->addHtml("<div class='row'>");
-$form->addHtml("<div class='col-sm'>");
+$form->addHtml("<div class='col-lg'>");
 
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'save-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('button', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
-$form->addBtn('submit', 'export-btn', "export", 'Export <i class="fa fa-download append" aria-hidden="true"></i>', 'class=btn btn-info', 'my-btn-group');
-$form->addBtn('submit', 'save-reorder-btn', 1, 'Reorder and Save <i class="fa fa-sync append" aria-hidden="true"></i>', 'class=btn btn-success', 'my-btn-group');
+$form->addBtn('submit', 'save-btn', 1, '<i class="fa fa-save" aria-hidden="true"></i> Save', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('button', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
+$form->addBtn('submit', 'export-btn', "export", '<i class="fa fa-download append" aria-hidden="true"></i> Export', 'class=btn btn-info', 'my-btn-group');
+$form->addBtn('submit', 'save-reorder-btn', 1, '<i class="fa fa-sync append" aria-hidden="true"></i> Reorder and Save', 'class=btn btn-success', 'my-btn-group');
+$form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;', 'my-btn-group');
 $form->printBtnGroup('my-btn-group');
-
+$form->addHtml('<div style="height:350px; z-index:10;display:none;" id="chart_div"></div>');
+$form->addHtml('</div>'); // End column
+$form->addHtml('</div>'); // End row
 #############################
 # Lycopodium/Charcoal Counts
 #############################
@@ -160,43 +164,38 @@ $sample = $db->recordsArray()[0];
 $lycopodium_count = $sample["lycopodium"];
 $charcoal_count = $sample["charcoal"];
 
+$form->addHtml("<div class='row'>");
+
 #######################
 # Lycopodium
 #######################
-$form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
+
+$form->addHtml('<div class="col-sm-3">');
 $form->addHtml('<text style="font-weight: bold;padding: 5px">Lycopodium</text>');
-$form->addHtml("<table style='width: 100%'>");
-$form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
-$form->addBtn('button', 'lycopodium_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'lycopodium\')');
-$form->addHtml("</td><td>");
+$form->addIcon("lycopodium",'<button type="button" class="btn btn-success" onclick="subtract(\'lycopodium\')"><i class="fa fa-minus"></i></button>',"before");
+$form->addIcon("lycopodium",'<button type="button" class="btn btn-success" onclick="add(\'lycopodium\')"><i class="fa fa-plus"></i></button>',"after");
 $_SESSION[$form->getFormName()]["lycopodium"] = $lycopodium_count; //Fill in the lycopodium input with database count
 $form->addInput('number', 'lycopodium', '', '', 'required');
-$form->addHtml("</td><td style='text-align: right'>");
-$form->addBtn('button', 'lycopodium_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'lycopodium\')');
-$form->addHtml("</td></tr></table>");
 $form->addHtml('</div>');
 
 #######################
 # Charcoal
 #######################
-$form->addHtml('<div style="display:inline-block; max-width:200px; padding-right:10px;">');
+
+$form->addHtml('<div class="col-sm-3">');
 $form->addHtml('<text style="font-weight: bold;padding: 5px">Charcoal</text>');
-$form->addHtml("<table style='width: 100%'>");
-$form->addHtml("<tr style=\"vertical-align:top\"><td style='text-align: left'>");
-$form->addBtn('button', 'charcoal_subtract', 1, '<i class="fa fa-minus" aria-hidden="true"></i>', 'class=btn btn-success sp_count, data-style=zoom-in, onclick=subtract(\'charcoal\')');
-$form->addHtml("</td><td>");
+$form->addIcon("charcoal",'<button type="button" class="btn btn-success" onclick="subtract(\'charcoal\')"><i class="fa fa-minus"></i></button>',"before");
+$form->addIcon("charcoal",'<button type="button" class="btn btn-success" onclick="add(\'charcoal\')"><i class="fa fa-plus"></i></button>',"after");
 $_SESSION[$form->getFormName()]["charcoal"] = $charcoal_count; //Fill in the charcoal input with database count
 $form->addInput('number', 'charcoal', '', '', 'required');
-$form->addHtml("</td><td style='text-align: right'>");
-$form->addBtn('button', 'charcoal_add', 1, '<i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=add(\'charcoal\')');
-$form->addHtml("</td></tr></table>");
 $form->addHtml('</div>');
 
-$form->addHtml("</div><div class='col-sm'>");
+
+$form->addHtml('</div>'); // End row
 
 // Concentration curve div
-$form->addHtml("<div style='height: 350px' id=\"chart_div\"></div><br/>");
-$form->addHtml("</div></div>");
+
+
 
 $db = new Mysql();
 
@@ -245,6 +244,7 @@ if($db->rowCount() > 0) {
     $form->addHtml('<p style="font-style: italic;">No specimens added to this sample</p>');
 }
 
+
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 
@@ -259,7 +259,6 @@ $page_render->renderPage();
 require_once "concentration.php";
 ?>
 <script>
-
     // Undo changes for the sample (only if not previously saved)
     function reload(){
         if (confirm('Are you sure you want to reset the sample?')) {
