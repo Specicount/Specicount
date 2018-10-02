@@ -7,110 +7,79 @@ use phpformbuilder\database\Mysql;
     start session and include form class
 ============================================= */
 
-// Captcha if we decide to allow any user to register
-/*function rand_char($length) {
-    $random = '';
-    for ($i = 0; $i < $length; $i++) {
-        $random .= chr(mt_rand(33, 126));
-    }
-    return $random;
-}*/
-
 require_once "classes/Page_Renderer.php";
+require_once "classes/Post_Form.php";
+require_once "page-components/functions.php";
+use classes\Post_Form;
 
-$project = $_GET["project"];
+class Register_Form extends Post_Form {
+    protected function setUpdateArray() {
+        parent::setUpdateArray();
+        // Create encrypted password
+        $this->update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    }
 
-$db = new Mysql();
+    protected function additionalValidation() {
+        $this->validator->email()->validate('email');
+        $this->validator->hasUppercase()->hasLowercase()->hasNumber()->minLength(8)->validate('password');
+        $this->validator->matches('password')->validate('password_conf');
+        $this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
+        return true;
+    }
 
-/* =============================================
-    validation if posted
-============================================= */
+    protected function create() {
+        $this->db->insertRow($this->table_name, $this->update);
+        storeDbMsg($this->db,'User: ' . $_POST["email"] . ' added successfully!', "That email already exists!");
+    }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && Form::testToken('register') === true) {
-    $validator = Form::validate('register');
-    //$validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
+    protected function update() {
+        $this->raiseNotImplemented();
+    }
 
-    if ($validator->hasErrors()) {
-        $_SESSION['errors']['register'] = $validator->getAllErrors();
-    } else {
-        if ($_POST["password"] == $_POST["password_conf"]) {
-            $update["username"] = Mysql::SQLValue($_POST["username"]);
-            $update['first_name'] = Mysql::SQLValue($_POST["first_name"]);
-            $update['last_name'] = Mysql::SQLValue($_POST["last_name"]);
-            $update["email"] = Mysql::SQLValue($_POST["email"]);
-            $update['institution'] = Mysql::SQLValue($_POST["institution"]);
-            // Create encrypted password
-            $update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
-
-
-            $db->insertRow('users', $update);
-
-            if (!empty($db->error())) {
-                $msg = '<p class="alert alert-danger">' . $db->error() . '<br>' . $db->getLastSql() . '</p>' . "\n";
-            } else {
-                $msg = '<p class="alert alert-success">User: '.$_POST["username"].' added successfully !</p>' . " \n";
-            }
-        } else {
-            $msg = '<p class="alert alert-danger">Passwords do not match</p>' . "\n";
-        }
+    protected function fillFormWithDbValues($record_array) {
+        parent::fillFormWithDbValues($record_array);
+        unset($_SESSION[$this->form_ID]["password"]);
+        unset($_SESSION[$this->form_ID]["password_conf"]);
     }
 }
 
 /* ==================================================
     The Form
 ================================================== */
-unset($_SESSION['register']);
 
+//Form::clear("register");
+$form = new Register_Form("register","users", 'horizontal', 'novalidate', 'bs4');
 
-$form = new Form('register', 'horizontal', 'novalidate', 'bs4');
+$form->setCols(3, 9);
 
-$form->setCols(0, 12);
+$form->addInput('email', 'email', '', 'Email', 'required, class=col-5');
+$form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-5');
+$form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-5');
+$form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-5");
 
-$form->addHelper('Username', 'username');
-$form->addInput('text', 'username', '', '', 'required');
+$form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter", "password");
+$form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
+                data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
+$form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-5,
+                data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 
-$form->addHelper('First Name', 'first_name');
-$form->addInput('text', 'first_name', '', '', 'required');
+$form->addRecaptcha('6Ley73EUAAAAAGlW8U8cgkYJ6k7fIDbTF5Am47Qj', 'recaptcha2', true);
 
-$form->addHelper('Last Name', 'last_name');
-$form->addInput('text', 'last_name', '', '', 'required');
-
-$form->addHelper('Email', 'email');
-$form->addInput('email', 'email', '', '', 'required, placeholder=Email');
-
-$form->addHelper('Your Institution/Company', 'institution');
-$form->addInput('text', 'institution', '', '');
-
-$form->addHelper('Password', 'password');
-$form->addInput('password', 'password', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
-
-$form->addHelper('Password Confirmation', 'password_conf');
-$form->addInput('password', 'password_conf', '', '', 'required, data-fv-stringlength, data-fv-stringlength-min=6, data-fv-stringlength-message=Your password must be at least 6 characters long');
-
-// Captcha if we decide to allow any user to register
-/*$key = rand_char(15);
-$form->addHtml('<input id="captcha_code" name="captcha_code" type="hidden" value="'.$key.'">');
-$form->addRecaptcha($key);*/
-
-#######################
-# Clear/Save
-#######################
-$form->addBtn('submit', 'submit-btn', 1, 'Register User <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-user-plus" aria-hidden="true"></i> Register', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 if ($_GET["edit"]) {
-    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'my-btn-group');
+    $form->addBtn('submit', 'delete-btn', "delete", '<i class="fa fa-trash" aria-hidden="true"></i> Delete', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this core?\')', 'my-btn-group');
 }
 $form->printBtnGroup('my-btn-group');
 
 // jQuery validation
-$form->addPlugin('formvalidation', '#register', 'bs4');
+$form->addPlugin("formvalidation","#".$form->getFormName(), "bs4");
+
+// Captcha if we decide to allow any user to register
+
 
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle("Register");
+$page_render->setPageAccess(false);
 $page_render->disableSidebar();
-$page_render->disableNavbar();
-$page_render->noLoginRequired();
-$page_render->setInnerHTML("<p>Already a Member? <a href=\"login.php\">Login Now!</a></p>");
 $page_render->renderPage();

@@ -6,13 +6,11 @@
  * Time: 3:34 PM
  */
 
-use function functions\printDbErrors;
-use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
+use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Add_New_Post_Form.php";
 
 function delete_files($target) {
     if(is_dir($target)){
@@ -34,69 +32,64 @@ function extract_name($file) {
     return empty($file_array[1]) ? $file_array[0] : $file_array[1];
 }
 
-
-
 $image_folder = $_SERVER['DOCUMENT_ROOT']."/phpformbuilder/images/uploads/";
 if (!file_exists($image_folder)) {
     mkdir($image_folder);
 }
 
 
-class Specimen_Form extends \classes\Abstract_Form {
-    public function getFormType() {
-        return "specimen";
-    }
-
-    protected function delete($db, $filter) {
-        $filter = array('specimen_id' => Mysql::SQLValue($_POST["specimen_id"], "text"));
-        $db->deleteRows($this->getTableName(), $filter);
-        $db->deleteRows("found_specimens", $filter);
-        if (!$db->error()) {
+class Specimen_Form extends Add_New_Post_Form {
+    protected function delete() {
+        $this->db->deleteRows($this->table_name, $this->filter);
+        if ($this->db->error()) {
+            storeDbMsg($this->db);
+        } else {
             global $image_folder;
             delete_files($image_folder . $_POST["specimen_id"]. "/");
+            $success_message = urlencode(ucwords($this->form_ID) . " successfully deleted!");
+            header("location: index.php?success_message=".$success_message);
+            exit;
         }
     }
 
-    protected function create($db, $update) {
-        $db->insertRow($this->getTableName(), $update);
-        printDbErrors($db);
-        // If specimen added from sample page then also add the specimen to the sample
-        if ($_GET['sample_id']) {
-            $update_found["specimen_id"] = $update["specimen_id"];
-            $update_found["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
-            $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
-            $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
-            $update_found["specimen_project_id"] = Mysql::SQLValue($_GET['project_id']);
-            $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
-            $update_found["count"] = Mysql::SQLValue(1);
-            $db->insertRow('found_specimens', $update_found);
-            printDbErrors($db);
-            unset($_SESSION['add-new-specimen']);
+    protected function create() {
+        parent::create();
+        if (!$this->db->error()) {
+            // If specimen added from sample page then also add the specimen to the sample
+            if ($_GET['sample_id']) {
+                $update_found["specimen_id"] = $this->update["specimen_id"];
+                $update_found["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
+                $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
+                $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
+                $update_found["specimen_project_id"] = Mysql::SQLValue($_GET['project_id']);
+                $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
+                $update_found["count"] = Mysql::SQLValue(1);
+                $this->db->insertRow('found_specimens', $update_found);
+                storeDbMsg($this->db);
 
-
-            # Do concentration curve
-            $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
-            $update_curve["core_id"] = Mysql::SQLValue($_GET['core_id']);
-            $update_curve["project_id"] = Mysql::SQLValue($_GET['project_id']);
-            $db->query("SELECT SUM(count) as total FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
-            $tally_count = $db->recordsArray()[0]["total"];
-            $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
-            $db->query("SELECT COUNT(*) as amount FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
-            $unique_spec = $db->recordsArray()[0]["amount"];
-            $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
-            $db->insertRow('concentration_curve', $update_curve);
-            printDbErrors($db,"Specimen added successfully and added to sample!");
+                # Do concentration curve
+                $update_curve["sample_id"] = Mysql::SQLValue($_GET['sample_id']);
+                $update_curve["core_id"] = Mysql::SQLValue($_GET['core_id']);
+                $update_curve["project_id"] = Mysql::SQLValue($_GET['project_id']);
+                $this->db->query("SELECT SUM(count) as total FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
+                $tally_count = $this->db->recordsArray()[0]["total"];
+                $update_curve["tally_count"] = Mysql::SQLValue($tally_count, "int");
+                $this->db->query("SELECT COUNT(*) as amount FROM found_specimens WHERE sample_id = " . $update_curve["sample_id"] . " AND core_id = " . $update_curve["core_id"] . " AND project_id = " . $update_curve["project_id"]);
+                $unique_spec = $this->db->recordsArray()[0]["amount"];
+                $update_curve["unique_spec"] = Mysql::SQLValue($unique_spec, "int");
+                $this->db->insertRow('concentration_curve', $update_curve);
+                storeDbMsg($this->db,"Specimen successfully added to project and to sample!");
+            }
         }
     }
 
-    protected function getUpdateArray() {
+    protected function setUpdateArray() {
         global $image_folder;
         $type = trim($_POST["poll_spore"]);
 
-        //Don't ever want to change the project a specimen is attached to
+        //Don't want to change the project_id a specimen is attached to
         //This might change in the future if specimen migration functionality is desired
         $update["project_id"] = Mysql::SQLValue($_GET["project_id"], "text");
-
         $update["specimen_id"] = Mysql::SQLValue($_POST["specimen_id"], "text");
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
@@ -149,61 +142,58 @@ class Specimen_Form extends \classes\Abstract_Form {
             }
         }
 
-        return $update;
+        $this->update = $update;
     }
 
     protected function fillFormWithDbValues($record_array) {
         $specimen = $record_array;
-        $_SESSION[$this->getFormName()]["specimen_id"] = $specimen["specimen_id"];
-        $_SESSION[$this->getFormName()]["family"] = $specimen["family"];
-        $_SESSION[$this->getFormName()]["genus"] = $specimen["genus"];
-        $_SESSION[$this->getFormName()]["species"] = $specimen["species"];
-        $_SESSION[$this->getFormName()]["poll_spore"] = $specimen["poll_spore"];
-        $_SESSION[$this->getFormName()]["grain_arrangement"] = $specimen["grain_arrangement"];
-        $_SESSION[$this->getFormName()]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
-        $_SESSION[$this->getFormName()]["polar_axis_length"] = $specimen["polar_axis_length"];
-        $_SESSION[$this->getFormName()]["polar_axis_n"] = $specimen["polar_axis_n"];
-        $_SESSION[$this->getFormName()]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
-        $_SESSION[$this->getFormName()]["equatorial_axis_n"] = $specimen["equatorial_axis_n"];
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->getFormName()]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
-        $_SESSION[$this->getFormName()]["polar_shape"] = explode(",", $specimen["polar_shape"]);
-        $_SESSION[$this->getFormName()]["surface_pattern"] = $specimen["surface_pattern"];
-        $_SESSION[$this->getFormName()]["wall_thickness"] = $specimen["wall_thickness"];
-        $_SESSION[$this->getFormName()]["wall_evenness"] = $specimen["wall_evenness"];
-        $_SESSION[$this->getFormName()]["exine_type"] = $specimen["exine_type"];
-        $_SESSION[$this->getFormName()]["colporus"] = $specimen["colporus"];
-        $_SESSION[$this->getFormName()]["L_P"] = $specimen["L_P"];
-        $_SESSION[$this->getFormName()]["L_E"] = $specimen["L_E"];
-        $_SESSION[$this->getFormName()]["pore_protrusion"] = $specimen["pore_protrusion"];
-        $_SESSION[$this->getFormName()]["pore_shape_e"] = $specimen["pore_shape_e"];
-        $_SESSION[$this->getFormName()]["pore_shape_size"] = $specimen["pore_shape_size"];
-        $_SESSION[$this->getFormName()]["pore_shape_p"] = $specimen["pore_shape_p"];
-        $_SESSION[$this->getFormName()]["pore_margin"] = $specimen["pore_margin"];
-        $_SESSION[$this->getFormName()]["colpus_sulcus_length_c_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_length_c"]; // poll / spore
-        $_SESSION[$this->getFormName()]["colpus_sulcus_shape_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_shape"]; // poll / spore
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->getFormName()]["colpus_sulcus_margin_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_margin"]; // poll / spore
-        $_SESSION[$this->getFormName()]["apocolpium_width_e"] = $specimen["apocolpium_width_e"];
-        //$_SESSION[$this->getFormName()]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->getFormName()]["trilete_scar_arm_length"] = $specimen["trilete_scar_arm_length"];
-        $_SESSION[$this->getFormName()]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
-        $_SESSION[$this->getFormName()]["p_sacci_size"] = $specimen["p_sacci_size"];
-        $_SESSION[$this->getFormName()]["e_sacci_size"] = $specimen["e_sacci_size"];
-        $_SESSION[$this->getFormName()]["plant_function_type"] = explode(",", $specimen["plant_function_type"]);
-        $_SESSION[$this->getFormName()]["morphology_notes"] = $specimen["morphology_notes"];
+        $_SESSION[$this->form_ID]["specimen_id"] = $specimen["specimen_id"];
+        $_SESSION[$this->form_ID]["family"] = $specimen["family"];
+        $_SESSION[$this->form_ID]["genus"] = $specimen["genus"];
+        $_SESSION[$this->form_ID]["species"] = $specimen["species"];
+        $_SESSION[$this->form_ID]["poll_spore"] = $specimen["poll_spore"];
+        $_SESSION[$this->form_ID]["grain_arrangement"] = $specimen["grain_arrangement"];
+        $_SESSION[$this->form_ID]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
+        $_SESSION[$this->form_ID]["polar_axis_length"] = $specimen["polar_axis_length"];
+        $_SESSION[$this->form_ID]["polar_axis_n"] = $specimen["polar_axis_n"];
+        $_SESSION[$this->form_ID]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
+        $_SESSION[$this->form_ID]["equatorial_axis_n"] = $specimen["equatorial_axis_n"];
+        //$_SESSION[$this->form_ID]["***determined***"] = $specimen["***determined***"];
+        //$_SESSION[$this->form_ID]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$this->form_ID]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
+        $_SESSION[$this->form_ID]["polar_shape"] = explode(",", $specimen["polar_shape"]);
+        $_SESSION[$this->form_ID]["surface_pattern"] = $specimen["surface_pattern"];
+        $_SESSION[$this->form_ID]["wall_thickness"] = $specimen["wall_thickness"];
+        $_SESSION[$this->form_ID]["wall_evenness"] = $specimen["wall_evenness"];
+        $_SESSION[$this->form_ID]["exine_type"] = $specimen["exine_type"];
+        $_SESSION[$this->form_ID]["colporus"] = $specimen["colporus"];
+        $_SESSION[$this->form_ID]["L_P"] = $specimen["L_P"];
+        $_SESSION[$this->form_ID]["L_E"] = $specimen["L_E"];
+        $_SESSION[$this->form_ID]["pore_protrusion"] = $specimen["pore_protrusion"];
+        $_SESSION[$this->form_ID]["pore_shape_e"] = $specimen["pore_shape_e"];
+        $_SESSION[$this->form_ID]["pore_shape_size"] = $specimen["pore_shape_size"];
+        $_SESSION[$this->form_ID]["pore_shape_p"] = $specimen["pore_shape_p"];
+        $_SESSION[$this->form_ID]["pore_margin"] = $specimen["pore_margin"];
+        $_SESSION[$this->form_ID]["colpus_sulcus_length_c_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_length_c"]; // poll / spore
+        $_SESSION[$this->form_ID]["colpus_sulcus_shape_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_shape"]; // poll / spore
+        //$_SESSION[$this->form_ID]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$this->form_ID]["colpus_sulcus_margin_" . $specimen["poll_spore"]] = $specimen["colpus_sulcus_margin"]; // poll / spore
+        $_SESSION[$this->form_ID]["apocolpium_width_e"] = $specimen["apocolpium_width_e"];
+        //$_SESSION[$this->form_ID]["***determined***"] = $specimen["***determined***"];
+        $_SESSION[$this->form_ID]["trilete_scar_arm_length"] = $specimen["trilete_scar_arm_length"];
+        $_SESSION[$this->form_ID]["trilete_scar_shape"] = $specimen["trilete_scar_shape"];
+        $_SESSION[$this->form_ID]["p_sacci_size"] = $specimen["p_sacci_size"];
+        $_SESSION[$this->form_ID]["e_sacci_size"] = $specimen["e_sacci_size"];
+        $_SESSION[$this->form_ID]["plant_function_type"] = explode(",", $specimen["plant_function_type"]);
+        $_SESSION[$this->form_ID]["morphology_notes"] = $specimen["morphology_notes"];
     }
 }
-
-$specimen_form = new Specimen_Form();
-
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($specimen_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
+$form = new Specimen_Form("specimen", "specimens", 'horizontal', 'novalidate', 'bs4');
 
 if ($_GET['sample_id']) {
     $form->addHtml("<p style='font-style: italic'>Note: This will add the specimen to the website's database and also add it to the current sample: ".$_GET['sample_id']."</p>");
@@ -690,7 +680,7 @@ $form->endFieldset();
 $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {
-    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this specimen? Note: it will also be deleted from any samples it is connected to.\')', 'my-btn-group');
+    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this specimen? Note: it will also be deleted from any samples it is connected to.\')', 'my-btn-group');
 }
 
 $form->printBtnGroup('my-btn-group');
@@ -704,8 +694,11 @@ $form->addPlugin('formvalidation', '#add-new', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($specimen_form->getPageTitle());
-$page_render->disableSidebar();
+if (isset($_GET["edit"])) {
+    $page_render->setPageAccess(true, true, false, false);
+} else {
+    $page_render->setPageAccess(true, true, false, false);
+}
 $page_render->renderPage();
 ?>
 <script>

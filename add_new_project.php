@@ -1,40 +1,29 @@
 <?php
-use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
+
 use phpformbuilder\database\Mysql;
-
-/* =============================================
-    start session and include form class
-============================================= */
-
-use function functions\printDbErrors;
+use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Add_New_Post_Form.php";
 
-class Project_Form extends \classes\Abstract_Form {
-    public function getFormType() {
-        return "project";
-    }
-
-    protected function create($db, $update) {
-        $db->insertRow($this->getTableName(), $update);
-        printDbErrors($db);
-        $update_access['project_id'] = $update['project_id'];
-        $update_access['username'] = Mysql::SQLValue($_SESSION['username']);
-        $update_access['access_level'] = Mysql::SQLValue('admin');
-        $db->insertRow('user_project_access', $update_access);
+class Project_Form extends Add_New_Post_Form {
+    protected function create() {
+        parent::create();
+        $update_access['project_id'] = $this->update['project_id'];
+        $update_access['email'] = Mysql::SQLValue($_SESSION['email']);
+        $update_access['access_level'] = Mysql::SQLValue('owner');
+        $this->db->insertRow('user_project_access', $update_access);
     }
 }
 
-$project_form = new Project_Form();
+
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($project_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
-
+$form = new Project_Form("project","projects", 'horizontal', 'novalidate', 'bs4');
+$my_access_level = getAccessLevel();
 
 $form->startFieldset('Project Data');
 $form->setCols(6, 6);
@@ -69,17 +58,26 @@ $form->addCountrySelect('country', '', '', array('flag_size' => 16, 'return_valu
 $form->setCols(0, 6);
 $form->addHelper('Region', 'region');
 $form->addInput('text', 'region', '', '', '');
-$form->setCols(6, 6);
+$options = array(
+    'elementsWrapper' => '<div class="form-group row"></div>',
+    'buttonWrapper' => '<div class="form-group row"></div>'
+);
+$form->setOptions($options);
+if ($my_access_level== "owner") {
+    $form->setCols(4, 2);
+    $form->addOption("is_global", 0, "No");
+    $form->addOption("is_global", 1, "Yes");
+    $form->addSelect("is_global","Enable global specimen visibility?");
+}
 
 $form->endFieldset();
-
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
-if ($_GET["edit"]) {
-    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
+if ($_GET["edit"] && $my_access_level == "owner") {
+    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
 }
 $form->printBtnGroup('my-btn-group');
 
@@ -89,6 +87,10 @@ $form->addPlugin('formvalidation', '#add-new-project', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($project_form->getPageTitle());
-$page_render->disableSidebar();
+
+if (isset($_GET["edit"])) {
+    $page_render->setPageAccess(true, true, false, false);
+} else {
+    $page_render->setPageAccess(true, false, false, false);
+}
 $page_render->renderPage();

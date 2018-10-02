@@ -17,13 +17,13 @@ USE BioBase; -- Uncomment this line if you want to execute this script in your S
 
 -- All the information we store about users
 CREATE TABLE IF NOT EXISTS users (
-  username VARCHAR(30) NOT NULL,
-  `password` CHAR(128) NOT NULL,
   email VARCHAR(50) NOT NULL,
+  `password` CHAR(128) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
   institution VARCHAR(100),
-  PRIMARY KEY (username)
+  is_trusted BOOLEAN DEFAULT FALSE, -- Determines whether the specimens they create count as trusted data
+  PRIMARY KEY (email)
 );
 
 -- This contains all the information relating to the project
@@ -39,11 +39,11 @@ CREATE TABLE IF NOT EXISTS projects (
 -- This contains all the information relating to the project
 CREATE TABLE IF NOT EXISTS user_project_access (
   project_id VARCHAR (150) NOT NULL,
-  username VARCHAR(30) NOT NULL,
-  access_level ENUM('visitor','collaborator','admin') NOT NULL,
-  PRIMARY KEY (project_id, username),
+  email VARCHAR(30) NOT NULL,
+  access_level ENUM('owner','admin','collaborator','visitor') NOT NULL,
+  PRIMARY KEY (project_id, email),
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- This contains all the information relating to the core
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS samples (
   top_depth DECIMAL(19,2),
   bottom_depth DECIMAL(19,2),
   mid_depth DECIMAL(19,2),
-  modelled_age INT (11), -- ????
-  lycopodium INT (11),
-  charcoal INT (11),
+  modelled_age INT (11),
+  lycopodium INT (11) DEFAULT 0,
+  charcoal INT (11) DEFAULT 0,
   last_edit DATE NOT NULL,
   -- tags VARCHAR (200), not tags at present
   PRIMARY KEY (sample_id, core_id, project_id),
@@ -153,7 +153,6 @@ CREATE TABLE IF NOT EXISTS found_specimens (
   project_id VARCHAR (150) NOT NULL,         -- The project_id that identifies the sample the found_specimen is in
   `order` INT (11) DEFAULT NULL,
   `count` INT (11) DEFAULT 0,
-  last_update DATETIME DEFAULT NULL,
   PRIMARY KEY (specimen_id, sample_id, core_id, project_id),
   FOREIGN KEY (specimen_project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (sample_id) REFERENCES samples (sample_id) ON DELETE CASCADE ON UPDATE CASCADE,

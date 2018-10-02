@@ -1,50 +1,24 @@
 <?php
-use phpformbuilder\Form;
-use phpformbuilder\Validator\Validator;
-use phpformbuilder\database\Mysql;
 
-/* =============================================
-    start session and include form class
-============================================= */
+use phpformbuilder\database\Mysql;
+use classes\Add_New_Post_Form;
 
 require_once "classes/Page_Renderer.php";
-require_once "classes/Abstract_Form.php";
+require_once "classes/Add_New_Post_Form.php";
 
-
-class Sample_Form extends \classes\Abstract_Form {
-    public function getFormType() {
-        return "sample";
-    }
-
-    protected function delete($db, $filter) {
-        $db->deleteRows("concentration_curve", $filter);
-        printDbErrors($db);
-        $db->deleteRows("found_specimens", $filter);
-        printDbErrors($db);
-        $db->deleteRows($this->getTableName(), $filter);
-    }
-
-    protected function create($db, $update) {
-        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-        $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $db->insertRow($this->getTableName(), $update);
-    }
-
-    protected function update($db, $update, $filter) {
-        $update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
-        $update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
-        $db->updateRows($this->getTableName(), $update, $filter);
+class Sample_Form extends Add_New_Post_Form {
+    protected function setUpdateArray() {
+        parent::setUpdateArray();
+        $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
+        $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
     }
 }
-
-$sample_form = new Sample_Form();
-
 
 /* ==================================================
     The Form
 ================================================== */
 
-$form = new Form($sample_form->getFormName(), 'horizontal', 'novalidate', 'bs4');
+$form = new Sample_Form("sample", "samples",'horizontal', 'novalidate', 'bs4');
 
 $form->addHelper('Sample ID', 'sample_id');
 
@@ -73,10 +47,10 @@ $form->addInput('number', 'modelled_age', '', 'Modelled Age');
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'submit-btn', 1, 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
 $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {
-    $form->addBtn('submit', 'submit-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this sample?\')', 'my-btn-group');
+    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this sample?\')', 'my-btn-group');
 }
 $form->printBtnGroup('my-btn-group');
 
@@ -86,6 +60,9 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageTitle($sample_form->getPageTitle());
-$page_render->disableSidebar();
+if (isset($_GET["edit"])) {
+    $page_render->setPageAccess(true, true, true, true);
+} else {
+    $page_render->setPageAccess(true, true, true, false);
+}
 $page_render->renderPage();
