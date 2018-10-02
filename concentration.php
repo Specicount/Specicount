@@ -25,7 +25,6 @@ $result_concentration = implode($result,", ");
 if ($db->rowCount() > 0) {
     echo "
         <script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>
-        <div style='height: 350px' id=\"chart_div\"></div><br/>
         
         <script>
         google.charts.load('current', {packages: ['corechart', 'bar']});
