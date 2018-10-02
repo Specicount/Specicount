@@ -54,8 +54,8 @@ function getNavbar ($render_side, $navbar_text) {
     $output .= "</div>
 
     <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">
-        <a class=\"ribbon-button\" href=\"index.php\" style=\"width:25%\"><i class=\"fa fa-home\"></i> Home</a>
-        <div class=\"dropdown\" style=\"width:25%\">
+        <a class=\"ribbon-button\" href=\"index.php\" style=\"width:33.333%\"><i class=\"fa fa-home\"></i> Home</a>
+        <div class=\"dropdown\" style=\"width:33.333%\">
             <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\">Projects</a>
             <div class=\"dropdown-content\" style=\"width:100%\">
                 <a href=\"projects.php\">My Projects</a>
@@ -64,16 +64,7 @@ function getNavbar ($render_side, $navbar_text) {
                 <a href=\"project_access.php\">Share Project</a>
             </div>
         </div>
-        <div class=\"dropdown\" style=\"width:25%\">
-        <a class=\"ribbon-button\" href=\"#tools\">Tools</a>
-            <div class=\"dropdown-content\">
-                <a href=\"search_specimen.php\">Search</a>
-                <a href=\"#tool1\">Tool 1</a>
-                <a href=\"#tool2\">Tool 2</a>
-                <a href=\"#tool3\">Tool 3</a>
-            </div>
-        </div>
-        <div class=\"dropdown\" style=\"width:25%\">
+        <div class=\"dropdown\" style=\"width:33.334%\">
             <a href=\"help.php\"  class=\"ribbon-button\">Help</a>
             <div class=\"dropdown-content\">
                 <a href=\"help.php?tab=FAQ\">Frequently Asked Questions</a>
