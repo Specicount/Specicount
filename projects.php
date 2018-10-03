@@ -50,11 +50,12 @@ function getTable(){
     </style>
     <div>  
     <table class='project-list' style='width: 100%'>
-    <tr><th style='width: 30%'><text>Name</text></th>
-        <th style='width: 30%'><text>No. Cores</text></th>
-        <th style='width: 20%'><text>No. Samples</text></th>
-        <th style='width: 20%'><text>No. Specimens</text></th>
-        <th style='width: 20%'><text>Access Level</text></th></tr>
+    <tr><th style='width: 25%'><text>Name</text></th>
+        <th style='width: 15%'><text>Access Level</text></th>
+        <th style='width: 15%'><text>No. Cores</text></th>
+        <th style='width: 15%'><text>No. Samples</text></th>
+        <th style='width: 15%'><text>No. Specimens</text></th>
+        <th style='width: 15%'><text>Last Sample Edit</text></tr>
     ";
 
     foreach ($db->recordsArray() as $project_array) {
@@ -64,14 +65,17 @@ function getTable(){
         $num_cores = $db->querySingleValue("SELECT COUNT(*) FROM cores WHERE project_id=".$project_id_sql);
         $num_samples = $db->querySingleValue("SELECT COUNT(*) FROM samples WHERE project_id=".$project_id_sql);
         $num_specimens = $db->querySingleValue("SELECT COUNT(*) FROM specimens WHERE project_id=".$project_id_sql);
+        $db->selectRows("samples", array("project_id"=>$project_id_sql),"last_edit", "last_edit", true);
+        $last_sample_edit = $db->recordsArray()[0]["last_edit"];
 //        $db->query("SELECT cores.core_id, COUNT(samples.sample_id) AS cnt FROM cores LEFT JOIN samples ON cores.core_id = samples.core_id WHERE cores.project_id =".$project_id_sql." GROUP BY cores.core_id ORDER BY cores.core_id");
 
         $output .= "<tr>";
         $output .= "<td><a href='?project_id=".$project_id."'>".$project_id."</a></td>";
+        $output .= "<td><text>".$project_array["access_level"]."</text></td>";
         $output .= "<td><text>".$num_cores."</text></td>";
         $output .= "<td><text>".$num_samples."</text></td>";
         $output .= "<td><text>".$num_specimens."</text></td>";
-        $output .= "<td><text>".$project_array["access_level"]."</text></td>";
+        $output .= "<td><text>".$last_sample_edit."</text></td>";
         $output .= "</tr>";
     }
     $output .= "</table></div>";
@@ -81,6 +85,5 @@ function getTable(){
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Projects Home");
-
 $page_render->setInnerHTML(getTable());
 $page_render->renderPage();
