@@ -224,4 +224,5 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageAccess(true, true, true, true);
 $page_render->setPageTitle($title);
+$page_render->enableSidebar();
 $page_render->renderPage();
