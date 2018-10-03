@@ -22,8 +22,9 @@ function getTable(){
         display:inline-block;
         text-decoration: none;
     }
-    .project-list a:hover {
+    .project-list tr.rowlink:hover {
         background-color: #cccccc;
+        cursor:pointer;
     }
     .project-list table {
         border-collapse: collapse;
@@ -69,8 +70,8 @@ function getTable(){
         $last_sample_edit = $db->recordsArray()[0]["last_edit"];
 //        $db->query("SELECT cores.core_id, COUNT(samples.sample_id) AS cnt FROM cores LEFT JOIN samples ON cores.core_id = samples.core_id WHERE cores.project_id =".$project_id_sql." GROUP BY cores.core_id ORDER BY cores.core_id");
 
-        $output .= "<tr>";
-        $output .= "<td><a href='?project_id=".$project_id."'>".$project_id."</a></td>";
+        $output .= "<tr class='rowlink' data-link='?project_id=".$project_id."'>";
+        $output .= "<td><text>".$project_id."</text></td>";
         $output .= "<td><text>".$project_array["access_level"]."</text></td>";
         $output .= "<td><text>".$num_cores."</text></td>";
         $output .= "<td><text>".$num_samples."</text></td>";
@@ -79,7 +80,10 @@ function getTable(){
         $output .= "</tr>";
     }
     $output .= "</table></div>";
+
     return $output;
+
+
 }
 
 // Render Page
