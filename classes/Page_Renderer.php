@@ -53,6 +53,7 @@ class Page_Renderer {
         = $this->render_navbar
         = $this->render_scripts
         = $this->require_login
+        = $this->render_sidebar
         = true;
     }
 
@@ -68,8 +69,8 @@ class Page_Renderer {
         $this->render_navbar = false;
     }
 
-    public function enableSidebar() {
-        $this->render_sidebar = true;
+    public function disableSidebar() {
+        $this->render_sidebar = false;
     }
 
     public function disableScripts() {

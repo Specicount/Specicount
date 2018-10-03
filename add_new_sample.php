@@ -65,5 +65,4 @@ if (isset($_GET["edit"])) {
 } else {
     $page_render->setPageAccess(true, true, true, false);
 }
-$page_render->enableSidebar();
 $page_render->renderPage();

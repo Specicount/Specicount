@@ -32,5 +32,4 @@ $form->addBtn('submit', 'submit-btn', 1, 'Share', 'class=btn btn-success ladda-b
 $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Share A Project");
 $page_render->setForm($form);
-$page_render->enableSidebar();
 $page_render->renderPage();

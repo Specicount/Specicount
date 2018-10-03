@@ -92,3 +92,4 @@ for (var i = 0; i < coll.length; i++) {
 ');
 $page_render->setPageAccess(false);
 $page_render->renderPage();
+$page_render->disableSidebar();
