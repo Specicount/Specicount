@@ -146,15 +146,20 @@ function getSidebar () {
         $sample_id = $_GET["sample_id"];
         $core_id = $_GET["core_id"];
         $project_id = $_GET["project_id"];
+
         $output .= '<nav class="sidebar bg-dark">
-            <ul class="list-unstyled">
-                <li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>
-                <li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-edit"></i> Edit Sample</a></li>
-                <li><a href="sample.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fas fa-stopwatch"></i> Sample Count</a></li>
-                <li><a href="search_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>
-                <li><a href="add_new_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-plus"></i> Add New Specimen</a></li>
-            </ul>
-        </nav>';
+            <ul class="list-unstyled">';
+        if (basename($_SERVER['PHP_SELF']) == "sample.php") {
+            $output .=  '<li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>
+                        <li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-edit"></i> Edit Sample</a></li>
+                        <li><a href="search_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>
+                        <li><a href="add_new_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-plus"></i> Add New Specimen</a></li>';
+        } else {
+            $output .= '<li><a href="sample.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fas fa-reply"></i> Return to Sample</a></li>';
+        }
+        $output .= '</ul></nav>';
+
+
     // Project Side Bar (shown if not in sample - has drop downs of project, core and samples extracted from database)
     } else {
         $output .= '<nav class="sidebar bg-dark">
