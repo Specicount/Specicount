@@ -23,7 +23,7 @@ function getTable(){
         text-decoration: none;
     }
     .project-list tr.rowlink:hover {
-        background-color: #cccccc;
+        background-color: #dddddd;
         cursor:pointer;
     }
     .project-list table {
@@ -36,8 +36,8 @@ function getTable(){
         padding: 0px;
         vertical-align:top;
     }
-    .project-list tr:nth-child(even){
-        background-color: #eeeeee;
+    .project-list tr.active{
+        background-color: #dddddd;
     }
     .internal-list table, .internal-list td {
         border-collapse: collapse;
@@ -69,8 +69,11 @@ function getTable(){
         $db->selectRows("samples", array("project_id"=>$project_id_sql),"last_edit", "last_edit", true);
         $last_sample_edit = $db->recordsArray()[0]["last_edit"];
 //        $db->query("SELECT cores.core_id, COUNT(samples.sample_id) AS cnt FROM cores LEFT JOIN samples ON cores.core_id = samples.core_id WHERE cores.project_id =".$project_id_sql." GROUP BY cores.core_id ORDER BY cores.core_id");
-
-        $output .= "<tr class='rowlink' data-link='?project_id=".$project_id."'>";
+        if ($project_id == $_GET["project_id"]) {
+            $output .= "<tr class='rowlink active' data-link='?project_id=".$project_id."'>";
+        } else {
+            $output .= "<tr class='rowlink' data-link='?project_id=".$project_id."'>";
+        }
         $output .= "<td><text>".$project_id."</text></td>";
         $output .= "<td><text>".$project_array["access_level"]."</text></td>";
         $output .= "<td><text>".$num_cores."</text></td>";
