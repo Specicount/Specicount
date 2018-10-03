@@ -179,7 +179,6 @@ $sql =  "SELECT email, first_name, last_name, access_level FROM users NATURAL JO
         " ORDER BY access_level";
 $db->query($sql);
 foreach ($db->recordsArray() as $user) {
-    $form->startFieldset('');
     $form->addHtml('<div class="form-group row justify-content-end">');
     $form->setCols(0,3);
     $form->groupInputs("email[]", "first_name[]", "last_name[]", "delete-btn[]");
@@ -218,7 +217,6 @@ foreach ($db->recordsArray() as $user) {
     }
 
     $form->addHtml('</div>');
-    $form->endFieldset();
 }
 $form->endFieldset();
 
@@ -239,5 +237,4 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle($_GET["project_id"]." > Edit User Access");
 $page_render->setPageAccess(true, true, false, false);
-$page_render->enableSidebar();
 $page_render->renderPage();
