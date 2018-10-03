@@ -92,5 +92,6 @@ if (isset($_GET["edit"])) {
     $page_render->setPageAccess(true, true, false, false);
 } else {
     $page_render->setPageAccess(true, false, false, false);
+    $page_render->disableSidebar();
 }
 $page_render->renderPage();
