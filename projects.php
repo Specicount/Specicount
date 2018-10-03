@@ -51,25 +51,28 @@ function getTable(){
     <div>  
     <table class='project-list' style='width: 100%'>
     <tr><th style='width: 30%'><text>Name</text></th>
-        <th style='width: 30%'><text>Cores</text></th>
+        <th style='width: 30%'><text>No. Cores</text></th>
         <th style='width: 20%'><text>No. Samples</text></th>
+        <th style='width: 20%'><text>No. Specimens</text></th>
         <th style='width: 20%'><text>Access Level</text></th></tr>
     ";
 
     foreach ($db->recordsArray() as $project_array) {
+        $project_id = $project_array["project_id"];
+        $project_id_sql = Mysql::SQLValue($project_id);
         #$db->selectRows("cores", array("project_id" => Mysql::SQLValue($project_array["project_id"])), "core_id", "core_id", true);
-        $db->query("SELECT cores.core_id, COUNT(samples.sample_id) AS cnt FROM cores LEFT JOIN samples ON cores.core_id = samples.core_id WHERE cores.project_id =".Mysql::SQLValue($project_array["project_id"])." GROUP BY cores.core_id ORDER BY cores.core_id");
+        $num_cores = $db->querySingleValue("SELECT COUNT(*) FROM cores WHERE project_id=".$project_id_sql);
+        $num_samples = $db->querySingleValue("SELECT COUNT(*) FROM samples WHERE project_id=".$project_id_sql);
+        $num_specimens = $db->querySingleValue("SELECT COUNT(*) FROM specimens WHERE project_id=".$project_id_sql);
+//        $db->query("SELECT cores.core_id, COUNT(samples.sample_id) AS cnt FROM cores LEFT JOIN samples ON cores.core_id = samples.core_id WHERE cores.project_id =".$project_id_sql." GROUP BY cores.core_id ORDER BY cores.core_id");
 
-        $output .= "<tr><td><a href='?project_id=".$project_array["project_id"]."'>".$project_array["project_id"]."</a></td><td><table class='internal-list'>";
-        foreach ($db->recordsArray() as $core_array) {
-            $output .= "<tr><td><a href='?project_id=".$project_array["project_id"]."&core_id=".$core_array["core_id"]."'>".$core_array["core_id"]."</a></td></tr>";
-        }
-        $output .= "</table><td><table class='internal-list'>";
-
-        foreach ($db->recordsArray() as $core_array) {
-            $output .= "<tr><td><text>" . $core_array["cnt"] . "</text></td></tr>";
-        }
-        $output .= "</table></td><td><text>".$project_array["access_level"]."</text></td></tr>";
+        $output .= "<tr>";
+        $output .= "<td><a href='?project_id=".$project_id."'>".$project_id."</a></td>";
+        $output .= "<td><text>".$num_cores."</text></td>";
+        $output .= "<td><text>".$num_samples."</text></td>";
+        $output .= "<td><text>".$num_specimens."</text></td>";
+        $output .= "<td><text>".$project_array["access_level"]."</text></td>";
+        $output .= "</tr>";
     }
     $output .= "</table></div>";
     return $output;
@@ -80,5 +83,4 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Projects Home");
 
 $page_render->setInnerHTML(getTable());
-$page_render->enableSidebar();
 $page_render->renderPage();
