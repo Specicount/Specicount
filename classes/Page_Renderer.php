@@ -300,9 +300,10 @@ class Page_Renderer {
                             }
                         } else if (isset($messages["success"])) {
                             $messages["success"] = array_unique($messages["success"]);
-                            foreach ($messages["success"] as $success_msg) {
-                                echo $success_msg;
-                            }
+                            echo end($messages["success"]);
+//                            foreach ($messages["success"] as $success_msg) {
+//                                echo $success_msg;
+//                            }
                         }
 
                         // Render login form
