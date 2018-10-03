@@ -86,4 +86,7 @@ function getTable(){
 $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Projects Home");
 $page_render->setInnerHTML(getTable());
+if (isset($_GET["project_id"])) {
+    $page_render->enableSidebar();
+}
 $page_render->renderPage();
