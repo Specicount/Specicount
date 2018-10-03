@@ -265,6 +265,7 @@ class Page_Renderer {
             if (isset($login_form)) $this->printCSS($login_form);
             if ($this->page_access) $this->printCSS($this->form);
 
+
             ?>
         </head>
         <?php
@@ -278,10 +279,11 @@ class Page_Renderer {
 
         <div class="d-flex">
             <?php
-
             // Render the sidebar
             if ($this->render_sidebar) {
                 echo getSidebar();
+            } else {
+                echo "<style>.container-fluid {padding:0 10vw;}</style>";
             }
 
             ?>
