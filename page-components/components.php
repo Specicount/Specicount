@@ -56,19 +56,19 @@ function getNavbar ($render_side, $navbar_text) {
     <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">
         <a class=\"ribbon-button\" href=\"index.php\" style=\"width:33.333%\"><i class=\"fa fa-home\"></i> Home</a>
         <div class=\"dropdown\" style=\"width:33.333%\">
-            <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\">Projects</a>
+            <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\"><i class=\"fa fa-folder\"></i> Projects</a>
             <div class=\"dropdown-content\" style=\"width:100%\">
                 <a href=\"projects.php\">Recent Projects</a>
                 <a href=\"add_new_project.php\">New Project</a>
             </div>
         </div>
         <div class=\"dropdown\" style=\"width:33.334%\">
-            <a href=\"help.php\"  class=\"ribbon-button\">Help</a>
+            <a href=\"help.php\"  class=\"ribbon-button\"><i class=\"fa fa-question-circle\"></i> Help</a>
             <div class=\"dropdown-content\">
                 <a href=\"help.php?tab=FAQ\">Frequently Asked Questions</a>
                 <a href=\"help.php?tab=Documentation\">Documentation</a>
                 <a href=\"help.php?tab=User_Guide\">How To Use</a>
-                <a href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"></i> Report A Bug</a>
+                <a href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"><i class=\"fa fa-bug\"></i> Report A Bug</a>
             </div>
         </div>
     </div>
