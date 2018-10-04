@@ -62,7 +62,6 @@ class Specimen_Form extends Add_New_Post_Form {
                 $update_found["core_id"] = Mysql::SQLValue($_GET['core_id']);
                 $update_found["project_id"] = Mysql::SQLValue($_GET['project_id']);
                 $update_found["specimen_project_id"] = Mysql::SQLValue($_GET['project_id']);
-                $update_found["last_update"] = "'" . date("Y-m-d H:i:s") . "'";
                 $update_found["count"] = Mysql::SQLValue(1);
                 $this->db->insertRow('found_specimens', $update_found);
                 storeDbMsg($this->db);
@@ -615,6 +614,17 @@ $fileUpload_config = array(
     'debug'         => true
 );
 
+if(!is_dir('/var/www/html/phpformbuilder/images/uploads')) {
+    mkdir('/var/www/html/phpformbuilder/images/uploads', 0777);
+    umask(0);
+    chmod('/var/www/html/phpformbuilder/images/uploads', 0777);
+}
+
+if(!is_dir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"])) {
+    mkdir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"], 0777);
+    umask(0);
+    chmod('/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"], 0777);
+}
 
 // NOT WORKING ATM
 if ($_GET["edit"]) {
