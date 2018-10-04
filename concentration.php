@@ -62,7 +62,7 @@ if ($db->rowCount() > 0) {
 
             
             var options = {                
-                title:'Concentration Curve',
+                title:'Species Accumulation Curve',
                 seriesType:'scatter',
                 series: {
                     1: {
