@@ -66,20 +66,10 @@ class Leave_Form extends Post_Form {
         }
 
         // -------- LEAVE AS OWNER --------
-        //TODO: autoinsertupdate
         $filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
-        $this->db->selectRows($this->table_name, $filter);
-        // If new owner is already in the project
-        if ($this->db->rowCount() > 0) {
-            // Upgrade their access level to owner
-            $update["access_level"] = Mysql::sqlValue("owner");
-            $this->db->updateRows($this->table_name, $filter, $update);
-        } else {
-            // Otherwise add them to the access list as owner
-            $update = $filter;
-            $update["access_level"] = Mysql::sqlValue("owner");
-            $this->db->insertRow($this->table_name, $update);
-        }
+        $update = $filter;
+        $update["access_level"] = Mysql::sqlValue("owner");
+        $this->db->autoInsertUpdate($this->table_name, $filter, $update);
         storeDbMsg($this->db);
 
         // Delete old owner from access list

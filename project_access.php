@@ -20,15 +20,26 @@ require_once "classes/Post_Form.php";
 //unset($_SESSION[$form_ID]); // To ensure that other users aren't accidentally added as admin
 
 class Access_Form extends Post_Form {
+    protected function setRequiredAccessLevelsForPost() {
+        // Any member can leave a project
+        $this->post_required_access_levels = array("owner","admin","collaborator", "visitor");
+    }
+
     protected function registerPostActions() {
         $this->registerPostAction("addUser", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "add-new-user");
         $this->registerPostAction("saveChanges", isset($_POST['submit-btn']) && $_POST['submit-btn'] == "save-multiple");
         $this->registerPostAction("deleteUser", isset($_POST["delete-btn"]));
+        $this->registerPostAction("leave", isset($_POST['leave-btn']));
+        $this->registerPostAction("leaveAsOwner", isset($_POST['leave-owner-btn']));
     }
 
     protected function addUser() {
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
+        if ($my_access_level == "visitor") {
+            storeErrorMsg("You cannot add new users as a visitor");
+            return;
+        }
         if ($_POST["new_access_level"] == "owner") {
             storeErrorMsg("There can only be one owner of a project");
             return;
@@ -49,6 +60,10 @@ class Access_Form extends Post_Form {
     protected function deleteUser() {
         // ---- VALIDATION ----
         $my_access_level = getAccessLevel();
+        if ($my_access_level == "visitor") {
+            storeErrorMsg("You cannot delete users as a visitor");
+            return;
+        }
         $deleted_user_email = $_POST["delete-btn"];
         $deleted_user_access_level = getAccessLevel($deleted_user_email);
         // Make sure the owner cannot be deleted
@@ -73,6 +88,11 @@ class Access_Form extends Post_Form {
     // Update all users access levels
     protected function saveChanges() {
         // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        if ($my_access_level == "visitor") {
+            storeErrorMsg("You cannot make changes as a visitor");
+            return;
+        }
         foreach($_POST["access_level"] as $key => $value) {
             $access_levels[$key] = lcfirst($value); // This array is needed for readonly inputs
         }
@@ -119,6 +139,54 @@ class Access_Form extends Post_Form {
         }
         storeDbMsg($this->db,"Changes have been saved!");
     }
+
+    protected function leave() {
+        // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        if ($my_access_level == "owner") {
+            storeErrorMsg("You must transfer ownership to another user before you leave!");
+            return;
+        }
+
+        // -------- LEAVE --------
+        $filter["email"] = Mysql::sqlValue($_SESSION["email"]);
+        $filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
+        $this->db->deleteRows($this->table_name, $filter);
+        storeDbMsg($this->db,"You have successfully left the project");
+
+        header("location: projects.php");
+    }
+
+    protected function leaveAsOwner() {
+        // -------- VALIDATION --------
+        $my_access_level = getAccessLevel();
+        // Make sure that only the owner can transfer ownership
+        if ($my_access_level != "owner") {
+            storeErrorMsg("You must be the owner to do that");
+            return;
+        }
+        // Make sure that the new owner exists
+        $filter["email"] = Mysql::sqlValue($_POST["new-owner-email"]);
+        $this->db->selectRows("users", $filter);
+        if ($this->db->rowCount() == 0) {
+            storeErrorMsg("That user does not exist");
+            return;
+        }
+
+        // -------- LEAVE AS OWNER --------
+        $filter["project_id"] = Mysql::sqlValue($_GET["project_id"]);
+        $update = $filter;
+        $update["access_level"] = Mysql::sqlValue("owner");
+        $this->db->autoInsertUpdate($this->table_name, $filter, $update);
+        storeDbMsg($this->db);
+
+        // Delete old owner from access list
+        $filter["email"] = Mysql::sqlValue($_SESSION["email"]);
+        $this->db->deleteRows($this->table_name, $filter);
+        storeDbMsg($this->db,"Successfully transferred ownership!");
+
+        header("location: projects.php");
+    }
 }
 
 /* ==================================================
@@ -130,7 +198,7 @@ $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be prin
 
 $my_access_level = getAccessLevel();
 
-if (in_array($my_access_level, $form->getRequiredAccessLevelsForPost())) {
+if ($my_access_level != "visitor") {
     $form->startFieldset('Add New User to Project');
 
     $form->setCols(0,6);
@@ -220,7 +288,7 @@ foreach ($db->recordsArray() as $user) {
 }
 $form->endFieldset();
 
-if (in_array($my_access_level, $form->getRequiredAccessLevelsForPost())) {
+if ($my_access_level != "visitor") {
     $form->startFieldset('');
     $form->setCols(0,12);
     $form->addHtml("<br>");
@@ -229,6 +297,26 @@ if (in_array($my_access_level, $form->getRequiredAccessLevelsForPost())) {
     $form->printBtnGroup('save-group');
     $form->endFieldset();
 }
+
+$form->setOptions(array('buttonWrapper'=>'')); // So that the leave button can be printed on the same row as the input
+if ($my_access_level == "owner") {
+    $form->startFieldset("Leave project ".$_GET["project_id"]." and transfer ownership");
+    $form->addHtml('<div class="form-group row">');
+    $form->groupInputs("new-owner-email","leave-btn");
+    $form->setCols(0,5);
+    $form->addHelper("New Owner's Email", "new-owner-email");
+    $form->addInput("text","new-owner-email", "", "", "required");
+    $form->setCols(0,7);
+    $form->addBtn('submit', 'leave-owner-btn', true, '<i class="fa fa-sign-out-alt" aria-hidden="true"></i> Leave and Transfer Ownership', "class=btn btn-warning, onclick=return confirm('Are you sure you want to leave this project and transfer ownership?')");
+} else {
+    unset($_SESSION[$form->getFormName()]["required_fields"]);
+    $form->startFieldset("Leave project '".$_GET["project_id"]."'", "style=margin-top:80px;");
+    $form->addHtml('<div class="form-group row">');
+    $form->setCols(0,12);
+    $form->addBtn('submit', 'leave-btn', true, '<i class="fa fa-sign-out-alt" aria-hidden="true"></i> Leave This Project', "class=btn btn-warning, onclick=return confirm('Are you sure you want to leave this project?')");
+}
+$form->addHtml('</div>');
+$form->endFieldset();
 
 
 
