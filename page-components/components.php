@@ -175,7 +175,6 @@ function getSidebar () {
             // If currently on a page that is connected to this project, expand the project dropdown
             // Print the projects
             $output .= "<ul id='".$project_id."' class='list-unstyled'>
-                        <li><a href='leave_project.php?project_id=".$project_id."'><i class='fa fa-sign-out-alt'></i> Leave Project</a></li>
                         <li><a href='project_access.php?project_id=".$project_id."'><i class='fa fa-users'></i> View Project Users</a></li>";
             if ($my_access_level == "visitor") {
                 $output .= "<li><a href='add_new_project.php?edit=true&project_id=".$project_id."'><i class='fa fa-info-circle'></i> View Project Details</a></li>";

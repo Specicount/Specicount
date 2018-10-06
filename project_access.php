@@ -169,7 +169,7 @@ class Access_Form extends Post_Form {
         $filter["email"] = Mysql::sqlValue($_POST["new-owner-email"]);
         $this->db->selectRows("users", $filter);
         if ($this->db->rowCount() == 0) {
-            storeErrorMsg("That user does not exist");
+            storeErrorMsg("User ".$filter["email"]." does not exist");
             return;
         }
 
@@ -300,7 +300,7 @@ if ($my_access_level != "visitor") {
 
 $form->setOptions(array('buttonWrapper'=>'')); // So that the leave button can be printed on the same row as the input
 if ($my_access_level == "owner") {
-    $form->startFieldset("Leave project ".$_GET["project_id"]." and transfer ownership");
+    $form->startFieldset("Leave project ".$_GET["project_id"]." and transfer ownership", "style=margin-top:80px;");
     $form->addHtml('<div class="form-group row">');
     $form->groupInputs("new-owner-email","leave-btn");
     $form->setCols(0,5);
