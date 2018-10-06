@@ -76,20 +76,26 @@ foreach ($names as $column => $value) {
 
 $output .= "</table>";
 
-$dir = new DirectoryIterator($specimen["image_folder"]);
-$output .= "<br /> <p style='font-weight: bold'>Images</p>";
-foreach ($dir as $fileinfo) {
-    if (!$fileinfo->isDot()) {
-        $image = $fileinfo->getFilename();
-        if ($image != "thumbnail") {
-            $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["specimen_id"] . '/' . $image . '"><br />';
+if (isset($specimen["image_folder"])) {
+    $dir = new DirectoryIterator($specimen["image_folder"]);
+    $output .= "<br /> <p style='font-weight: bold'>Images</p>";
+    foreach ($dir as $fileinfo) {
+        if (!$fileinfo->isDot()) {
+            $image = $fileinfo->getFilename();
+            if ($image != "thumbnail") {
+                $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["specimen_id"] . '/' . $image . '"><br />';
+            }
         }
     }
+} else {
+    storeErrorMsg("Could not find specimen image folder");
 }
+
 
 $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Specimen Details");
-$page_render->disableNavbar();
+$page_render->setPageRestrictions(true,true, false, false, true);
+//$page_render->disableNavbar();
 $page_render->disableSidebar();
 $page_render->setInnerHTML($output);
 $page_render->renderPage();

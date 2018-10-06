@@ -89,9 +89,9 @@ $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 
 if (isset($_GET["edit"])) {
-    $page_render->setPageAccess(true, true, false, false);
+    $page_render->setPageRestrictions(true, true, false, false);
 } else {
-    $page_render->setPageAccess(true, false, false, false);
+    $page_render->setPageRestrictions(true, false, false, false);
     $page_render->disableSidebar();
 }
 $page_render->renderPage();

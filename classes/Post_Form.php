@@ -63,14 +63,7 @@ abstract class Post_Form extends Form {
         // If editing a form, then populate the fields with the current database values
         if (isset($_GET["edit"])) {
             $this->db->selectRows($this->table_name, $this->filter);
-            // If could not find the object in the database with which to fill in the form
-            if ($this->db->rowCount() == 0) {
-                // By convention, the most specific identifier is the last GET variable
-                $last_value = end(array_values($_GET));
-                storeErrorMsg("Could not find ".$last_value." in database");
-            } else {
-                $this->fillFormWithDbValues($this->db->recordsArray()[0]);
-            }
+            $this->fillFormWithDbValues($this->db->recordsArray()[0]);
         }
 
         // If the form has been posted (saved, deleted, etc) back to the server

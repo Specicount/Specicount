@@ -116,5 +116,6 @@ $form->endFieldset();
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 $page_render->setPageTitle("Leave Project");
+$page_render->setPageRestrictions(true,true);
 $page_render->renderPage();
 

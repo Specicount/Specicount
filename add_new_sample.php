@@ -28,6 +28,14 @@ if ($_GET["edit"]) {
     $form->addInput('text', 'sample_id', '', 'Sample ID ', 'required');
 }
 
+# Fill in first and last name with logged in user's first and last name
+$db = new Mysql();
+$filter["email"] = Mysql::sqlValue($_SESSION["email"]);
+$db->selectRows("users", $filter);
+$user = $db->recordsArray()[0];
+$_SESSION[$form->getFormName()]['analyst_first_name'] = $user['first_name'];
+$_SESSION[$form->getFormName()]['analyst_last_name'] = $user['last_name'];
+
 # Analyst Name
 $form->setCols(4, 4);
 $form->groupInputs('analyst_first_name', 'analyst_last_name');
@@ -61,8 +69,8 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
 if (isset($_GET["edit"])) {
-    $page_render->setPageAccess(true, true, true, true);
+    $page_render->setPageRestrictions(true, true, true, true);
 } else {
-    $page_render->setPageAccess(true, true, true, false);
+    $page_render->setPageRestrictions(true, true, true, false);
 }
 $page_render->renderPage();

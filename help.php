@@ -4,10 +4,8 @@ require_once 'classes/Page_Renderer.php';
 /*
 Collapsible sections modified from www.w3schools.com
 */
-// Render Page
-$page_render = new \classes\Page_Renderer();
-$page_render->setPageTitle("Help");
-$page_render->setInnerHTML('
+
+$html_string = '
 <style>
 .collapsible {
   background-color: #343a40;
@@ -89,7 +87,11 @@ for (var i = 0; i < coll.length; i++) {
   }
 }
 </script>
-');
-$page_render->setPageAccess(false);
+';
+
+// Render Page
+$page_render = new \classes\Page_Renderer();
+$page_render->setPageTitle("Help");
+$page_render->setInnerHTML($html_string);
 $page_render->disableSidebar();
 $page_render->renderPage();

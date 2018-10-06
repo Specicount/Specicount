@@ -77,6 +77,6 @@ $form->addPlugin("formvalidation","#".$form->getFormName(), "bs4");
 // Render Page
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageAccess(false);
+$page_render->setPageRestrictions(false);
 $page_render->disableSidebar();
 $page_render->renderPage();

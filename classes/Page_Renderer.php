@@ -17,6 +17,12 @@ use classes\Post_Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
+// Uncomment to view all errors
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+
+
 // The base website link (without parameters)
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 
@@ -36,9 +42,6 @@ class Page_Renderer {
 
     private $page_title;
 
-    //Whether the page requires a user to be logged in to view its contents
-    private $require_login;
-
     /*
      * @var Form
      */
@@ -48,20 +51,19 @@ class Page_Renderer {
     //Will only be rendered if not null
     private $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
 
-    // Determines whether the page will be rendered
+    // Variables that determine page restrictions (see function setPageRestrictions)
+    private $require_login, $require_project, $require_core, $require_sample, $require_specimen;
+
+    // Determines whether the page will be rendered (see function setPageAccess)
     private $page_access = true;
-
-
-    private $not_set = false;
-    // Archived: $php_filename
 
     public function __construct() {
         $this->render_header
         = $this->render_navbar
         = $this->render_scripts
-        = $this->require_login
         = $this->render_sidebar
         = true;
+        $this->setPageRestrictions();
     }
 
     /**
@@ -173,56 +175,93 @@ class Page_Renderer {
     }
 
     /**
-     * Set access for page
-     * @param bool $require_login   whether the page requires a valid user login
-     * @param bool $project         whether the page requires a valid project
-     * @param bool $core            whether the page requires a valid core
-     * @param bool $sample          whether the page requires a valid sample
+     * Set restrictions for page
+     * @param bool $require_login       true if the page requires a user to be logged in
+     * @param bool $require_project     true if the page requires a valid project_id GET variable
+     * @param bool $require_core        true if the page requires a valid core_id GET variable
+     * @param bool $require_sample      true if the page requires a valid sample_id GET variable
      */
-    public function setPageAccess($require_login = true, $project = false, $core = false, $sample = false) {
-
+    public function setPageRestrictions($require_login = false, $require_project = false, $require_core = false, $require_sample = false, $require_specimen = false) {
         $this->require_login = $require_login;
+        $this->require_project = $require_project;
+        $this->require_core = $require_core;
+        $this->require_sample = $require_sample;
+        $this->require_specimen = $require_specimen;
+    }
 
-        $project_id = Mysql::SqlValue($_GET["project_id"]);
-        $core_id = Mysql::SqlValue($_GET["core_id"]);
-        $sample_id = Mysql::SqlValue($_GET["sample_id"]);
-
-        $db = new Mysql();
-
-        // If trying to access a sample
-        if ($sample && !$db->querySingleValue("SELECT sample_id FROM samples WHERE project_id=$project_id AND core_id=$core_id AND sample_id=$sample_id")) {
-            storeErrorMsg("Sample not found in database");
-            $this->not_set = true;
-        }
-        // If trying to access a core
-        else if ($core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")){
-            storeErrorMsg("Core not found in database");
-            $this->not_set = true;
-        }
-        // If trying to access a project
-        else if ($project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")){
-            storeErrorMsg("Project not found in database");
-            $this->not_set = true;
+    /**
+     * Determines whether the page will be rendered based on class variables set by setPageRestrictions
+     */
+    private function setPageAccess() {
+        // ------------- user logged in -------------
+        if ($this->require_login && !isset($_SESSION["email"])) {
+            $this->page_access = false;
+            storeErrorMsg("You must be logged in to view this page");
+            return;
         }
 
-        // If trying to access any page connected to a project and the page's database equivalent exists
-        if ($project && $this->page_access) {
-            $my_access_level = getAccessLevel();
-            // If the user does not have access to that project
-            if (!$my_access_level) {
-                $this->page_access = false;
+        // ------------- database object exists -------------
+        $project_id = $core_id = $sample_id = $specimen_id = null;
+        $required_array["project_id"] = $this->require_project;
+        $required_array["core_id"] = $this->require_core;
+        $required_array["sample_id"] = $this->require_sample;
+        $required_array["specimen_id"] = $this->require_specimen;
+        foreach ($required_array as $object_id => $object_is_required) {
+            if ($object_is_required) {
+                if (isset($_GET[$object_id])) {
+                    $$object_id = Mysql::SqlValue($_GET[$object_id]);
+                } else {
+                    $this->page_access = false;
+                    storeErrorMsg("You must specify a $object_id in the URL");
+                    return;
+                }
             }
         }
 
-        $this->page_access = !$this->not_set;
+        $db = new Mysql();
+        // If trying to access a specimen
+        if ($this->require_specimen && !$db->querySingleValue("SELECT specimen_id FROM specimens WHERE project_id=$project_id AND specimen_id=$specimen_id")) {
+            $this->page_access = false;
+            storeErrorMsg("Specimen $specimen_id not found in database");
+            return;
+        }
+        // If trying to access a sample
+        else if ($this->require_sample && !$db->querySingleValue("SELECT sample_id FROM samples WHERE project_id=$project_id AND core_id=$core_id AND sample_id=$sample_id")) {
+            $this->page_access = false;
+            storeErrorMsg("Sample $sample_id not found in database");
+            return;
+        }
+        // If trying to access a core
+        else if ($this->require_core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")){
+            $this->page_access = false;
+            storeErrorMsg("Core $core_id not found in database");
+            return;
+        }
+        // If trying to access a project
+        else if ($this->require_project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")){
+            $this->page_access = false;
+            storeErrorMsg("Project $project_id not found in database");
+            return;
+        }
+
+        // ------------- user has correct access level -------------
+        // If trying to access any page connected to a project (and the database object exists)
+        if ($this->require_project) {
+            $my_access_level = getAccessLevel();
+            // If the user does not have access to that project (since objects are connected to a project)
+            if (!$my_access_level) {
+                $this->page_access = false;
+                storeErrorMsg("You do not have access to project $project_id");
+                return;
+            }
+        }
     }
 
     /**
      * Create the page for displaying
-     * This function also checks login (for pages that require it)
      */
     public function renderPage() {
-        global $actual_link;
+
 
         // Use the form's default page title if a page title hasn't been explicitly set
         if (empty($this->page_title)) {
@@ -233,50 +272,41 @@ class Page_Renderer {
             }
         }
 
-        // The following code can't be in setPageAccess because you can't rely on that function always being called
-        // If user is not logged in
+        // If not logged in
         if (!isset($_SESSION['email'])) {
-
-            $db = new Mysql();
-
-            $this->page_access = false;
-
-            // Set login form for each page
+            // If login button was pressed
             if (isset($_POST['do-login'])) {
                 if (!$_POST['email']) {
-                    storeErrorMsg('Please enter a email address');
-                }
-
-                if (!$_POST['password']) {
+                    storeErrorMsg('Please enter an email address');
+                } else if (!$_POST['password']) {
                     storeErrorMsg('Please enter a password');
-                }
-
-                $db->selectRows('users', array('email' => Mysql::SQLValue($_POST['email'])), null, null, true, 1);
-                $user = $db->recordsArray()[0];
-
-                if (password_verify($_POST['password'], $user["password"])) {
-                    $_SESSION['email'] = $_POST['email'];
-                    $this->page_access = true;
-                    $current_script = basename(getTopMostScript(), ".php");
-                    if ($current_script == "register" || $current_script == "password_reset") {
-                        header("location: index.php");
-                    }
-                    echo '<script>parent.window.location.reload();</script>';
                 } else {
-                    storeErrorMsg('Incorrect username or password');
+                    $db = new Mysql();
+                    $db->selectRows('users', array('email' => Mysql::SQLValue($_POST['email'])));
+                    $user = $db->recordsArray()[0];
+                    if (password_verify($_POST['password'], $user["password"])) {
+                        $_SESSION['email'] = $_POST['email'];
+                        $current_script = basename(getTopMostScript(), ".php");
+                        if ($current_script == "register" || $current_script == "password_reset") {
+                            header("location: index.php");
+                        }
+                        echo '<script>parent.window.location.reload();</script>';
+                    } else {
+                        storeErrorMsg('Incorrect username or password');
+                    }
                 }
-            } else if (isset($_POST['do-forgot-password'])) {
+            }
+
+            // If forgot password button was pressed
+            if (isset($_POST['do-forgot-password'])) {
+                global $actual_link;
                 sendForgotPasswordEmail($actual_link);
             }
 
             $login_form = array(getLoginModal(), getForgotPasswordModal());
-
-            // Set the page accessible if it does not require login or we have verified the page access
-            $this->page_access = !$this->require_login || $this->page_access;
         }
 
-        // Page access should not be changed from here
-        if (!$this->page_access && !$this->not_set) storeErrorMsg("You do not have access to this page");
+        $this->setPageAccess();
 
         ?>
         <!DOCTYPE html>
@@ -307,7 +337,7 @@ class Page_Renderer {
         <div class="d-flex">
             <?php
             // Render the sidebar
-            if ($this->render_sidebar) {
+            if ($this->render_sidebar && $this->page_access) {
                 echo getSidebar();
             } else {
                 echo "<style>.container-fluid {padding:0 10vw;}</style>";
