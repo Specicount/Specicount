@@ -17,6 +17,8 @@ use classes\Post_Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 
+// The base website link (without parameters)
+$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 
 // Add required files
 $current_dir = __DIR__;
@@ -37,9 +39,14 @@ class Page_Renderer {
     //Whether the page requires a user to be logged in to view its contents
     private $require_login;
 
+    /*
+     * @var Form
+     */
+    private $form;
+
     //Variables that will store content to render on the page
     //Will only be rendered if not null
-    private $form, $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
+    private $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
 
     // Determines whether the page will be rendered
     private $page_access = true;
@@ -57,36 +64,62 @@ class Page_Renderer {
         = true;
     }
 
+    /**
+     * Set the title of the page
+     * @param $title string title of page
+     */
     public function setPageTitle($title) {
         $this->page_title = $title;
     }
 
+    /**
+     * Disable the stylesheets and other header information
+     */
     public function disableHeader() {
         $this->render_header = false;
     }
 
+    /**
+     * Disable the navbar
+     */
     public function disableNavbar() {
         $this->render_navbar = false;
     }
 
+    /**
+     * Disable the sidebar
+     */
     public function disableSidebar() {
         $this->render_sidebar = false;
     }
 
+    /**
+     * Disable the JS scripts to be placed on the page
+     */
     public function disableScripts() {
         $this->render_scripts = false;
     }
 
+    /**
+     * Set the form(s) to render
+     * @param $form Form|array
+     */
     public function setForm($form) {
         $this->form = $form;
     }
 
-    // Set the inner html of the page
+    /**
+     * Set the inner html of the page
+     * @param $html_string string the HTML to render on the page
+     */
     public function setInnerHTML($html_string) {
         $this->html_string = $html_string;
     }
 
-    // Print CSS files of form
+    /**
+     * Print CSS files of form(s)
+     * @param $form Form|array
+     */
     protected function printCSS($form) {
         if ($form) {
             //Since form could be an array that holds multiple form objects
@@ -101,7 +134,10 @@ class Page_Renderer {
         }
     }
 
-    // Print script files of form
+    /**
+     * Print script files of form(s)
+     * @param $form Form|array
+     */
     protected function printScripts($form){
         if ($form) {
             //Since form could be an array that holds multiple form objects
@@ -118,7 +154,10 @@ class Page_Renderer {
         }
     }
 
-    // Render form
+    /**
+     * Render form(s)
+     * @param $form Form|array
+     */
     protected function renderForm($form) {
         if ($form) {
             //Since form could be an array that holds multiple form objects
@@ -178,12 +217,16 @@ class Page_Renderer {
         $this->page_access = !$this->not_set;
     }
 
-    // Create the page
+    /**
+     * Create the page for displaying
+     * This function also checks login (for pages that require it)
+     */
     public function renderPage() {
+        global $actual_link;
 
         // Use the form's default page title if a page title hasn't been explicitly set
         if (empty($this->page_title)) {
-            if (isset($this->form)) {
+            if (isset($this->form) && !is_array($this->form)) {
                 $this->page_title = $this->form->getPageTitle();
             } else {
                 $this->page_title = "UNTITLED";
@@ -201,12 +244,10 @@ class Page_Renderer {
             // Set login form for each page
             if (isset($_POST['do-login'])) {
                 if (!$_POST['email']) {
-                    $errors['email'] = "Please enter a email address";
                     storeErrorMsg('Please enter a email address');
                 }
 
                 if (!$_POST['password']) {
-                    $errors['password'] = "Please enter a password";
                     storeErrorMsg('Please enter a password');
                 }
 
@@ -216,34 +257,20 @@ class Page_Renderer {
                 if (password_verify($_POST['password'], $user["password"])) {
                     $_SESSION['email'] = $_POST['email'];
                     $this->page_access = true;
-                    if (basename(getTopMostScript(), ".php") == "register") {
+                    $current_script = basename(getTopMostScript(), ".php");
+                    if ($current_script == "register" || $current_script == "password_reset") {
                         header("location: index.php");
                     }
                     echo '<script>parent.window.location.reload();</script>';
                 } else {
-                    $errors['email'] = "Incorrect username or password";
                     storeErrorMsg('Incorrect username or password');
                 }
+            } else if (isset($_POST['do-forgot-password'])) {
+                sendForgotPasswordEmail($actual_link);
             }
 
-            // Login form
-            $login_form = new Form("login", 'horizontal', 'novalidate', 'bs4');
-            $login_form->startFieldset("Login");
-            $login_form->setCols(0, 12);
-            $login_form->addInput("hidden", "do-login", 1);
-            $login_form->addHelper("Email", "email");
-            $login_form->addInput('text', 'email', '', '', 'required');
-            $login_form->addHelper("Password", "password");
-            $login_form->addInput('password', 'password', '', '', 'required');
-            $login_form->addHtml("<div class=\"btn-group\">");
-            $login_form->addBtn('submit', 'submit-btn', "login", '<i class="fa fa-sign-in-alt"></i> Log In', 'class=btn btn-success ladda-button, data-style=zoom-in', 'lor-group');
-            $login_form->addBtn('button', 'register-btn', "register", '<i class="fa fa-user-plus"></i> Register', 'class=btn btn-primary, data-style=zoom-in, onclick=navigate(\'register.php\')', 'lor-group');
-            //$login_form->addHtml('<a class="btn btn-primary" href="register.php"><i class="fa fa-user-plus"></i> Register Account</a>');
-            $login_form->printBtnGroup('lor-group');
-            $login_form->modal('#modal-login-target');
-            $login_form->addPlugin('formvalidation', '#login', 'bs4');
-            $login_form->endFieldset();
-            
+            $login_form = array(getLoginModal(), getForgotPasswordModal());
+
             // Set the page accessible if it does not require login or we have verified the page access
             $this->page_access = !$this->require_login || $this->page_access;
         }
