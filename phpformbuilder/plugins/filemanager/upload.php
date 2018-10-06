@@ -60,7 +60,13 @@ while ($cycle && $i < $max_cycles)
 }
 
 require('UploadHandler.php');
+
+/**
+ * @var array messages formatted at either ['error'] or ['success']
+ */
 $messages = null;
+
+
 if(trans("Upload_error_messages")!=="Upload_error_messages"){
 	$messages = trans("Upload_error_messages");
 }
