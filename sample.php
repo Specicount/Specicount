@@ -134,6 +134,12 @@ class Sample_Count_Form extends Post_Form {
 ================================================== */
 
 $form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5, novalidate', 'bs4');
+$my_access_level = getAccessLevel();
+$readonly_attr = "";
+if ($my_access_level == "visitor") {
+    $readonly_attr = "readonly=readonly, ";
+}
+
 
 #######################
 # Sample grid
@@ -146,11 +152,17 @@ $form->addHtml("<div class='col-lg'>");
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'save-btn', 1, '<i class="fa fa-save" aria-hidden="true"></i> Save', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('button', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
-$form->addBtn('submit', 'export-btn', "export", '<i class="fa fa-download append" aria-hidden="true"></i> Export', 'class=btn btn-info', 'my-btn-group');
-$form->addBtn('submit', 'save-reorder-btn', 1, '<i class="fa fa-sync append" aria-hidden="true"></i> Reorder and Save', 'class=btn btn-success', 'my-btn-group');
-$form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;', 'my-btn-group');
+if ($my_access_level != "visitor") {
+    $form->addBtn('submit', 'save-btn', 1, '<i class="fa fa-save" aria-hidden="true"></i> Save', 'class=btn btn-success, data-style=zoom-in', 'my-btn-group');
+    $form->addBtn('button', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
+    $form->addBtn('submit', 'export-btn', "export", '<i class="fa fa-download append" aria-hidden="true"></i> Export', 'class=btn btn-info', 'my-btn-group');
+    $form->addBtn('submit', 'save-reorder-btn', 1, '<i class="fa fa-sync append" aria-hidden="true"></i> Reorder and Save', 'class=btn btn-success', 'my-btn-group');
+    $form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;', 'my-btn-group');
+} else {
+    $form->addBtn('submit', 'export-btn', "export", '<i class="fa fa-download append" aria-hidden="true"></i> Export', 'class=btn btn-info', 'my-btn-group');
+    $form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;', 'my-btn-group');
+}
+
 $form->printBtnGroup('my-btn-group');
 $form->addHtml('<div style="height:350px; z-index:10;display:none;" id="chart_div"></div>');
 $form->addHtml('</div>'); // End column
@@ -172,10 +184,12 @@ $form->addHtml("<div class='row'>");
 
 $form->addHtml('<div class="col-sm-3">');
 $form->addHtml('<text style="font-weight: bold;padding: 5px">Lycopodium</text>');
-$form->addIcon("lycopodium",'<button type="button" class="btn btn-success" onclick="subtract(\'lycopodium\')"><i class="fa fa-minus"></i></button>',"before");
-$form->addIcon("lycopodium",'<button type="button" class="btn btn-success" onclick="add(\'lycopodium\')"><i class="fa fa-plus"></i></button>',"after");
+if ($my_access_level != "visitor") {
+    $form->addIcon("lycopodium",'<button type="button" class="btn btn-success" onclick="subtract(\'lycopodium\')"><i class="fa fa-minus"></i></button>',"before");
+    $form->addIcon("lycopodium",'<button type="button" class="btn btn-success" onclick="add(\'lycopodium\')"><i class="fa fa-plus"></i></button>',"after");
+}
 $_SESSION[$form->getFormName()]["lycopodium"] = $lycopodium_count; //Fill in the lycopodium input with database count
-$form->addInput('number', 'lycopodium', '', '', 'required');
+$form->addInput('number', 'lycopodium', '', '', $readonly_attr.'required');
 $form->addHtml('</div>');
 
 #######################
@@ -184,10 +198,12 @@ $form->addHtml('</div>');
 
 $form->addHtml('<div class="col-sm-3">');
 $form->addHtml('<text style="font-weight: bold;padding: 5px">Charcoal</text>');
-$form->addIcon("charcoal",'<button type="button" class="btn btn-success" onclick="subtract(\'charcoal\')"><i class="fa fa-minus"></i></button>',"before");
-$form->addIcon("charcoal",'<button type="button" class="btn btn-success" onclick="add(\'charcoal\')"><i class="fa fa-plus"></i></button>',"after");
+if ($my_access_level != "visitor") {
+    $form->addIcon("charcoal", '<button type="button" class="btn btn-success" onclick="subtract(\'charcoal\')"><i class="fa fa-minus"></i></button>', "before");
+    $form->addIcon("charcoal", '<button type="button" class="btn btn-success" onclick="add(\'charcoal\')"><i class="fa fa-plus"></i></button>', "after");
+}
 $_SESSION[$form->getFormName()]["charcoal"] = $charcoal_count; //Fill in the charcoal input with database count
-$form->addInput('number', 'charcoal', '', '', 'required');
+$form->addInput('number', 'charcoal', '', '', $readonly_attr.'required');
 $form->addHtml('</div>');
 
 
@@ -229,12 +245,15 @@ if($db->rowCount() > 0) {
         $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_counter" class="counter"><p id="'.$specimen_pkeys_encoded.'_counter_text">' . $specimen["count"] . '</p></div>');
         $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_overlay" class="overlay">');
         $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
-        $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
-        $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle del-btn"></i></a>');
         $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys_encoded.'_close" class="fas fa-window-close close-btn"></i></span></a>');
-        $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success add-btn, data-style=zoom-in, onclick=add(\''.$specimen_pkeys_encoded.'\');updateCounter(\''.$specimen_pkeys_encoded.'\')');
-        $form->addBtn('submit', 'delete-btn', $specimen_pkeys_encoded, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger del-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
-        $form->addInput('number', $specimen_pkeys_encoded, $specimen["count"], '', 'required onchange=updateCounter(\''.$specimen_pkeys_encoded.'\')');
+        if ($my_access_level != "visitor") {
+            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
+            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success add-btn, data-style=zoom-in, onclick=add(\''.$specimen_pkeys_encoded.'\');updateCounter(\''.$specimen_pkeys_encoded.'\')');
+            $form->addBtn('submit', 'delete-btn', $specimen_pkeys_encoded, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger del-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
+        } else {
+            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle edit-btn"></i></a>');
+        }
+        $form->addInput('number', $specimen_pkeys_encoded, $specimen["count"], '', $readonly_attr.'required onchange=updateCounter(\''.$specimen_pkeys_encoded.'\')');
         $form->addHtml('</div>');
         $form->addHtml('</div>');
     }

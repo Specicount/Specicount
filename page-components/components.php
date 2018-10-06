@@ -141,19 +141,25 @@ function getSidebar () {
     if(!isset($_SESSION["email"])) return "";
 
     $output = '';
-    
     if (!empty($_GET["sample_id"])) {
         $sample_id = $_GET["sample_id"];
         $core_id = $_GET["core_id"];
         $project_id = $_GET["project_id"];
+        $my_access_level = getAccessLevel();
 
         $output .= '<nav class="sidebar bg-dark">
             <ul class="list-unstyled">';
         if (basename($_SERVER['PHP_SELF']) == "sample.php") {
-            $output .=  '<li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>
-                        <li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-edit"></i> Edit Sample</a></li>
-                        <li><a href="search_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>
-                        <li><a href="add_new_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-plus"></i> Add New Specimen</a></li>';
+            $output .= '<li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>';
+            if ($my_access_level == "visitor") {
+                $output .= '<li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-info-circle"></i> View Sample Details</a></li>';
+            } else {
+                $output .= '<li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-edit"></i> Edit Sample</a></li>';
+            }
+            $output .= '<li><a href="search_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>';
+            if ($my_access_level != "visitor") {
+                $output .= '<li><a href="add_new_specimen.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-plus"></i> Add New Specimen</a></li>';
+            }
         } else {
             $output .= '<li><a href="sample.php?project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fas fa-reply"></i> Return to Sample</a></li>';
         }
@@ -162,27 +168,24 @@ function getSidebar () {
 
     // Project Side Bar (shown if not in sample - has drop downs of project, core and samples extracted from database)
     } else {
-        $output .= '<nav class="sidebar bg-dark">
-            <!--<li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>-->';
-
+        $output .= '<nav class="sidebar bg-dark">';
             $db = new Mysql();
-            $email = Mysql::SQLValue($_SESSION['email']);
             $project_id = $_GET['project_id'];
-            $my_access_level = getAccessLevel($email, $project_id);
+            $my_access_level = getAccessLevel();
             // If currently on a page that is connected to this project, expand the project dropdown
-            $toggle_expand_parent = $toggle_expand_child = "";
-            if ($_GET["project_id"] == $project_id) {
-                $toggle_expand_parent = 'aria-expanded="true"';
-                $toggle_expand_child = 'show';
-            }
             // Print the projects
-            $output .= "<ul id='".$project_id."' class='list-unstyled collapse ".$toggle_expand_child."'>
-                    <li><a href='leave_project.php?project_id=".$project_id."'><i class='fa fa-sign-out-alt'></i> Leave Project</a></li>
-                    <li><a href='project_access.php?project_id=".$project_id."'><i class='fa fa-users'></i> View Project Users</a></li>
-                    <li><a href='add_new_project.php?edit=true&project_id=".$project_id."'><i class='fa fa-edit'></i> Edit Project</a></li>";
+            $output .= "<ul id='".$project_id."' class='list-unstyled'>
+                        <li><a href='leave_project.php?project_id=".$project_id."'><i class='fa fa-sign-out-alt'></i> Leave Project</a></li>
+                        <li><a href='project_access.php?project_id=".$project_id."'><i class='fa fa-users'></i> View Project Users</a></li>";
+            if ($my_access_level == "visitor") {
+                $output .= "<li><a href='add_new_project.php?edit=true&project_id=".$project_id."'><i class='fa fa-info-circle'></i> View Project Details</a></li>";
+            } else {
+                $output .= "<li><a href='add_new_project.php?edit=true&project_id=".$project_id."'><i class='fa fa-edit'></i> Edit Project</a></li>";
+            }
+
             if ($my_access_level != "visitor") {
                 $output .= "<li><a href='add_new_specimen.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
-                        <li><a href='add_new_core.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Core</a></li>";
+                            <li><a href='add_new_core.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Core</a></li>";
             }
             $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project_id)), "core_id", "core_id", true);
             foreach ($db->recordsArray() as $core_array) {
@@ -195,8 +198,13 @@ function getSidebar () {
                 }
                 // Print the cores
                 $output .= "<a href='#".$core_id."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fa fa-database'></i> ".$core_id."</a>
-                        <ul id='".$core_id."' class='list-unstyled collapse ".$toggle_expand_child."'>
-                        <li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-edit'></i> Edit Core</a></li>";
+                        <ul id='".$core_id."' class='list-unstyled collapse ".$toggle_expand_child."'>";
+                if ($my_access_level == "visitor") {
+                    $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-info-circle'></i> View Core Details</a></li>";
+                } else {
+                    $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-edit'></i> Edit Core</a></li>";
+                }
+
                 if ($my_access_level != "visitor") {
                     $output .= "<li><a href='add_new_sample.php?project_id=".$project_id."&core_id=".$core_id."' data-parent='#".$core_id."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
                 }

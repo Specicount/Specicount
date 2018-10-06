@@ -24,6 +24,11 @@ class Project_Form extends Add_New_Post_Form {
 
 $form = new Project_Form("project","projects", 'horizontal', 'novalidate', 'bs4');
 $my_access_level = getAccessLevel();
+$readonly_attr = $disabled_attr = "";
+if ($my_access_level == "visitor") {
+    $readonly_attr = "readonly=readonly, ";
+    $disabled_attr = "disabled, ";
+}
 
 $form->startFieldset('Project Data');
 $form->setCols(6, 6);
@@ -31,7 +36,7 @@ $form->groupInputs('project_id', 'biorealm');
 
 $form->addHelper('Project Name', 'project_id');
 if ($_GET["edit"]) {
-    $form->addInput('text', 'project_id', '', '', 'required, readonly="readonly"');
+    $form->addInput('text', 'project_id', '', '', 'required, readonly=readonly');
 } else {
     $form->addInput('text', 'project_id', '', '', 'required'); // Need to have warning for code
 }
@@ -47,17 +52,17 @@ $form->addOption('biorealm', 'Australasia',  'Australasia', '', '');
 $form->addOption('biorealm', 'Neotropic',  'Neotropic', '', '');
 $form->addOption('biorealm', 'Oceania',  'Oceania', '', '');
 $form->addOption('biorealm', 'Antarctic',  'Antarctic', '', '');
-$form->addSelect('biorealm', '', 'class=select2, data-width=100%');
+$form->addSelect('biorealm', '', $disabled_attr.'class=select2, data-width=100%');
 
 $form->setCols(6, 6);
 
 $form->setCols(6, 6);
 $form->groupInputs('country', 'region');
 $form->addHelper('Country', 'country');
-$form->addCountrySelect('country', '', '', array('flag_size' => 16, 'return_value' => 'code', 'placeholder' => 'Select your country'));
+$form->addCountrySelect('country', '', $disabled_attr, array('flag_size' => 16, 'return_value' => 'code', 'placeholder' => 'Select your country'));
 $form->setCols(0, 6);
 $form->addHelper('Region', 'region');
-$form->addInput('text', 'region', '', '', '');
+$form->addInput('text', 'region', '', '', $readonly_attr);
 $options = array(
     'elementsWrapper' => '<div class="form-group row"></div>',
     'buttonWrapper' => '<div class="form-group row"></div>'
@@ -74,12 +79,15 @@ $form->endFieldset();
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
-if ($_GET["edit"] && $my_access_level == "owner") {
-    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
+if ($my_access_level != "visitor") {
+    $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+    $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+    if ($_GET["edit"] && $my_access_level == "owner") {
+        $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this project?\')', 'my-btn-group');
+    }
+    $form->printBtnGroup('my-btn-group');
 }
-$form->printBtnGroup('my-btn-group');
+
 
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-project', 'bs4');

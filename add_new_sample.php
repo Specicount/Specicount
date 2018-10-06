@@ -19,11 +19,17 @@ class Sample_Form extends Add_New_Post_Form {
 ================================================== */
 
 $form = new Sample_Form("sample", "samples",'horizontal', 'novalidate', 'bs4');
+$my_access_level = getAccessLevel();
+$readonly_attr = "";
+if ($my_access_level == "visitor") {
+    $readonly_attr = "readonly=readonly, ";
+}
+
 
 $form->addHelper('Sample ID', 'sample_id');
 
 if ($_GET["edit"]) {
-    $form->addInput('text', 'sample_id', '', 'Sample ID ', 'required, readonly="readonly"');
+    $form->addInput('text', 'sample_id', '', 'Sample ID ', 'required, readonly=readonly');
 } else {
     $form->addInput('text', 'sample_id', '', 'Sample ID ', 'required');
 }
@@ -40,27 +46,31 @@ $_SESSION[$form->getFormName()]['analyst_last_name'] = $user['last_name'];
 $form->setCols(4, 4);
 $form->groupInputs('analyst_first_name', 'analyst_last_name');
 $form->addHelper('First Name', 'analyst_first_name');
-$form->addInput('text', 'analyst_first_name', '', 'Analyst ', 'required');
+$form->addInput('text', 'analyst_first_name', '', 'Analyst ', $readonly_attr.'required');
 $form->setCols(0, 4);
 $form->addHelper('Last Name', 'analyst_last_name');
-$form->addInput('text', 'analyst_last_name', '', '', '');
+$form->addInput('text', 'analyst_last_name', '', '', $readonly_attr.'required');
 $form->setCols(4, 8);
 
-$form->addPlugin('pickadate', '#start_date');
-$form->addInput('text', 'start_date', '', 'Start Date ', 'required');
+if ($my_access_level != "visitor") {
+    $form->addPlugin('pickadate', '#start_date');
+}
+$form->addInput('text', 'start_date', '', 'Start Date ', $readonly_attr.'required');
 
 $form->addHelper('Years Old', 'modelled_age');
-$form->addInput('number', 'modelled_age', '', 'Modelled Age');
+$form->addInput('number', 'modelled_age', '', 'Modelled Age', $readonly_attr);
 
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
-if ($_GET["edit"]) {
-    $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this sample?\')', 'my-btn-group');
+if ($my_access_level != "visitor") {
+    $form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+    $form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+    if ($_GET["edit"]) {
+        $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this sample?\')', 'my-btn-group');
+    }
+    $form->printBtnGroup('my-btn-group');
 }
-$form->printBtnGroup('my-btn-group');
 
 // jQuery validation
 $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
