@@ -59,10 +59,10 @@ class Page_Renderer {
 
     public function __construct() {
         $this->render_header
-        = $this->render_navbar
-        = $this->render_scripts
-        = $this->render_sidebar
-        = true;
+            = $this->render_navbar
+            = $this->render_scripts
+            = $this->render_sidebar
+            = true;
         $this->setPageRestrictions();
     }
 
@@ -271,35 +271,36 @@ class Page_Renderer {
         }
 
         // If login button was pressed on login modal
-        if (isset($_POST['do-login'])) {
-            if (!$_POST['email']) {
-                storeErrorMsg('Please enter an email address');
-            } else if (!$_POST['password']) {
-                storeErrorMsg('Please enter a password');
-            } else {
-                $db = new Mysql();
-                $db->selectRows('users', array('email' => Mysql::SQLValue($_POST['email'])));
-                $user = $db->recordsArray()[0];
-                if (password_verify($_POST['password'], $user["password"])) {
-                    $_SESSION['email'] = $_POST['email'];
-                    $current_script = basename(getTopMostScript(), ".php");
-                    if ($current_script == "register" || $current_script == "password_reset") {
-                        header("location: index.php");
-                    }
-                    echo '<script>parent.window.location.reload();</script>';
+
+        if (!isset($_SESSION['email'])) {
+            if (isset($_POST['do-login'])) {
+                if (!$_POST['email']) {
+                    storeErrorMsg('Please enter an email address');
+                } else if (!$_POST['password']) {
+                    storeErrorMsg('Please enter a password');
                 } else {
-                    storeErrorMsg('Incorrect username or password');
+                    $db = new Mysql();
+                    $db->selectRows('users', array('email' => Mysql::SQLValue($_POST['email'])));
+                    $user = $db->recordsArray()[0];
+                    if (password_verify($_POST['password'], $user["password"])) {
+                        $_SESSION['email'] = $_POST['email'];
+                        $current_script = basename(getTopMostScript(), ".php");
+                        if ($current_script == "register" || $current_script == "password_reset") {
+                            header("location: index.php");
+                        }
+                        echo '<script>window.location = window.location.href;</script>';
+                    } else {
+                        storeErrorMsg('Incorrect username or password');
+                    }
                 }
             }
-        }
 
-        // If forgot password button was pressed on password reset modal
-        if (isset($_POST['do-forgot-password'])) {
-            global $actual_link;
-            sendForgotPasswordEmail($actual_link);
-        }
-        // If not logged in
-        if (!isset($_SESSION['email'])) {
+            // If forgot password button was pressed on password reset modal
+            if (isset($_POST['do-forgot-password'])) {
+                global $actual_link;
+                sendForgotPasswordEmail($actual_link);
+            }
+            // If not logged in
             $login_form = array(getLoginModal(), getForgotPasswordModal());
         }
 
@@ -367,7 +368,7 @@ class Page_Renderer {
 
                         // Don't render the page if the user is not allowed access
                         if ($this->page_access) {
-                             if (isset($this->form)) {
+                            if (isset($this->form)) {
                                 $this->renderForm($this->form);
                             }
 
@@ -392,7 +393,7 @@ class Page_Renderer {
 
         ?>
         </html>
-    <?php
+        <?php
     }
 }
 ?>
