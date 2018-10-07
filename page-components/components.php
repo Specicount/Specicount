@@ -97,18 +97,18 @@ function getScripts () {
         $(document).ready(function() {
             // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
             // If mouse intends to hover over specimen
-            $(".specimen-container").hoverIntent(
-                function() {
-                    var specimen_id = $(this).attr(\'id\').split("_")[0];
-                    fadeInOverlay(specimen_id);
-                },
-                function() {
-                    var specimen_id = $(this).attr(\'id\').split("_")[0];
-                    fadeOutOverlay(specimen_id);
-                });
+            function enter() {
+                var specimen_id = $(this).attr(\'id\').split("_")[0];
+                fadeInOverlay(specimen_id);
+            }
+            function leave() {
+                var specimen_id = $(this).attr(\'id\').split("_")[0];
+                fadeOutOverlay(specimen_id);
+            }
+            $(".specimen-container").hoverIntent(enter, leave);
         
             //If close button on overlay clicked
-            $(".overlay .close-btn").click(function() {
+            $(".overlay .top-right-btn").click(function() {
                 var specimen_id = $(this).attr(\'id\').split("_")[0];
                 fadeOutOverlay(specimen_id);
             });

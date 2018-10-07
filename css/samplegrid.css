@@ -51,24 +51,16 @@ html {
     height: 100%;
     background-color: rgba(255,255,255,0.8);
     display:none;
-    /*
-    -webkit-transition: all 0.2s ease-in-out 0s;
-    -moz-transition: all 0.2s ease-in-out 0s;
-    -ms-transition: all 0.2s ease-in-out 0s;
-    transition: all 0.2s ease-in-out 0s;
-
-    opacity: 0;
-    visibility: hidden;
-    */
+    transition: box-shadow 500ms;
 }
 
-/*
-.specimen-container:hover .overlay, .specimen-container:active .overlay {
-    opacity: 1;
-    visibility: visible;
-
+/* This class is added to overlay when add-to-count button pressed */
+.interaction-highlight {
+    -webkit-box-shadow: inset 0px 0px 10px 4px rgba(0,168,28,1);
+    -moz-box-shadow: inset 0px 0px 10px 4px rgba(0,168,28,1);
+    box-shadow: inset 0px 0px 10px 4px rgba(0,168,28,1);
+    z-index: 30;
 }
-*/
 
 /* ID: specimen text */
 .overlay text {
@@ -82,19 +74,6 @@ html {
     max-width: 80%;
 }
 
-/* Button size */
-.overlay *[class*="-btn"] {
-    width: calc(40px + 0.25vw);
-    height: calc(40px + 0.25vw);
-}
-
-/* Close button top right */
-.overlay .close-btn {
-    position: absolute;
-    top: 0;
-    right: 3px;
-}
-
 /* All buttons are contained in an anchor element.
    This needed to be set so that the ID text didn't
    stop you from pressing the close button */
@@ -102,22 +81,35 @@ html {
     display: inline-block;
 }
 
-/* Edit button bottom left */
-.overlay .edit-btn {
+/* Button size */
+.overlay *[class*="-btn"] {
+    width: calc(40px + 0.25vw);
+    height: calc(40px + 0.25vw);
+}
+
+/* Close button */
+.overlay .top-right-btn {
+    position: absolute;
+    top: 0;
+    right: 3px;
+}
+
+/* Edit button */
+.overlay .bot-left-btn {
     position: absolute;
     bottom: 0;
     left: 2px;
 }
 
-/* Info button bottom right */
-.overlay .del-btn {
+/* Delete button */
+.overlay .bot-right-btn {
     position: absolute;
     bottom: 1px;
     right: 2px;
 }
 
-/* Delete button */
-.overlay .info-btn {
+/* Info button */
+.overlay .mid-right-btn {
     position: absolute;
     top: 50%;
     right: 3px;
@@ -125,7 +117,7 @@ html {
 }
 
 /* Add to sample or add to count button */
-.overlay .add-btn {
+.overlay .mid-btn {
     position: absolute;
     top: 50%;
     left: 50%;

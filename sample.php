@@ -157,10 +157,10 @@ if ($my_access_level != "visitor") {
     $form->addBtn('button', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onClick=reload()', 'my-btn-group');
     $form->addBtn('submit', 'export-btn', "export", '<i class="fa fa-download append" aria-hidden="true"></i> Export', 'class=btn btn-info', 'my-btn-group');
     $form->addBtn('submit', 'save-reorder-btn', 1, '<i class="fa fa-sync append" aria-hidden="true"></i> Reorder and Save', 'class=btn btn-success', 'my-btn-group');
-    $form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;', 'my-btn-group');
+    $form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;z-index:0;', 'my-btn-group');
 } else {
     $form->addBtn('submit', 'export-btn', "export", '<i class="fa fa-download append" aria-hidden="true"></i> Export', 'class=btn btn-info', 'my-btn-group');
-    $form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;', 'my-btn-group');
+    $form->addBtn('button', 'stats-btn', 1, '<i style="font-size:30px;" class="fas fa-chart-bar"></i>', 'class=btn, style=box-shadow:none;z-index:0;', 'my-btn-group');
 }
 
 $form->printBtnGroup('my-btn-group');
@@ -245,13 +245,13 @@ if($db->rowCount() > 0) {
         $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_counter" class="counter"><p id="'.$specimen_pkeys_encoded.'_counter_text">' . $specimen["count"] . '</p></div>');
         $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_overlay" class="overlay">');
         $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
-        $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys_encoded.'_close" class="fas fa-window-close close-btn"></i></span></a>');
+        $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys_encoded.'_close" class="fas fa-window-close top-right-btn"></i></span></a>');
         if ($my_access_level != "visitor") {
-            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit edit-btn"></i></a>');
-            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success add-btn, data-style=zoom-in, onclick=add(\''.$specimen_pkeys_encoded.'\');updateCounter(\''.$specimen_pkeys_encoded.'\')');
-            $form->addBtn('submit', 'delete-btn', $specimen_pkeys_encoded, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger del-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
+            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
+            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success mid-btn, data-style=zoom-in, onclick=add(\''.$specimen_pkeys_encoded.'\');updateCounter(\''.$specimen_pkeys_encoded.'\')');
+            $form->addBtn('submit', 'delete-btn', $specimen_pkeys_encoded, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger bot-right-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
         } else {
-            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle edit-btn"></i></a>');
+            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-left-btn"></i></a>');
         }
         $form->addInput('number', $specimen_pkeys_encoded, $specimen["count"], '', $readonly_attr.'required onchange=updateCounter(\''.$specimen_pkeys_encoded.'\')');
         $form->addHtml('</div>');
@@ -294,6 +294,10 @@ require_once "concentration.php";
     function add(specimen_id) {
         //console.log("value of "+specimen_id+" input is "+document.getElementById(specimen_id).value);
         document.getElementById(specimen_id).value = parseInt(document.getElementById(specimen_id).value) + 1;
+        $("#"+specimen_id+"_overlay").addClass('interaction-highlight');
+        setTimeout(function () {
+            $("#"+specimen_id+"_overlay").removeClass('interaction-highlight');
+        }, 1000);
     }
 
     // Subtract from counter
