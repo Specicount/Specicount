@@ -49,7 +49,7 @@ class Page_Renderer {
 
     //Variables that will store content to render on the page
     //Will only be rendered if not null
-    private $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts;
+    private $html_string, $render_header, $render_navbar, $render_sidebar, $render_scripts, $render_div_container;
 
     // Variables that determine page restrictions (see function setPageRestrictions)
     private $require_login, $require_project, $require_core, $require_sample, $require_specimen;
@@ -62,6 +62,7 @@ class Page_Renderer {
             = $this->render_navbar
             = $this->render_scripts
             = $this->render_sidebar
+            = $this->render_div_container
             = true;
         $this->setPageRestrictions();
     }
@@ -86,6 +87,10 @@ class Page_Renderer {
      */
     public function disableNavbar() {
         $this->render_navbar = false;
+    }
+
+    public function disableDivContainer() {
+        $this->render_div_container = false;
     }
 
     /**
@@ -330,61 +335,60 @@ class Page_Renderer {
             echo getNavbar($this->render_sidebar, $this->page_title);
         }
 
-        ?>
-
-        <div class="d-flex">
-            <?php
-            // Render the sidebar
-            if ($this->render_sidebar && $this->page_access) {
-                echo getSidebar();
-            } else {
-                echo "<style>.container-fluid {padding:0 10vw;}</style>";
-            }
-
+        if ($this->render_div_container) {
             ?>
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
-                        <?php
-                        // $messages refers to our own message passing system that is mostly utilised by our own custom forms
-                        global $messages;
-                        if (isset($messages["error"])) {
-                            $messages["error"] = array_unique($messages["error"]);
-                            foreach ($messages["error"] as $error_msg) {
-                                echo $error_msg;
-                            }
-                        } else if (isset($messages["success"])) {
-                            $messages["success"] = array_unique($messages["success"]);
-                            echo end($messages["success"]);
+            <div class="d-flex">
+                <?php
+                // Render the sidebar
+                if ($this->render_sidebar && $this->page_access) {
+                    echo getSidebar();
+                } else {
+                    echo "<style>.container-fluid {padding:0 10vw;}</style>";
+                }
+
+                ?>
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div style="padding-top: 30px" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
+                            <?php
+                            // $messages refers to our own message passing system that is mostly utilised by our own custom forms
+                            global $messages;
+                            if (isset($messages["error"])) {
+                                $messages["error"] = array_unique($messages["error"]);
+                                foreach ($messages["error"] as $error_msg) {
+                                    echo $error_msg;
+                                }
+                            } else if (isset($messages["success"])) {
+                                $messages["success"] = array_unique($messages["success"]);
+                                echo end($messages["success"]);
 //                            foreach ($messages["success"] as $success_msg) {
 //                                echo $success_msg;
 //                            }
-                        }
-
-                        // Render login form
-                        if (isset($login_form)) {
-                            $this->renderForm($login_form);
-                        }
-
-                        // Don't render the page if the user is not allowed access
-                        if ($this->page_access) {
-                            if (isset($this->form)) {
-                                $this->renderForm($this->form);
                             }
 
-                            //Check whether $html_string has been initialised so we can render
-                            if ($this->html_string) {
-                                echo $this->html_string;
+                            // Render login form
+                            if (isset($login_form)) {
+                                $this->renderForm($login_form);
                             }
-                        }
-                        ?>
+
+                            // Don't render the page if the user is not allowed access
+                            if ($this->page_access) {
+                                if (isset($this->form)) {
+                                    $this->renderForm($this->form);
+                                }
+
+                                //Check whether $html_string has been initialised so we can render
+                                if ($this->html_string) {
+                                    echo $this->html_string;
+                                }
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-
-        <?php
+            <?php
+        }
 
         // Get default scripts and form scripts
         if ($this->render_scripts) echo getScripts();

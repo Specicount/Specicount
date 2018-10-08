@@ -10,6 +10,7 @@ require_once "classes/Page_Renderer.php";
 $page_render = new \classes\Page_Renderer();
 $page_render->setPageTitle("Analysis");
 $page_render->disableSidebar();
+$page_render->disableDivContainer();
 $page_render->renderPage();
 
 echo "
