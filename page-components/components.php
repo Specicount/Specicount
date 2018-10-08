@@ -42,7 +42,7 @@ function getNavbar ($render_side, $navbar_text) {
     if ($render_side) {
         $output .= "<a class=\"sidebar-toggle text-light mr-3\"><i class=\"fa fa-bars\"></i></a>";
     }
-    $output .= "<text class=\"text-center\">BioData - $navbar_text</text>
+    $output .= "<text class=\"text-center\">Specicount - $navbar_text</text>
     </div>
     ";
     // If a user is logged in
