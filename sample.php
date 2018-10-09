@@ -3,13 +3,18 @@ use phpformbuilder\Form;
 use phpformbuilder\Validator\Validator;
 use phpformbuilder\database\Mysql;
 use classes\Post_Form;
+use ChartJs\ChartJS;
 
 /* =============================================
     start session and include form class
 ============================================= */
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
+require_once 'Chart.js-PHP-master/src/ChartJS.php';
 
 class Sample_Count_Form extends Post_Form {
     protected function setRequiredAccessLevelsForPost() {
@@ -133,6 +138,8 @@ class Sample_Count_Form extends Post_Form {
     The Form
 ================================================== */
 
+$db = new Mysql();
+
 $form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5, novalidate', 'bs4');
 $my_access_level = getAccessLevel();
 $readonly_attr = "";
@@ -146,6 +153,7 @@ if ($my_access_level == "visitor") {
 #######################
 $form->addHtml('<style>.input-group-text {padding:0; background-color:transparent; border:none;}</style>');
 $form->addInput('hidden','last_edit');
+
 $form->addHtml("<div class='row'>");
 $form->addHtml("<div class='col-lg'>");
 
@@ -164,13 +172,58 @@ if ($my_access_level != "visitor") {
 }
 
 $form->printBtnGroup('my-btn-group');
-$form->addHtml('<div style="height:350px; z-index:10;display:none;" id="chart_div"></div>');
+
+// Concentration curve data
+$form->addHtml('<div style="height:350px; z-index:10;display:none;" id="chart_div">');
+$db->selectRows('concentration_curve', $form->getFilterArray());
+$curve_data = array();
+if (!$db->error()) {
+    $table_data = $db->recordsArray();
+    foreach ($table_data as $point) {
+        $curve_data[] = ['x' => $point["tally_count"], 'y' => $point["unique_spec"]];
+    }
+} else {
+    $curve_data = array();
+}
+
+if ($curve_data) {
+    $data = [
+        'labels' => ['X', 'Y'],
+        'datasets' => [[
+            'label' => 'Concentration Curve',
+            'data' => $curve_data,
+            'backgroundColor' => '#f2b21a',
+            'borderColor' => '#e5801d',
+            'fill' => false
+        ]]
+    ];
+
+    $options = [
+        'scales' => [
+            'xAxes' => [[
+                'type' => 'logarithmic',
+                'position' => 'bottom'
+            ]]
+        ]
+    ];
+
+    $attributes = ['id' => 'example', 'width' => 500, 'height' => 500];
+    $Line = new ChartJS('line', $data, $options, $attributes);
+
+    $Line->renderCanvas();
+
+    $form->addHtml($Line);
+} else {
+    $form->addHtml('No data');
+}
+
+$form->addHtml('</div>'); // End chart_div
 $form->addHtml('</div>'); // End column
 $form->addHtml('</div>'); // End row
+
 #############################
 # Lycopodium/Charcoal Counts
 #############################
-$db = new Mysql();
 $db->selectRows($form->getTableName(), $form->getFilterArray());
 $sample = $db->recordsArray()[0];
 $lycopodium_count = $sample["lycopodium"];
@@ -208,9 +261,6 @@ $form->addHtml('</div>');
 
 
 $form->addHtml('</div>'); // End row
-
-// Concentration curve div
-
 
 
 $db = new Mysql();
@@ -274,9 +324,14 @@ $page_render->setPageRestrictions(true, true, true, true);
 $page_render->setPageTitle($_GET['project_id']." > ". $_GET['core_id']. " > ".$_GET['sample_id']." > Sample Count");
 $page_render->renderPage();
 
-// Add concentration curve scripts
-require_once "concentration.php";
 ?>
+<script src="js/Chart.min.js"></script>
+<script src="js/driver.js"></script>
+<script>
+    (function() {
+        loadChartJsPhp();
+    })();
+</script>
 <script>
     // Undo changes for the sample (only if not previously saved)
     function reload(){
@@ -323,4 +378,16 @@ require_once "concentration.php";
         }
         ?>
     };
+
+    // The popover for the graph
+    let ref = $("button[name='stats-btn']");
+    let popup = $("#chart_div");
+    let popper = new Popper(ref, popup, {
+        placement: 'bottom'
+    });
+    ref.click(function() {
+        popup.toggle();
+        popper.scheduleUpdate();
+    });
+
 </script>

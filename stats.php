@@ -17,10 +17,12 @@ echo "
 <script type=\"text/javascript\" src=\"js/iframeResizer.min.js\"></script>
 <style>
   iframe {
-    min-width: 100%;
+    height:1000px;
+    overflow-x: scroll;
+    overflow-y: scroll
   }
 </style>
-<iframe id=\"myIframe\" src=\"http://seprojgrp2b.anu.edu.au:3838/StatApp/\" scrolling=\"no\" frameborder=\"no\"></iframe>
+<iframe id=\"myIframe\" src=\"http://seprojgrp2b.anu.edu.au:3838/StatApp/\" scrolling=\"yes\" frameborder=\"no\"></iframe>
 <script>
   iFrameResize({
     heightCalculationMethod: 'taggedElement'

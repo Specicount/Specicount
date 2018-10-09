@@ -70,7 +70,7 @@ if ($db->rowCount() > 0) {
                     }
                 },
                 colors: ['#4286f4','#9bc1ff'],
-                chartArea: {width:300},
+                chartArea: {wight:350},
                 hAxis: {
                   title: 'Tally Count'
                 },
