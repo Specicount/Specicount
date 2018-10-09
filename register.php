@@ -38,8 +38,6 @@ class Register_Form extends Post_Form {
 
     protected function fillFormWithDbValues($record_array) {
         parent::fillFormWithDbValues($record_array);
-        unset($_SESSION[$this->form_ID]["password"]);
-        unset($_SESSION[$this->form_ID]["password_conf"]);
     }
 }
 
@@ -57,6 +55,8 @@ $form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-5')
 $form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-5');
 $form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-5");
 
+unset($_SESSION[$form->getFormName()]["password"]);
+unset($_SESSION[$form->getFormName()]["password_conf"]);
 $form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter", "password");
 $form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');

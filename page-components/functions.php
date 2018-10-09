@@ -260,6 +260,7 @@ function getLoginModal () {
     $login_form->addHelper("Email", "email");
     $login_form->addInput('email', 'email', '', '', 'required');
     $login_form->addHelper("Password", "password");
+    unset($_SESSION["login"]["password"]);
     $login_form->addInput('password', 'password', '', '', 'required');
     $login_form->addHtml('<div style="margin-bottom: 10px"><a href=\'#\' data-remodal-target="modal-forgot-password-target"><i class="fa fa-key"></i> Forgot Password</a></div>');
     $login_form->addBtn('submit', 'submit-btn', "login", '<i class="fa fa-sign-in-alt"></i> Log In', 'class=btn btn-success ladda-button, data-style=zoom-in', 'lor-group');
