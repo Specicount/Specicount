@@ -123,10 +123,10 @@ function getScripts () {
                 $("#"+specimen_id+"_overlay").fadeOut(200);
                 $("#"+specimen_id+"_counter").fadeIn(200);
             }
-        
-            $("p.alert").click(function() {
-                $(this).fadeOut(200);
-            });
+            
+            setTimeout(function () {
+                $("p.alert.alert-success").fadeOut();
+            }, 3000);
             
             $(".rowlink").click(function() {
                 window.location = $(this).data("link");
