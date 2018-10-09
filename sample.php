@@ -173,8 +173,10 @@ if ($my_access_level != "visitor") {
 
 $form->printBtnGroup('my-btn-group');
 
-// Concentration curve data
-$form->addHtml('<div style="height:350px; z-index:10;display:none;" id="chart_div">');
+#######################
+# Concentration curve
+#######################
+$form->addHtml('<div id="chart_div" style="z-index:10;display:none;">');
 $db->selectRows('concentration_curve', $form->getFilterArray());
 $curve_data = array();
 if (!$db->error()) {
@@ -199,6 +201,8 @@ if ($curve_data) {
     ];
 
     $options = [
+        'responsive' => true,
+        'maintainAspectRatio' => false,
         'scales' => [
             'xAxes' => [[
                 'type' => 'logarithmic',
@@ -207,10 +211,8 @@ if ($curve_data) {
         ]
     ];
 
-    $attributes = ['id' => 'example', 'width' => 500, 'height' => 500];
+    $attributes = ['id' => 'concentration_curve'];
     $Line = new ChartJS('line', $data, $options, $attributes);
-
-    $Line->renderCanvas();
 
     $form->addHtml($Line);
 } else {
@@ -325,14 +327,21 @@ $page_render->setPageTitle($_GET['project_id']." > ". $_GET['core_id']. " > ".$_
 $page_render->renderPage();
 
 ?>
+<style>
+    #concentration_curve {
+        width:350px !important;
+        height:350px !important;
+        background-color: white !important;
+    }
+</style>
 <script src="js/Chart.min.js"></script>
 <script src="js/driver.js"></script>
 <script>
+    // Chart.js load
     (function() {
         loadChartJsPhp();
     })();
-</script>
-<script>
+
     // Undo changes for the sample (only if not previously saved)
     function reload(){
         if (confirm('Are you sure you want to reset the sample?')) {

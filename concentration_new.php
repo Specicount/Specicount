@@ -47,6 +47,7 @@ if ($db->rowCount() > 0) {
     ];
 
     $options = [
+        'responsive' => true,
         'scales' => [
             'xAxes' => [[
                 'type' => 'logarithmic',
@@ -55,7 +56,7 @@ if ($db->rowCount() > 0) {
         ]
     ];
 
-    $attributes = ['id' => 'example', 'width' => 500, 'height' => 500];
+    $attributes = ['id' => 'example'];
     $Line = new ChartJS('line', $data, $options, $attributes);
 
     $Line->renderCanvas();
@@ -64,10 +65,20 @@ if ($db->rowCount() > 0) {
 }
 ?>
 <html>
+<head>
+    <style>
+        /*canvas {
+            width:500px !important;
+            height:500px !important;
+        }*/
+    </style>
+</head>
 <body>
+<div style="width: 600px;height:300px">
 <?php
 echo $Line;
 ?>
+</div>
 <script src="js/Chart.min.js"></script>
 <script src="js/driver.js"></script>
 <script>
