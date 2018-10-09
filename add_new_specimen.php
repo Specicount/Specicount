@@ -232,15 +232,9 @@ $form->addInput('text', 'genus', '', '', '');
 $form->setCols(0, 4);
 $form->addHelper('Species', 'species');
 $form->addInput('text', 'species', '', '', '');
-$form->setCols(4, 4);
-$form->groupInputs("age","depth");
-$form->addHelper('Age (years)', 'age');
-$form->addInput('number','age','','Age & Depth (at least one)<sup class="text-danger">*</sup>', 'class=age-depth-group');
-$form->addHelper('Depth (cm)', 'depth');
-$form->addInput('number','depth','','','class=age-depth-group');
-$form->setCols(4, 8);
 
 # Type
+$form->setCols(4, 8);
 $form->addHelper('Pollen/Spore', 'poll_spore');
 $form->addOption('poll_spore', '', 'Choose one ...', '', 'disabled, selected');
 $form->addOption('poll_spore', 'pollen', 'Pollen', '', '');
@@ -736,23 +730,7 @@ if (isset($_GET["edit"])) {
 }
 $page_render->renderPage();
 ?>
-<style>label.is-invalid{color:#dc3545;}</style>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script>
-    $("#<?=$form->getFormName()?>").validate({
-        errorClass: "is-invalid",
-        ignore: ":not(.age-depth-group)",
-        rules: {
-            age: {
-                require_from_group: [1, ".age-depth-group"]
-            },
-            depth: {
-                require_from_group: [1, ".age-depth-group"]
-            }
-        }
-    });
-
     function merge_polar(){
         if (!document.getElementById("polar_axis_n").value || !document.getElementById("polar_axis_length").value) {
             n_value = 0;
