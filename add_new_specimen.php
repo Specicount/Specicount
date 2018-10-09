@@ -39,6 +39,7 @@ if (!file_exists($image_folder)) {
 
 
 class Specimen_Form extends Add_New_Post_Form {
+
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
         if ($this->db->error()) {
@@ -93,6 +94,8 @@ class Specimen_Form extends Add_New_Post_Form {
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
         $update["species"] = Mysql::SQLValue($_POST["species"], "text");
+        $update["age"] = Mysql::SQLValue($_POST["age"], "int");
+        $update["depth"] = Mysql::SQLValue($_POST["depth"], "float");
         $update["poll_spore"] = Mysql::SQLValue($type, "text");
         $update["grain_arrangement"] = Mysql::SQLValue($_POST["grain_arrangement"], "text");
         $update["grain_morphology"] = Mysql::SQLValue(implode(",", $_POST["grain_morphology_$type"]), "text"); // poll / spore
@@ -150,6 +153,8 @@ class Specimen_Form extends Add_New_Post_Form {
         $_SESSION[$this->form_ID]["family"] = $specimen["family"];
         $_SESSION[$this->form_ID]["genus"] = $specimen["genus"];
         $_SESSION[$this->form_ID]["species"] = $specimen["species"];
+        $_SESSION[$this->form_ID]["age"] = $specimen["age"];
+        $_SESSION[$this->form_ID]["depth"] = $specimen["depth"];
         $_SESSION[$this->form_ID]["poll_spore"] = $specimen["poll_spore"];
         $_SESSION[$this->form_ID]["grain_arrangement"] = $specimen["grain_arrangement"];
         $_SESSION[$this->form_ID]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
@@ -206,12 +211,14 @@ if ($_GET['sample_id']) {
 $form->startFieldset('General');
 $form->setCols(4, 4);
 $form->groupInputs('specimen_id', 'family');
-$form->addHelper('Specimen ID', 'specimen_id');
+$form->addHelper('Specimen ID<sup class="text-danger">* </sup>', 'specimen_id');
+$form->setOptions(array('requiredMark'=>''));
 if ($_GET["edit"]) {
-    $form->addInput('text', 'specimen_id', '', 'Descriptors ', 'required, readonly="readonly"');
+    $form->addInput('text', 'specimen_id', '', 'Descriptors', 'required, readonly=readonly');
 } else {
-    $form->addInput('text', 'specimen_id', '', 'Descriptors ', 'required'); // Need to have warning for code !!!!!!!!!
+    $form->addInput('text', 'specimen_id', '', 'Descriptors', 'required'); // Need to have warning for code !!!!!!!!!
 }
+$form->setOptions(array('requiredMark'=>'<sup class="text-danger">* </sup>'));
 $form->setCols(0, 4);
 $form->addHelper('Family', 'family');
 $form->addInput('text', 'family', '', '', '');
@@ -225,6 +232,12 @@ $form->addInput('text', 'genus', '', '', '');
 $form->setCols(0, 4);
 $form->addHelper('Species', 'species');
 $form->addInput('text', 'species', '', '', '');
+$form->setCols(4, 4);
+$form->groupInputs("age","depth");
+$form->addHelper('Age (years)', 'age');
+$form->addInput('number','age','','Age & Depth (at least one)<sup class="text-danger">*</sup>', 'class=age-depth-group');
+$form->addHelper('Depth (cm)', 'depth');
+$form->addInput('number','depth','','','class=age-depth-group');
 $form->setCols(4, 8);
 
 # Type
@@ -238,6 +251,7 @@ $form->endFieldset();
 $form->startFieldset('Morphology');
 
 # 2. Grain Arrangement
+$form->setCols(4, 8);
 $form->addOption('grain_arrangement', '', 'Choose one ...', '', 'disabled, selected');
 $form->addOption('grain_arrangement', 'monad', 'Monad', '', '');
 $form->addOption('grain_arrangement', 'dyad', 'Dyad', '', '');
@@ -307,48 +321,6 @@ $form->endFieldset();
 #######################
 $form->startFieldset('Shape & Size');
 
-# 4. & 5. Lengths
-# Polar
-$form->setCols(4, 4);
-$form->groupInputs('polar_axis_length', 'polar_axis_n');
-$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'polar_axis_length');
-$form->addInput('number', 'polar_axis_length', '', 'Polar axis length ', 'readonly="readonly"');
-$form->addHelper('Number of measurements', 'polar_axis_length');
-$form->addHelper('Number of measurements', 'polar_axis_n');
-$form->addInput('number', 'polar_axis_n', '', '', 'readonly="readonly"');
-
-$form->groupInputs('polar_axis_input', 'polar_axis_button');
-$form->addHelper('Input in (µm)', 'polar_axis_input');
-$form->addInput('number', 'polar_axis_input', '', '', '');
-$form->addBtn('button', 'polar_axis_button', "merge", 'Merge with average <i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=merge_polar()', '');
-$form->setCols(4, 8);
-
-# Equatorial
-$form->setCols(4, 4);
-$form->groupInputs('equatorial_axis_length', 'equatorial_axis_n');
-$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'equatorial_axis_length');
-$form->addInput('number', 'equatorial_axis_length', '', 'Equatorial axis length ', 'readonly="readonly"');
-$form->addHelper('Number of measurements', 'equatorial_axis_length');
-$form->addHelper('Number of measurements', 'equatorial_axis_n');
-$form->addInput('number', 'equatorial_axis_n', '', '', 'readonly="readonly"');
-
-$form->groupInputs('equatorial_axis_input', 'equatorial_axis_button');
-$form->addHelper('Input in (µm)', 'equatorial_axis_input');
-$form->addInput('number', 'equatorial_axis_input', '', '', '');
-$form->addBtn('button', 'equatorial_axis_button', "merge", 'Merge with average <i class="fa fa-plus" aria-hidden="true"></i>', 'class=btn btn-success, data-style=zoom-in, onclick=merge_equatorial()', '');
-$form->setCols(4, 8);
-
-# 6 & 7 can be determined
-
-# 8. Equatorial shape (minor)
-$form->addOption('equatorial_shape', '', 'Choose one ...', '', 'disabled, selected');
-$form->addOption('equatorial_shape', 'rounded ', 'rounded ', '', '');
-$form->addOption('equatorial_shape', 'rectangular', 'rectangular', '', '');
-$form->addOption('equatorial_shape', 'rhombic', 'rhombic', '', '');
-$form->addOption('equatorial_shape', 'triangular', 'triangular', '', '');
-$form->addOption('equatorial_shape', 'bilateral', 'bilateral', '', '');
-$form->addSelect('equatorial_shape', 'Equatorial shape ', 'class=select2, data-width=100%');
-
 # 9. *Polar shape (following Huang 1972)
 $form->addOption('polar_shape[]', 'circular',  'circular', '', '');
 $form->addOption('polar_shape[]', 'circular-lobate',  'circular-lobate', '', '');
@@ -368,6 +340,58 @@ $form->addOption('polar_shape[]', 'tubular',  'tubular', '', '');
 $form->addHelper('Multiple Choice', 'polar_shape[]');
 $form->addSelect('polar_shape[]', 'Polar shape ', 'class=select2, data-width=100%, multiple=multiple');
 
+# Polar axis length
+$form->setCols(4, 4);
+$form->groupInputs('polar_axis_length', 'polar_axis_n');
+$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'polar_axis_length');
+$form->addInput('number', 'polar_axis_length', '', 'Polar axis length ', 'readonly="readonly"');
+$form->addHelper('Number of measurements', 'polar_axis_length');
+$form->addHelper('Number of measurements', 'polar_axis_n');
+$form->addInput('number', 'polar_axis_n', '', '', 'readonly="readonly"');
+
+$form->setCols(4, 2);
+$form->groupInputs('polar_axis_input', 'polar_average');
+$form->addHelper('Input in (µm)', 'polar_axis_input');
+$form->addInput('number', 'polar_axis_input', '', '', '');
+$form->setCols(4, 6);
+$form->setOptions(array('buttonWrapper'=>''));
+$form->addBtn('button', 'polar_axis_merge_button', "merge", '<i class="fa fa-plus" aria-hidden="true"></i> Merge with average ', 'class=btn btn-success, data-style=zoom-in, onclick=merge_polar()', 'polar_average');
+$form->addBtn('button', 'polar_axis_reset_button', "reset", '<i class="fa fa-ban" aria-hidden="true"></i> Reset average ', 'class=btn btn-warning, data-style=zoom-in, onclick=if(confirm(\'Are you sure you want to reset the polar average?\')) reset_polar()', 'polar_average');
+$form->printBtnGroup('polar_average');
+$form->addHtml('</div>');
+
+# 8. Equatorial shape (minor)
+$form->setCols(4, 8);
+$form->addOption('equatorial_shape', '', 'Choose one ...', '', 'disabled, selected');
+$form->addOption('equatorial_shape', 'rounded ', 'rounded ', '', '');
+$form->addOption('equatorial_shape', 'rectangular', 'rectangular', '', '');
+$form->addOption('equatorial_shape', 'rhombic', 'rhombic', '', '');
+$form->addOption('equatorial_shape', 'triangular', 'triangular', '', '');
+$form->addOption('equatorial_shape', 'bilateral', 'bilateral', '', '');
+$form->addSelect('equatorial_shape', 'Equatorial shape ', 'class=select2, data-width=100%');
+
+# Equatorial axis length
+$form->setCols(4, 4);
+$form->groupInputs('equatorial_axis_length', 'equatorial_axis_n');
+$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'equatorial_axis_length');
+$form->addInput('number', 'equatorial_axis_length', '', 'Equatorial axis length ', 'readonly="readonly"');
+$form->addHelper('Number of measurements', 'equatorial_axis_length');
+$form->addHelper('Number of measurements', 'equatorial_axis_n');
+$form->addInput('number', 'equatorial_axis_n', '', '', 'readonly="readonly"');
+
+$form->setCols(4, 2);
+$form->groupInputs('equatorial_axis_input', 'equatorial_average');
+$form->addHelper('Input in (µm)', 'equatorial_axis_input');
+$form->addInput('number', 'equatorial_axis_input', '', '', '');
+$form->setCols(4, 6);
+$form->addBtn('button', 'equatorial_axis_merge_button', "merge", '<i class="fa fa-plus" aria-hidden="true"></i> Merge with average ', 'class=btn btn-success, data-style=zoom-in, onclick=merge_equatorial()', 'equatorial_average');
+$form->addBtn('button', 'equatorial_axis_reset_button', "reset", '<i class="fa fa-ban" aria-hidden="true"></i> Reset average ', 'class=btn btn-warning, data-style=zoom-in, onclick=if(confirm(\'Are you sure you want to reset the equatorial average?\')) reset_equatorial()', 'equatorial_average');
+$form->printBtnGroup('equatorial_average');
+$form->addHtml('</div>');
+$form->setOptions(array('buttonWrapper'=>'<div class="form-group row justify-content-end"></div>'));
+
+
+
 /*$form->startFieldset('Single image with labels');
 for ($i=0; $i < 10; $i++) {
     $form->addOption('polar_shape[]', 'https://www.phpformbuilder.pro/templates/assets/img/random-images/sports/sport-' . $i . '.jpg', '', '', 'data-img-src=https://www.phpformbuilder.pro/templates/assets/img/random-images/sports/sport-' . $i . '.jpg, data-img-label=Sport ' . $i . ', data-img-alt=Sport' . $i);
@@ -376,6 +400,7 @@ $form->addSelect('polar_shape[]', 'Choose your favourite sport', 'multiple, clas
 $form->endFieldset();*/
 
 # 10. *Surface pattern
+$form->setCols(4, 8);
 $form->addOption('surface_pattern', '', 'Choose one ...', '', 'disabled, selected');
 $form->addOption('surface_pattern', 'psilate',  'psilate', '', '');
 $form->addOption('surface_pattern', 'granulate',  'granulate', '', '');
@@ -687,8 +712,8 @@ $form->endFieldset();
 #######################
 # Clear/Save
 #######################
-$form->addBtn('submit', 'submit-btn', "save", 'Save <i class="fa fa-save" aria-hidden="true"></i>', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-$form->addBtn('reset', 'reset-btn', 1, 'Reset <i class="fa fa-ban" aria-hidden="true"></i>', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
+$form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-save" aria-hidden="true"></i> Save', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
+$form->addBtn('reset', 'reset-btn', 1, '<i class="fa fa-ban" aria-hidden="true"></i> Reset', 'class=btn btn-warning, onclick=confirm(\'Are you sure you want to reset all fields?\')', 'my-btn-group');
 if ($_GET["edit"]) {
     $form->addBtn('submit', 'delete-btn', "delete", 'Delete <i class="fa fa-trash" aria-hidden="true"></i>', 'class=btn btn-danger, onclick=return confirm(\'Are you sure you want to delete this specimen? Note: it will also be deleted from any samples it is connected to.\')', 'my-btn-group');
 }
@@ -711,8 +736,24 @@ if (isset($_GET["edit"])) {
 }
 $page_render->renderPage();
 ?>
+<style>label.is-invalid{color:#dc3545;}</style>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script>
-    function merge_polar (){
+    $("#<?=$form->getFormName()?>").validate({
+        errorClass: "is-invalid",
+        ignore: ":not(.age-depth-group)",
+        rules: {
+            age: {
+                require_from_group: [1, ".age-depth-group"]
+            },
+            depth: {
+                require_from_group: [1, ".age-depth-group"]
+            }
+        }
+    });
+
+    function merge_polar(){
         if (!document.getElementById("polar_axis_n").value || !document.getElementById("polar_axis_length").value) {
             n_value = 0;
             current_total = 0;
@@ -724,7 +765,12 @@ $page_render->renderPage();
         document.getElementById("polar_axis_n").value = n_value + 1;
     }
 
-    function merge_equatorial (){
+    function reset_polar(){
+        document.getElementById("polar_axis_length").value = null;
+        document.getElementById("polar_axis_n").value = null;
+    }
+
+    function merge_equatorial(){
         if (!document.getElementById("equatorial_axis_n").value || !document.getElementById("polar_axis_length").value) {
             n_value = 0;
             current_total = 0;
@@ -734,5 +780,10 @@ $page_render->renderPage();
         }
         document.getElementById("equatorial_axis_length").value = (current_total + parseFloat(document.getElementById("equatorial_axis_input").value)) / (n_value + 1);
         document.getElementById("equatorial_axis_n").value = n_value + 1;
+    }
+
+    function reset_equatorial(){
+        document.getElementById("equatorial_axis_length").value = null;
+        document.getElementById("equatorial_axis_n").value = null;
     }
 </script>
