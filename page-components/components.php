@@ -65,6 +65,7 @@ function getNavbar ($render_side, $navbar_text) {
         <div class=\"dropdown\" style=\"width:33.334%\">
             <a href=\"help.php\"  class=\"ribbon-button\"><i class=\"fa fa-question-circle\"></i> Help</a>
             <div class=\"dropdown-content\">
+                <a href=\"stats.php\">Stats</a>
                 <a href=\"help.php?tab=FAQ\">Frequently Asked Questions</a>
                 <a href=\"help.php?tab=Documentation\">Documentation</a>
                 <a href=\"help.php?tab=User_Guide\">How To Use</a>
