@@ -84,8 +84,6 @@ CREATE TABLE IF NOT EXISTS specimens (
   family VARCHAR (45) DEFAULT NULL,
   genus VARCHAR (45) DEFAULT NULL,
   species VARCHAR (45) DEFAULT NULL,
-  age INT (11),
-  depth DECIMAL(11,2),
   poll_spore VARCHAR (10),
   grain_arrangement VARCHAR (45),
   grain_morphology VARCHAR (200),
