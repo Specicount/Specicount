@@ -31,7 +31,37 @@ if (!$db->error()) {
 <body>
 <?php
 
+if ($db->rowCount() > 0) {
 
+    print_r($curve_data);
+
+    $data = [
+        'labels' => ['X', 'Y'],
+        'datasets' => [[
+            'label' => 'Concentration Curve',
+            'data' => $curve_data,
+            'backgroundColor' => '#f2b21a',
+            'borderColor' => '#e5801d',
+            'fill' => false
+        ]]
+    ];
+
+    $options = [
+        'scales' => [
+            'xAxes' => [[
+                'type' => 'logarithmic',
+                'position' => 'bottom'
+            ]]
+        ]
+    ];
+
+    $attributes = ['id' => 'example', 'width' => 500, 'height' => 500];
+    $Line = new ChartJS('line', $data, $options, $attributes);
+
+    $Line->renderCanvas();
+} else {
+    echo 'No data';
+}
 ?>
 <html>
 <body>
