@@ -892,38 +892,4 @@ $page_render->renderPage();
         }
 
     }
-
-    function merge_polar(){
-        if (!document.getElementById("polar_axis_n").value || !document.getElementById("polar_axis_length_avg").value) {
-            n_value = 0;
-            current_total = 0;
-        } else {
-            n_value = parseFloat(document.getElementById("polar_axis_n").value);
-            current_total = parseFloat(document.getElementById("polar_axis_length_avg").value) * n_value;
-        }
-        document.getElementById("polar_axis_length_avg").value = (current_total + parseFloat(document.getElementById("polar_axis_input").value)) / (n_value + 1);
-        document.getElementById("polar_axis_n").value = n_value + 1;
-    }
-
-    function reset_polar(){
-        document.getElementById("polar_axis_length_avg").value = null;
-        document.getElementById("polar_axis_n").value = null;
-    }
-
-    function merge_equatorial(){
-        if (!document.getElementById("equatorial_axis_n").value || !document.getElementById("polar_axis_length").value) {
-            n_value = 0;
-            current_total = 0;
-        } else {
-            n_value = parseFloat(document.getElementById("equatorial_axis_n").value);
-            current_total = parseFloat(document.getElementById("equatorial_axis_length_avg").value) * n_value;
-        }
-        document.getElementById("equatorial_axis_length_avg").value = (current_total + parseFloat(document.getElementById("equatorial_axis_input").value)) / (n_value + 1);
-        document.getElementById("equatorial_axis_n").value = n_value + 1;
-    }
-
-    function reset_equatorial(){
-        document.getElementById("equatorial_axis_length_avg").value = null;
-        document.getElementById("equatorial_axis_n").value = null;
-    }
 </script>
