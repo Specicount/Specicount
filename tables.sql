@@ -87,10 +87,14 @@ CREATE TABLE IF NOT EXISTS specimens (
   poll_spore VARCHAR (10),
   grain_arrangement VARCHAR (45),
   grain_morphology VARCHAR (200),
-  polar_axis_length DECIMAL(19,1),
-  polar_axis_n INT (11),
-  equatorial_axis_length DECIMAL(19,1),
-  equatorial_axis_n INT (11),
+  polar_axis_length_min DECIMAL(6,1),
+  polar_axis_length_avg DECIMAL(6,1),
+  polar_axis_length_max DECIMAL(6,1),
+  polar_axis_n INT (3),
+  equatorial_axis_length_min DECIMAL(6,1),
+  equatorial_axis_length_avg DECIMAL(6,1),
+  equatorial_axis_length_max DECIMAL(6,1),
+  equatorial_axis_n INT (3),
   size VARCHAR (45),-- ***determined*** 6 (integer)
   equatorial_shape_major VARCHAR (45),-- ***determined*** 7 character
   equatorial_shape_minor VARCHAR (45) DEFAULT 'rounded',

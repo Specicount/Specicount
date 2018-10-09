@@ -99,13 +99,17 @@ class Specimen_Form extends Add_New_Post_Form {
         $update["poll_spore"] = Mysql::SQLValue($type, "text");
         $update["grain_arrangement"] = Mysql::SQLValue($_POST["grain_arrangement"], "text");
         $update["grain_morphology"] = Mysql::SQLValue(implode(",", $_POST["grain_morphology_$type"]), "text"); // poll / spore
-        $update["polar_axis_length"] = Mysql::SQLValue($_POST["polar_axis_length"], "float");
+        $update["polar_axis_length_min"] = Mysql::SQLValue($_POST["polar_axis_length_min"], "float");
+        $update["polar_axis_length_avg"] = Mysql::SQLValue($_POST["polar_axis_length_avg"], "float");
+        $update["polar_axis_length_max"] = Mysql::SQLValue($_POST["polar_axis_length_max"], "float");
         $update["polar_axis_n"] = Mysql::SQLValue($_POST["polar_axis_n"], "float");
-        $update["equatorial_axis_length"] = Mysql::SQLValue($_POST["equatorial_axis_length"], "float");
+        $update["equatorial_axis_length_avg"] = Mysql::SQLValue($_POST["equatorial_axis_length_avg"], "float");
         $update["equatorial_axis_n"] = Mysql::SQLValue($_POST["equatorial_axis_n"], "float");
+        $update["size"] = Mysql::SQLValue($_POST["size"], "text");
         //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
         //$update["***determined***"] = Mysql::SQLValue($_POST["***determined***"], "text");
-        $update["equatorial_shape_minor"] = Mysql::SQLValue($_POST["equatorial_shape"], "text");
+        $update["equatorial_shape_minor"] = Mysql::SQLValue($_POST["equatorial_shape_minor"], "text");
+        $update["equatorial_shape_major"] = Mysql::SQLValue($_POST["equatorial_shape_major"], "text");
         $update["polar_shape"] = Mysql::SQLValue(implode(",", $_POST["polar_shape"]), "text");
         $update["surface_pattern"] = Mysql::SQLValue($_POST["surface_pattern"], "text");
         $update["wall_thickness"] = Mysql::SQLValue($_POST["wall_thickness"], "float");
@@ -158,13 +162,19 @@ class Specimen_Form extends Add_New_Post_Form {
         $_SESSION[$this->form_ID]["poll_spore"] = $specimen["poll_spore"];
         $_SESSION[$this->form_ID]["grain_arrangement"] = $specimen["grain_arrangement"];
         $_SESSION[$this->form_ID]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
-        $_SESSION[$this->form_ID]["polar_axis_length"] = $specimen["polar_axis_length"];
+        $_SESSION[$this->form_ID]["polar_axis_length_min"] = $specimen["polar_axis_length_min"];
+        $_SESSION[$this->form_ID]["polar_axis_length_avg"] = $specimen["polar_axis_length_avg"];
+        $_SESSION[$this->form_ID]["polar_axis_length_max"] = $specimen["polar_axis_length_max"];
         $_SESSION[$this->form_ID]["polar_axis_n"] = $specimen["polar_axis_n"];
-        $_SESSION[$this->form_ID]["equatorial_axis_length"] = $specimen["equatorial_axis_length"];
+        $_SESSION[$this->form_ID]["equatorial_axis_length_min"] = $specimen["equatorial_axis_length_min"];
+        $_SESSION[$this->form_ID]["equatorial_axis_length_avg"] = $specimen["equatorial_axis_length_avg"];
+        $_SESSION[$this->form_ID]["equatorial_axis_length_max"] = $specimen["equatorial_axis_length_max"];
         $_SESSION[$this->form_ID]["equatorial_axis_n"] = $specimen["equatorial_axis_n"];
+        $_SESSION[$this->form_ID]["size"] = $specimen["size"];
         //$_SESSION[$this->form_ID]["***determined***"] = $specimen["***determined***"];
         //$_SESSION[$this->form_ID]["***determined***"] = $specimen["***determined***"];
-        $_SESSION[$this->form_ID]["equatorial_shape_minor"] = $specimen["equatorial_shape"];
+        $_SESSION[$this->form_ID]["equatorial_shape_minor"] = $specimen["equatorial_shape_minor"];
+        $_SESSION[$this->form_ID]["equatorial_shape_major"] = $specimen["equatorial_shape_major"];
         $_SESSION[$this->form_ID]["polar_shape"] = explode(",", $specimen["polar_shape"]);
         $_SESSION[$this->form_ID]["surface_pattern"] = $specimen["surface_pattern"];
         $_SESSION[$this->form_ID]["wall_thickness"] = $specimen["wall_thickness"];
@@ -314,6 +324,90 @@ $form->endFieldset();
 # Measurements
 #######################
 $form->startFieldset('Shape & Size');
+$form->setOptions(array('buttonWrapper'=>''));
+
+# Polar axis length
+$form->setCols(4, 2);
+$form->groupInputs('polar_axis_length_min', 'polar_axis_length_avg', 'polar_axis_length_max', 'polar_axis_n');
+$form->addHelper('Min (rounded to 1dp on save)', 'polar_axis_length_min');
+$form->addHelper('Avg. (rounded to 1dp on save)', 'polar_axis_length_avg');
+$form->addHelper('Max (rounded to 1dp on save)', 'polar_axis_length_max');
+$form->addHelper('Number of measurements', 'polar_axis_n');
+$form->addInput('number', 'polar_axis_length_min', '', 'Polar axis length (µm)', 'readonly="readonly"');
+$form->addInput('number', 'polar_axis_length_avg', '', '', 'readonly="readonly"');
+$form->addInput('number', 'polar_axis_length_max', '', '', 'readonly="readonly"');
+$form->addInput('number', 'polar_axis_n', '', '', 'readonly="readonly"');
+
+$form->setCols(4, 2);
+unset($_SESSION[$form->getFormName()]['polar_axis_input']);
+$form->groupInputs('polar_axis_input', 'polar_average');
+$form->addHelper('New measurement', 'polar_axis_input');
+$form->addInput('number', 'polar_axis_input', '', '', '');
+$form->setCols(4, 6);
+$form->addBtn('button', 'polar_axis_merge_button', "merge", '<i class="fa fa-plus" aria-hidden="true"></i> Add data point', 'class=btn btn-success, data-style=zoom-in, onclick=add_data_point(\'polar\')', 'polar');
+$form->addBtn('button', 'polar_axis_reset_button', "reset", '<i class="fa fa-trash" aria-hidden="true"></i> Delete all data points', 'class=btn btn-danger, data-style=zoom-in, onclick=if(confirm(\'Are you sure you want to delete all polar data points?\')) reset_data(\'polar\')', 'polar');
+$form->printBtnGroup('polar');
+$form->addHtml('</div>');
+
+# Equatorial axis length
+$form->setCols(4, 2);
+$form->groupInputs('equatorial_axis_length_min', 'equatorial_axis_length_avg', 'equatorial_axis_length_max', 'equatorial_axis_n');
+$form->addHelper('Min (rounded to 1dp on save)', 'equatorial_axis_length_min');
+$form->addHelper('Avg. (rounded to 1dp on save)', 'equatorial_axis_length_avg');
+$form->addHelper('Max (rounded to 1dp on save)', 'equatorial_axis_length_max');
+$form->addHelper('Number of measurements', 'equatorial_axis_n');
+$form->addInput('number', 'equatorial_axis_length_min', '', 'Equatorial axis length (µm)', 'readonly="readonly"');
+$form->addInput('number', 'equatorial_axis_length_avg', '', '', 'readonly="readonly"');
+$form->addInput('number', 'equatorial_axis_length_max', '', '', 'readonly="readonly"');
+$form->addInput('number', 'equatorial_axis_n', '', '', 'readonly="readonly"');
+
+$form->setCols(4, 2);
+unset($_SESSION[$form->getFormName()]['equatorial_axis_input']);
+$form->groupInputs('equatorial_axis_input', 'equatorial_average');
+$form->addHelper('New measurement', 'equatorial_axis_input');
+$form->addInput('number', 'equatorial_axis_input', '', '', '');
+$form->setCols(4, 6);
+$form->addBtn('button', 'equatorial_axis_merge_button', "merge", '<i class="fa fa-plus" aria-hidden="true"></i> Add data point', 'class=btn btn-success, data-style=zoom-in, onclick=add_data_point(\'equatorial\')', 'equatorial');
+$form->addBtn('button', 'equatorial_axis_reset_button', "reset", '<i class="fa fa-trash" aria-hidden="true"></i> Delete all data points', 'class=btn btn-danger, data-style=zoom-in, onclick=if(confirm(\'Are you sure you want to delete all equatorial data points?\')) reset_data(\'equatorial\')', 'equatorial');
+$form->printBtnGroup('equatorial');
+$form->addHtml('</div>');
+
+$form->setOptions(array('buttonWrapper'=>'<div class="form-group row justify-content-end"></div>'));
+
+# 6. Size
+$form->setCols(4, 8);
+$form->addOption('size', '', 'Choose one ...', '', 'disabled, selected');
+$form->addOption('size', 'very small', 'Very Small;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp max[P,E]<10');
+$form->addOption('size', 'small',      'Small;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 10<=max[P,E]<25');
+$form->addOption('size', 'medium',     'Medium;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 25<=max[P,E]<50');
+$form->addOption('size', 'large',      'Large;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 50<=max[P,E]<100');
+$form->addOption('size', 'very large', 'Very Large;&nbsp&nbsp&nbsp 100<=max[P,E]<200');
+$form->addOption('size', 'gigantic', 'Gigantic;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp max[P,E]>=200');
+$form->addSelect('size','Size','class=select2, data-width=100%');
+
+# 7. Equatorial shape (major)
+$form->setCols(4, 8);
+$form->addOption('equatorial_shape_major', '', 'Choose one ...', '', 'disabled, selected');
+$form->addOption('equatorial_shape_major', 'peroblate',         'peroblate;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspP/E<0.5');
+$form->addOption('equatorial_shape_major', 'oblate',            'oblate;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp0.5<=P/E<0.76');
+$form->addOption('equatorial_shape_major', 'suboblate',         'suboblate;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp0.76<=P/E<0.89');
+$form->addOption('equatorial_shape_major', 'oblate-spheroidal',  'oblate-spheroidal;&nbsp&nbsp&nbsp0.89<=P/E<0.99');
+$form->addOption('equatorial_shape_major', 'spheroidal',        'spheroidal;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp0.99<=P/E<1.01');
+$form->addOption('equatorial_shape_major', 'prolate-spheroidal', 'prolate-spheroidal;&nbsp1.01&lt=P/E<1.15');
+$form->addOption('equatorial_shape_major', 'subprolate',        'subprolate;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp1.15<=P/E<1.34');
+$form->addOption('equatorial_shape_major', 'prolate',           'prolate;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp1.34<=P/E<2.00');
+$form->addOption('equatorial_shape_major', 'perprolate',        'perprolate;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspP/E>=2.00');
+$form->addSelect('equatorial_shape_major', 'Equatorial shape (major)', 'class=select2, data-width=100%');
+
+# 8. Equatorial shape (minor)
+$form->setCols(4, 8);
+$form->addOption('equatorial_shape_minor', '', 'Choose one ...', '', 'disabled, selected');
+$form->addOption('equatorial_shape_minor', 'rounded ', 'rounded ', '', '');
+$form->addOption('equatorial_shape_minor', 'rectangular', 'rectangular', '', '');
+$form->addOption('equatorial_shape_minor', 'rhombic', 'rhombic', '', '');
+$form->addOption('equatorial_shape_minor', 'triangular', 'triangular', '', '');
+$form->addOption('equatorial_shape_minor', 'bilateral', 'bilateral', '', '');
+$form->addSelect('equatorial_shape_minor', 'Equatorial shape (minor)', 'class=select2, data-width=100%');
 
 # 9. *Polar shape (following Huang 1972)
 $form->addOption('polar_shape[]', 'circular',  'circular', '', '');
@@ -333,58 +427,6 @@ $form->addOption('polar_shape[]', 'rectangular (rhomboidal)',  'rectangular (rho
 $form->addOption('polar_shape[]', 'tubular',  'tubular', '', '');
 $form->addHelper('Multiple Choice', 'polar_shape[]');
 $form->addSelect('polar_shape[]', 'Polar shape ', 'class=select2, data-width=100%, multiple=multiple');
-
-# Polar axis length
-$form->setCols(4, 4);
-$form->groupInputs('polar_axis_length', 'polar_axis_n');
-$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'polar_axis_length');
-$form->addInput('number', 'polar_axis_length', '', 'Polar axis length ', 'readonly="readonly"');
-$form->addHelper('Number of measurements', 'polar_axis_length');
-$form->addHelper('Number of measurements', 'polar_axis_n');
-$form->addInput('number', 'polar_axis_n', '', '', 'readonly="readonly"');
-
-$form->setCols(4, 2);
-$form->groupInputs('polar_axis_input', 'polar_average');
-$form->addHelper('Input in (µm)', 'polar_axis_input');
-$form->addInput('number', 'polar_axis_input', '', '', '');
-$form->setCols(4, 6);
-$form->setOptions(array('buttonWrapper'=>''));
-$form->addBtn('button', 'polar_axis_merge_button', "merge", '<i class="fa fa-plus" aria-hidden="true"></i> Merge with average ', 'class=btn btn-success, data-style=zoom-in, onclick=merge_polar()', 'polar_average');
-$form->addBtn('button', 'polar_axis_reset_button', "reset", '<i class="fa fa-ban" aria-hidden="true"></i> Reset average ', 'class=btn btn-warning, data-style=zoom-in, onclick=if(confirm(\'Are you sure you want to reset the polar average?\')) reset_polar()', 'polar_average');
-$form->printBtnGroup('polar_average');
-$form->addHtml('</div>');
-
-# 8. Equatorial shape (minor)
-$form->setCols(4, 8);
-$form->addOption('equatorial_shape', '', 'Choose one ...', '', 'disabled, selected');
-$form->addOption('equatorial_shape', 'rounded ', 'rounded ', '', '');
-$form->addOption('equatorial_shape', 'rectangular', 'rectangular', '', '');
-$form->addOption('equatorial_shape', 'rhombic', 'rhombic', '', '');
-$form->addOption('equatorial_shape', 'triangular', 'triangular', '', '');
-$form->addOption('equatorial_shape', 'bilateral', 'bilateral', '', '');
-$form->addSelect('equatorial_shape', 'Equatorial shape ', 'class=select2, data-width=100%');
-
-# Equatorial axis length
-$form->setCols(4, 4);
-$form->groupInputs('equatorial_axis_length', 'equatorial_axis_n');
-$form->addHelper('Average in (µm) Note: Rounded to 1dp upon save', 'equatorial_axis_length');
-$form->addInput('number', 'equatorial_axis_length', '', 'Equatorial axis length ', 'readonly="readonly"');
-$form->addHelper('Number of measurements', 'equatorial_axis_length');
-$form->addHelper('Number of measurements', 'equatorial_axis_n');
-$form->addInput('number', 'equatorial_axis_n', '', '', 'readonly="readonly"');
-
-$form->setCols(4, 2);
-$form->groupInputs('equatorial_axis_input', 'equatorial_average');
-$form->addHelper('Input in (µm)', 'equatorial_axis_input');
-$form->addInput('number', 'equatorial_axis_input', '', '', '');
-$form->setCols(4, 6);
-$form->addBtn('button', 'equatorial_axis_merge_button', "merge", '<i class="fa fa-plus" aria-hidden="true"></i> Merge with average ', 'class=btn btn-success, data-style=zoom-in, onclick=merge_equatorial()', 'equatorial_average');
-$form->addBtn('button', 'equatorial_axis_reset_button', "reset", '<i class="fa fa-ban" aria-hidden="true"></i> Reset average ', 'class=btn btn-warning, data-style=zoom-in, onclick=if(confirm(\'Are you sure you want to reset the equatorial average?\')) reset_equatorial()', 'equatorial_average');
-$form->printBtnGroup('equatorial_average');
-$form->addHtml('</div>');
-$form->setOptions(array('buttonWrapper'=>'<div class="form-group row justify-content-end"></div>'));
-
-
 
 /*$form->startFieldset('Single image with labels');
 for ($i=0; $i < 10; $i++) {
@@ -730,21 +772,141 @@ if (isset($_GET["edit"])) {
 }
 $page_render->renderPage();
 ?>
+<style>
+    .select2-highlight {
+        -webkit-box-shadow: 0px 0px 3px 3px rgba(0,155,212,1);
+        -moz-box-shadow: 0px 0px 3px 3px rgba(0,155,212,1);
+        box-shadow: 0px 0px 3px 3px rgba(0,155,212,1);
+    }
+
+    .select2 {
+        transition: box-shadow 500ms;
+    }
+</style>
 <script>
+    function add_data_point(axis_type) {
+        new_data_point_value = document.getElementById(axis_type+"_axis_input").value;
+        new_data_point_float = parseFloat(new_data_point_value);
+        if (!new_data_point_value || new_data_point_float <= 0) {
+            alert("Please enter a positive number");
+            return;
+        }
+
+        // If no data points added yet
+        if (!document.getElementById(axis_type+"_axis_n").value) {
+            var n = 0;
+            var avg = 0;
+            var min = Infinity;
+            var max = -Infinity;
+        } else {
+            var n = parseFloat(document.getElementById(axis_type+"_axis_n").value);
+            var avg = parseFloat(document.getElementById(axis_type+"_axis_length_avg").value);
+            var min = parseFloat(document.getElementById(axis_type+"_axis_length_min").value);
+            var max = parseFloat(document.getElementById(axis_type+"_axis_length_max").value);
+        }
+        var total = avg * n;
+        if (new_data_point_float < min) {
+            document.getElementById(axis_type+"_axis_length_min").value = new_data_point_float;
+        }
+        if (new_data_point_float > max) {
+            document.getElementById(axis_type+"_axis_length_max").value = new_data_point_float;
+        }
+        document.getElementById(axis_type+"_axis_length_avg").value = (total + new_data_point_float) / (n + 1);
+        document.getElementById(axis_type+"_axis_n").value = n + 1;
+
+        // If polar and equatorial data points exist
+        if (document.getElementById("polar_axis_n").value && document.getElementById("equatorial_axis_n").value) {
+            var p = parseFloat(document.getElementById("polar_axis_length_max").value);
+            var e = parseFloat(document.getElementById("equatorial_axis_length_max").value);
+            update_size(p,e);
+            update_equatorial_shape_major(p,e);
+        }
+
+
+    }
+
+    function reset_data(axis_type) {
+        document.getElementById(axis_type+"_axis_length_min").value = null;
+        document.getElementById(axis_type+"_axis_length_avg").value = null;
+        document.getElementById(axis_type+"_axis_length_max").value = null;
+        document.getElementById(axis_type+"_axis_n").value = null;
+    }
+
+    function update_size(p,e) {
+        var select = $("#size");
+        var old_val = select.val();
+        var max = Math.max(p,e);
+        if (max < 10) {
+            select.val('very small').trigger('change');
+        } else if (max <25) {
+            select.val('small').trigger('change');
+        } else if (max <50) {
+            select.val('medium').trigger('change');
+        } else if (max <100) {
+            select.val('large').trigger('change');
+        } else if (max <200) {
+            select.val('very large').trigger('change');
+        } else {
+            select.val('gigantic').trigger('change');
+        }
+
+        var new_val = select.val();
+        if (old_val != new_val) {
+            select.next().addClass("select2-highlight");
+            setTimeout(function() {
+                select.next().removeClass("select2-highlight");
+            }, 500)
+        }
+    }
+
+    function update_equatorial_shape_major(p,e) {
+        var select = $("#equatorial_shape_major");
+        var old_val = select.val();
+        var p_e = p/e;
+        if (p_e < 0.5) {
+            select.val('peroblate').trigger('change');
+        } else if (p_e < 0.76) {
+            select.val('oblate').trigger('change');
+        } else if (p_e < 0.89) {
+            select.val('suboblate').trigger('change');
+        } else if (p_e < 0.99) {
+            select.val('oblate-spheroidal').trigger('change');
+        } else if (p_e < 1.01) {
+            select.val('spheroidal').trigger('change');
+        } else if (p_e < 1.15) {
+            select.val('prolate-spheroidal').trigger('change');
+        } else if (p_e < 1.34) {
+            select.val('subprolate').trigger('change');
+        } else if (p_e < 2.00) {
+            select.val('prolate').trigger('change');
+        } else {
+            select.val('perprolate').trigger('change');
+        }
+
+        var new_val = select.val();
+        if (old_val != new_val) {
+            select.next().addClass("select2-highlight");
+            setTimeout(function() {
+                select.next().removeClass("select2-highlight");
+            }, 500)
+        }
+
+    }
+
     function merge_polar(){
-        if (!document.getElementById("polar_axis_n").value || !document.getElementById("polar_axis_length").value) {
+        if (!document.getElementById("polar_axis_n").value || !document.getElementById("polar_axis_length_avg").value) {
             n_value = 0;
             current_total = 0;
         } else {
             n_value = parseFloat(document.getElementById("polar_axis_n").value);
-            current_total = parseFloat(document.getElementById("polar_axis_length").value) * n_value;
+            current_total = parseFloat(document.getElementById("polar_axis_length_avg").value) * n_value;
         }
-        document.getElementById("polar_axis_length").value = (current_total + parseFloat(document.getElementById("polar_axis_input").value)) / (n_value + 1);
+        document.getElementById("polar_axis_length_avg").value = (current_total + parseFloat(document.getElementById("polar_axis_input").value)) / (n_value + 1);
         document.getElementById("polar_axis_n").value = n_value + 1;
     }
 
     function reset_polar(){
-        document.getElementById("polar_axis_length").value = null;
+        document.getElementById("polar_axis_length_avg").value = null;
         document.getElementById("polar_axis_n").value = null;
     }
 
@@ -754,14 +916,14 @@ $page_render->renderPage();
             current_total = 0;
         } else {
             n_value = parseFloat(document.getElementById("equatorial_axis_n").value);
-            current_total = parseFloat(document.getElementById("equatorial_axis_length").value) * n_value;
+            current_total = parseFloat(document.getElementById("equatorial_axis_length_avg").value) * n_value;
         }
-        document.getElementById("equatorial_axis_length").value = (current_total + parseFloat(document.getElementById("equatorial_axis_input").value)) / (n_value + 1);
+        document.getElementById("equatorial_axis_length_avg").value = (current_total + parseFloat(document.getElementById("equatorial_axis_input").value)) / (n_value + 1);
         document.getElementById("equatorial_axis_n").value = n_value + 1;
     }
 
     function reset_equatorial(){
-        document.getElementById("equatorial_axis_length").value = null;
+        document.getElementById("equatorial_axis_length_avg").value = null;
         document.getElementById("equatorial_axis_n").value = null;
     }
 </script>
