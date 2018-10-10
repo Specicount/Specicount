@@ -42,9 +42,9 @@ class Search_Form extends Post_Form {
         }
 
         // -------- ADD TO SAMPLE --------
-        $primary_key_values = explode(",", $_POST["add-to-sample-btn"]);
-        $specimen_project_id = trim(base64_decode(str_replace("-", "=", $primary_key_values[0])));
-        $specimen_id = trim(base64_decode(str_replace("-", "=", $primary_key_values[1])));
+        $specimen_pkeys = explode("~", $_POST["add-to-sample-btn"]);
+        $specimen_project_id = $specimen_pkeys[0];
+        $specimen_id = $specimen_pkeys[1];
 
         $update["project_id"] = Mysql::SQLValue($_GET["project_id"]);
         $update["core_id"] = Mysql::SQLValue($_GET["core_id"]);
@@ -188,22 +188,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($results)) {
         $form->addHtml('<div class="square-grid">');
         foreach ($results as $specimen) {
-            $specimen_project_id_encoded = str_replace("=", "-", trim(base64_encode($specimen["project_id"])));
-            $specimen_id_encoded = str_replace("=", "-", trim(base64_encode($specimen["specimen_id"])));
-            $primary_key_values = $specimen_project_id_encoded . ',' . $specimen_id_encoded;
+            $specimen_pkeys = $specimen["project_id"].'~'.$specimen["specimen_id"];
             $image = $specimen["image_folder"].$specimen["primary_image"];
-            $form->addHtml('<div id="'.$specimen_id_encoded.'" class="specimen-container cell"');
+            $form->addHtml('<div id="'.$specimen_pkeys.'$container" class="specimen-container cell"');
             if (is_file($image)) {
                 $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
             }
             $form->addHtml('>');
-            $form->addHtml('<div id="'.$specimen_id_encoded.'_counter" class="counter"><p id="'.$specimen_id_encoded.'_counter_text">ID: ' . $specimen["specimen_id"] . '</p></div>');
-            $form->addHtml('<div id="'.$specimen_id_encoded.'_overlay" class="overlay">');
+            $form->addHtml('<div id="'.$specimen_pkeys.'$counter" class="counter"><p id="'.$specimen_pkeys.'$counter_text">ID: ' . $specimen["specimen_id"] . '</p></div>');
+            $form->addHtml('<div id="'.$specimen_pkeys.'$overlay" class="overlay">');
             $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
-            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
-            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-right-btn"></i></a>');
-            $form->addHtml('<a href="#"><span><i id="'.$specimen_id_encoded.'_close" class="fas fa-window-close top-right-btn"></i></span></a>');
-            $form->addBtn('submit', 'add-to-sample-btn', $primary_key_values, 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button mid-btn, data-style=zoom-in');
+            $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys.'$close" class="fas fa-window-close top-right-btn"></i></span></a>');
+            if ($my_access_level != "visitor") {
+                $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
+                $form->addBtn('submit', 'add-to-sample-btn', $specimen_pkeys, 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button mid-btn, data-style=zoom-in');
+                $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-right-btn"></i></a>');
+            } else {
+                $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-left-btn"></i></a>');
+            }
             $form->addHtml('</div>');
             $form->addHtml('</div>');
         }

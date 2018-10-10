@@ -99,29 +99,33 @@ function getScripts () {
             // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
             // If mouse intends to hover over specimen
             function enter() {
-                var specimen_id = $(this).attr(\'id\').split("_")[0];
+                var specimen_id = $(this).attr(\'id\').split("$")[0];
                 fadeInOverlay(specimen_id);
             }
             function leave() {
-                var specimen_id = $(this).attr(\'id\').split("_")[0];
+                var specimen_id = $(this).attr(\'id\').split("$")[0];
                 fadeOutOverlay(specimen_id);
             }
             $(".specimen-container").hoverIntent(enter, leave);
         
             //If close button on overlay clicked
             $(".overlay .top-right-btn").click(function() {
-                var specimen_id = $(this).attr(\'id\').split("_")[0];
+                var specimen_id = $(this).attr(\'id\').split("$")[0];
                 fadeOutOverlay(specimen_id);
             });
         
             function fadeInOverlay(specimen_id) {
-                $("#"+specimen_id+"_overlay").fadeIn(200);
-                $("#"+specimen_id+"_counter").fadeOut(200);
+                var overlay = document.getElementById(specimen_id+"$overlay");
+                var counter = document.getElementById(specimen_id+"$counter");
+                $(overlay).fadeIn(200);
+                $(counter).fadeOut(200);
             }
         
             function fadeOutOverlay(specimen_id) {
-                $("#"+specimen_id+"_overlay").fadeOut(200);
-                $("#"+specimen_id+"_counter").fadeIn(200);
+                var overlay = document.getElementById(specimen_id+"$overlay");
+                var counter = document.getElementById(specimen_id+"$counter");
+                $(overlay).fadeOut(200);
+                $(counter).fadeIn(200);
             }
             
             setTimeout(function () {

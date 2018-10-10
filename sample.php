@@ -9,9 +9,6 @@ use ChartJs\ChartJS;
     start session and include form class
 ============================================= */
 
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
-
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
 require_once 'Chart.js-PHP-master/src/ChartJS.php';
@@ -37,7 +34,7 @@ class Sample_Count_Form extends Post_Form {
         }
 
         // -------- DELETE --------
-        $specimen_pkeys = explode('~',trim(base64_decode(str_replace("-", "=", $_POST["delete"]))));
+        $specimen_pkeys = explode('~',json_decode($_POST["delete"]));
         $specimen_project_id = $specimen_pkeys[0];
         $specimen_id = $specimen_pkeys[1];
 
@@ -93,7 +90,7 @@ class Sample_Count_Form extends Post_Form {
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) {
             $specimens = array_slice($_POST, 6); // Skip the first 6 post variables to get to specimens
             foreach ($specimens as $specimen => $count) {
-                $specimen_pkeys = explode('~',trim(base64_decode(str_replace("-", "=", $specimen))));
+                $specimen_pkeys = explode('~',$specimen);
                 $specimen_project_id = $specimen_pkeys[0];
                 $specimen_id = $specimen_pkeys[1];
 
@@ -137,6 +134,11 @@ class Sample_Count_Form extends Post_Form {
 /* ==================================================
     The Form
 ================================================== */
+
+
+Form::clear("sample-count");
+unset($_SESSION["sample-count"]["required_fields"]);              // This is needed because if a user accesses different pages with the same form_ID in the same session then
+unset($_SESSION["sample-count"]["required_fields_conditions"]);   // phpformbuilder will keep adding new specimen_IDs to the required fields and Form::clear won't unset them
 
 $db = new Mysql();
 $form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5, novalidate', 'bs4');
@@ -285,26 +287,25 @@ if($db->rowCount() > 0) {
     $form->addHtml('<div class="square-grid">');
 
     foreach ($specimen_data as $specimen) {
-        $specimen_pkeys_encoded = str_replace("=", "-", trim(base64_encode($specimen["specimen_project_id"].'~'.$specimen["specimen_id"])));
+        $specimen_pkeys = $specimen["specimen_project_id"].'~'.$specimen["specimen_id"];
         $image = $specimen["image_folder"].$specimen["primary_image"];
-        $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_container" class="specimen-container cell"');
+        $form->addHtml('<div id="'.$specimen_pkeys.'$container" class="specimen-container cell"');
         if (is_file($image)) {
             $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
         }
         $form->addHtml('>');
-        //$form->addHtml('<div id="'.$specimen["specimen_id"].'_imageblur" class="imageblur" style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen_name.'/'.$specimen["primary_image"].'\');"></div>');
-        $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_counter" class="counter"><p id="'.$specimen_pkeys_encoded.'_counter_text">' . $specimen["count"] . '</p></div>');
-        $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_overlay" class="overlay">');
+        $form->addHtml('<div id="'.$specimen_pkeys.'$counter" class="counter"><p id="'.$specimen_pkeys.'$counter_text">' . $specimen["count"] . '</p></div>');
+        $form->addHtml('<div id="'.$specimen_pkeys.'$overlay" class="overlay">');
         $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
-        $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys_encoded.'_close" class="fas fa-window-close top-right-btn"></i></span></a>');
+        $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys.'$close" class="fas fa-window-close top-right-btn"></i></span></a>');
         if ($my_access_level != "visitor") {
             $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
-            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success mid-btn, data-style=zoom-in, onclick=add(\''.$specimen_pkeys_encoded.'\');updateCounter(\''.$specimen_pkeys_encoded.'\')');
-            $form->addBtn('submit', 'delete-btn', $specimen_pkeys_encoded, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger bot-right-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
+            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success mid-btn, data-style=zoom-in, onclick=add(\''.$specimen_pkeys.'\');updateCounter(\''.$specimen_pkeys.'\')');
+            $form->addBtn('submit', 'delete-btn', $specimen_pkeys, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger bot-right-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
         } else {
             $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-left-btn"></i></a>');
         }
-        $form->addInput('number', $specimen_pkeys_encoded, $specimen["count"], '', $readonly_attr.'required onchange=updateCounter(\''.$specimen_pkeys_encoded.'\')');
+        $form->addInput('number', $specimen_pkeys, $specimen["count"], '', $readonly_attr.'required onchange=updateCounter(\''.$specimen_pkeys.'\')');
         $form->addHtml('</div>');
         $form->addHtml('</div>');
     }
@@ -351,16 +352,20 @@ $page_render->renderPage();
 
     // Update counter text on hover
     function updateCounter(specimen_id){
-        document.getElementById(specimen_id+"_counter_text").innerHTML = document.getElementById(specimen_id).value;
+        document.getElementById(specimen_id+"$counter_text").innerHTML = document.getElementById(specimen_id).value;
     }
 
     // Add to counter
     function add(specimen_id) {
         //console.log("value of "+specimen_id+" input is "+document.getElementById(specimen_id).value);
         document.getElementById(specimen_id).value = parseInt(document.getElementById(specimen_id).value) + 1;
-        $("#"+specimen_id+"_overlay").addClass('interaction-highlight');
+        var container = document.getElementById(specimen_id+"$container");
+        var overlay = document.getElementById(specimen_id+"$overlay");
+        $(container).addClass('interaction-highlight');
+        $(overlay).addClass('interaction-highlight');
         setTimeout(function () {
-            $("#"+specimen_id+"_overlay").removeClass('interaction-highlight');
+            $(container).removeClass('interaction-highlight');
+            $(overlay).removeClass('interaction-highlight');
         }, 1000);
     }
 
@@ -377,7 +382,7 @@ $page_render->renderPage();
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
         $i = 0;
         foreach ($keys as $k) {
-            $specimen_id = str_replace("=", "-", trim(base64_encode($specimen_data[$i]["specimen_project_id"].'~'.$specimen_data[$i]["specimen_id"])));
+            $specimen_id = $specimen_data[$i]["specimen_project_id"].'~'.$specimen_data[$i]["specimen_id"];
             echo "if (key == ".(ord($k) - 32).") {
                     add('".$specimen_id."');
                     updateCounter('".$specimen_id."');

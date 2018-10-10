@@ -39,8 +39,6 @@ abstract class Post_Form extends Form {
 
 
     public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
-        unset($_SESSION[$form_ID]["required_fields"]);              // This is needed because if a user accesses different pages with the same form_ID in the same session then
-        unset($_SESSION[$form_ID]["required_fields_conditions"]);   // phpformbuilder will keep adding to the required fields and Form::clear won't unset them - mostly problematic for samples
         $this->form_ID = $form_ID;
         $this->table_name = $table_name;
         $this->db = new Mysql();

@@ -44,6 +44,9 @@ html {
     margin-bottom: 0;
 }
 
+.specimen-container {
+    transition: box-shadow 500ms;
+}
 
 /* White overlay when you hover over image */
 .overlay {
@@ -56,9 +59,9 @@ html {
 
 /* This class is added to overlay when add-to-count button pressed */
 .interaction-highlight {
-    -webkit-box-shadow: inset 0px 0px 10px 4px rgba(0,168,28,1);
-    -moz-box-shadow: inset 0px 0px 10px 4px rgba(0,168,28,1);
-    box-shadow: inset 0px 0px 10px 4px rgba(0,168,28,1);
+    -webkit-box-shadow: inset 0px 0px 15px 10px rgba(0,186,31,1);
+    -moz-box-shadow: inset 0px 0px 15px 10px rgba(0,186,31,1);
+    box-shadow: inset 0px 0px 15px 10px rgba(0,186,31,1);
     z-index: 30;
 }
 
