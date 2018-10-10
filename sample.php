@@ -9,8 +9,8 @@ use ChartJs\ChartJS;
     start session and include form class
 ============================================= */
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 
 require_once "classes/Page_Renderer.php";
 require_once "classes/Post_Form.php";
@@ -139,7 +139,6 @@ class Sample_Count_Form extends Post_Form {
 ================================================== */
 
 $db = new Mysql();
-
 $form = new Sample_Count_Form("sample-count", "samples", 'vertical', 'class=mb-5, novalidate', 'bs4');
 $my_access_level = getAccessLevel();
 $readonly_attr = "";

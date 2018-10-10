@@ -39,6 +39,8 @@ abstract class Post_Form extends Form {
 
 
     public function __construct($form_ID, $table_name, $layout, $attr, $framework) {
+        unset($_SESSION[$form_ID]["required_fields"]);              // This is needed because if a user accesses different pages with the same form_ID in the same session then
+        unset($_SESSION[$form_ID]["required_fields_conditions"]);   // phpformbuilder will keep adding to the required fields and Form::clear won't unset them - mostly problematic for samples
         $this->form_ID = $form_ID;
         $this->table_name = $table_name;
         $this->db = new Mysql();
@@ -48,14 +50,11 @@ abstract class Post_Form extends Form {
         $this->setRequiredAccessLevelsForPost();
         $this->registerPostActions();
 
-
-//        unset($_SESSION[$this->form_ID]); // Debug purposes
+        // Debug purposes
+//        unset($_SESSION[$this->form_ID]);
 //        $_SESSION["email"] = "alex@niven.com";
 //        $_SESSION["email"] = "elliott.wagener@hotmail.com";
 //        $_SESSION["email"] = "matthew.knill@hotmail.com";
-//        $_SESSION["email"] = "gay@fools.com";
-
-
 //        print_r($_SESSION["email"]." is ".getAccessLevel());
 
         // FILL FORM
@@ -136,8 +135,6 @@ abstract class Post_Form extends Form {
     }
 
     // Deletes the form_ID from the database based on a filter (primary keys)
-    // If you override this function you must not call the parent function, otherwise the redirect will not execute
-    // the rest of your code
     protected function delete() {
         $this->db->deleteRows($this->table_name, $this->filter);
         storeDbMsg($this->db);
