@@ -19,7 +19,7 @@ class Sample_Count_Form extends Post_Form {
     }
 
     protected function registerPostActions() {
-        $this->registerPostAction("delete", isset($_POST["delete-btn"]), false);
+        $this->registerPostAction("delete", isset($_POST["delete"]), false);
         $this->registerPostAction("export", isset($_POST["export-btn"]), false);
         $this->registerPostAction("save", isset($_POST["save-btn"]));
         $this->registerPostAction("saveReorder", isset($_POST["save-reorder-btn"]));
@@ -34,10 +34,8 @@ class Sample_Count_Form extends Post_Form {
         }
 
         // -------- DELETE --------
-        $specimen_pkeys = explode('~',json_decode($_POST["delete"]));
-        $specimen_project_id = $specimen_pkeys[0];
-        $specimen_id = $specimen_pkeys[1];
-
+        $specimen_project_id = key($_POST["delete"]);
+        $specimen_id = key($_POST["delete"][$specimen_project_id]);
 
         $this->filter["specimen_project_id"] = Mysql::SQLValue($specimen_project_id);
         $this->filter["specimen_id"] = Mysql::SQLValue($specimen_id);
@@ -88,20 +86,17 @@ class Sample_Count_Form extends Post_Form {
         $sample_data = $this->db->selectRows("samples", $this->filter);
         // Concurrency control - if this sample was last updated by this device
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) {
-            $specimens = array_slice($_POST, 6); // Skip the first 6 post variables to get to specimens
-            foreach ($specimens as $specimen => $count) {
-                $specimen_pkeys = explode('~',$specimen);
-                $specimen_project_id = $specimen_pkeys[0];
-                $specimen_id = $specimen_pkeys[1];
-
-                $filter = $this->filter;
-                $filter["specimen_project_id"] = Mysql::SQLValue($specimen_project_id);
-                $filter["specimen_id"] = Mysql::SQLValue($specimen_id);
-
-                $update["count"] = Mysql::SQLValue($count);
-
-                $this->db->updateRows("found_specimens", $update, $filter);
+            foreach ($_POST["specimen_counts"] as $specimen_project_id => $specimen_ids) {
+                foreach ($specimen_ids as $specimen_id => $count) {
+                    $filter = $this->filter;
+                    $filter["specimen_project_id"] = Mysql::SQLValue($specimen_project_id);
+                    $filter["specimen_id"] = Mysql::SQLValue($specimen_id);
+                    $update["count"] = Mysql::SQLValue($count);
+                    $this->db->updateRows("found_specimens", $update, $filter);
+                    storeDbMsg($this->db);
+                }
             }
+            $update_sample = array();
             $update_sample["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"));
             $update_sample["lycopodium"] = Mysql::SQLValue($_POST["lycopodium"]);
             $update_sample["charcoal"] = Mysql::SQLValue($_POST["charcoal"]);
