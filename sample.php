@@ -37,7 +37,7 @@ class Sample_Count_Form extends Post_Form {
         }
 
         // -------- DELETE --------
-        $specimen_pkeys = explode(',',trim(base64_decode(str_replace("-", "=", $_POST["delete"]))));
+        $specimen_pkeys = explode('~',trim(base64_decode(str_replace("-", "=", $_POST["delete"]))));
         $specimen_project_id = $specimen_pkeys[0];
         $specimen_id = $specimen_pkeys[1];
 
@@ -93,7 +93,7 @@ class Sample_Count_Form extends Post_Form {
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) {
             $specimens = array_slice($_POST, 6); // Skip the first 6 post variables to get to specimens
             foreach ($specimens as $specimen => $count) {
-                $specimen_pkeys = explode(',',trim(base64_decode(str_replace("-", "=", $specimen))));
+                $specimen_pkeys = explode('~',trim(base64_decode(str_replace("-", "=", $specimen))));
                 $specimen_project_id = $specimen_pkeys[0];
                 $specimen_id = $specimen_pkeys[1];
 
@@ -194,8 +194,8 @@ if ($curve_data) {
         'datasets' => [[
             'label' => 'Concentration Curve',
             'data' => $curve_data,
-            'backgroundColor' => '#f2b21a',
-            'borderColor' => '#e5801d',
+            'backgroundColor' => '#28a745',
+            'borderColor' => '#28a745',
             'fill' => false
         ]]
     ];
@@ -286,7 +286,7 @@ if($db->rowCount() > 0) {
     $form->addHtml('<div class="square-grid">');
 
     foreach ($specimen_data as $specimen) {
-        $specimen_pkeys_encoded = str_replace("=", "-", trim(base64_encode($specimen["specimen_project_id"].','.$specimen["specimen_id"])));
+        $specimen_pkeys_encoded = str_replace("=", "-", trim(base64_encode($specimen["specimen_project_id"].'~'.$specimen["specimen_id"])));
         $image = $specimen["image_folder"].$specimen["primary_image"];
         $form->addHtml('<div id="'.$specimen_pkeys_encoded.'_container" class="specimen-container cell"');
         if (is_file($image)) {
@@ -328,6 +328,7 @@ $page_render->renderPage();
 
 ?>
 <style>
+    /*The size of the concentration curve*/
     #concentration_curve {
         width:350px !important;
         height:350px !important;
@@ -377,7 +378,7 @@ $page_render->renderPage();
         $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
         $i = 0;
         foreach ($keys as $k) {
-            $specimen_id = str_replace("=", "-", trim(base64_encode($specimen_data[$i]["specimen_id"])));
+            $specimen_id = str_replace("=", "-", trim(base64_encode($specimen_data[$i]["specimen_project_id"].'~'.$specimen_data[$i]["specimen_id"])));
             echo "if (key == ".(ord($k) - 32).") {
                     add('".$specimen_id."');
                     updateCounter('".$specimen_id."');
