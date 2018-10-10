@@ -99,35 +99,22 @@ function getScripts () {
             // This uses the hoverIntent jquery plugin to avoid excessive queuing of animations
             // If mouse intends to hover over specimen
             function enter() {
-                var specimen_id = $(this).attr(\'id\').split("$")[0];
-                fadeInOverlay(specimen_id);
+                $(this).find(".overlay").fadeIn(200);
+                $(this).find(".counter").fadeOut(200);
             }
             function leave() {
-                var specimen_id = $(this).attr(\'id\').split("$")[0];
-                fadeOutOverlay(specimen_id);
+                $(this).find(".overlay").fadeOut(200);
+                $(this).find(".counter").fadeIn(200);
             }
             $(".specimen-container").hoverIntent(enter, leave);
         
             //If close button on overlay clicked
             $(".overlay .top-right-btn").click(function() {
-                var specimen_id = $(this).attr(\'id\').split("$")[0];
-                fadeOutOverlay(specimen_id);
+                var specimen_container = $(this).closest(".specimen-container");
+                $(specimen_container).find(".overlay").fadeOut(200);
+                $(specimen_container).find(".counter").fadeIn(200);
             });
         
-            function fadeInOverlay(specimen_id) {
-                var overlay = document.getElementById(specimen_id+"$overlay");
-                var counter = document.getElementById(specimen_id+"$counter");
-                $(overlay).fadeIn(200);
-                $(counter).fadeOut(200);
-            }
-        
-            function fadeOutOverlay(specimen_id) {
-                var overlay = document.getElementById(specimen_id+"$overlay");
-                var counter = document.getElementById(specimen_id+"$counter");
-                $(overlay).fadeOut(200);
-                $(counter).fadeIn(200);
-            }
-            
             setTimeout(function () {
                 $("p.alert.alert-success").fadeOut();
             }, 3000);
