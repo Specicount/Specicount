@@ -199,6 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form->addHtml('<div id="'.$specimen_pkeys.'$overlay" class="overlay">');
             $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
             $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys.'$close" class="fas fa-window-close top-right-btn"></i></span></a>');
+            $my_access_level = getAccessLevel();
             if ($my_access_level != "visitor") {
                 $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
                 $form->addBtn('submit', 'add-to-sample-btn', $specimen_pkeys, 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button mid-btn, data-style=zoom-in');
