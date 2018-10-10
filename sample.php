@@ -288,7 +288,7 @@ if($db->rowCount() > 0) {
         $image = $specimen["image_folder"].$specimen["primary_image"];
 
         // i.e. reference with $('.container .counter') {$(this).do whatever}
-        $form->addHtml('<div name="container" data-project-id="'.$specimen["specimen_project_id"].'" data-specimen-id="'.$specimen["specimen_project_id"].'" class="specimen-container cell"');
+        $form->addHtml('<div data-project-id="'.$specimen["specimen_project_id"].'" data-specimen-id="'.$specimen["specimen_project_id"].'" class="specimen-container cell"');
         if (is_file($image)) {
             $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
         }
@@ -299,7 +299,7 @@ if($db->rowCount() > 0) {
         $form->addHtml('<a href="#"><span><i class="fas fa-window-close top-right-btn close"></i></span></a>');
         if ($my_access_level != "visitor") {
             $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
-            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success mid-btn, data-style=zoom-in, onclick=add(\''.$specimen["specimen_project_id"].'\', \''.$specimen["specimen_id"].'\');updateCounter(\''.$specimen["specimen_project_id"].'\', \''.$specimen["specimen_id"].'\')');
+            $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success mid-btn, data-style=zoom-in, onclick=addToSpecimen(this);updateCounter(this)');
             // Delete button must have an array as well - bit ugly :(
             $form->addBtn('submit', 'delete['.$specimen["specimen_project_id"].']['.$specimen["specimen_id"].']', 1, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger bot-right-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
         } else {
@@ -307,7 +307,7 @@ if($db->rowCount() > 0) {
         }
 
         // Create POST array in the form specimen_counts[project_id][specimen_id]
-        $form->addInput('number', 'specimen_counts['.$specimen["specimen_project_id"].']['.$specimen["specimen_id"].']', $specimen["count"], '', $readonly_attr.'required onchange=updateCounter(\''.$specimen_pkeys.'\')');
+        $form->addInput('number', 'specimen_counts['.$specimen["specimen_project_id"].']['.$specimen["specimen_id"].']', $specimen["count"], '', $readonly_attr.'required, onchange=updateCounter(this)');
 
         $form->addHtml('</div>');
         $form->addHtml('</div>');
@@ -353,17 +353,33 @@ $page_render->renderPage();
         }
     }
 
-    // Update counter text on hover
-    function updateCounter(specimen_project_id, specimen_id){
-        document.getElementById(specimen_id+"$counter_text").innerHTML = document.getElementById(specimen_id).value;
+    // Add for charcoal and lycopodium
+    function add(element_id) {
+        document.getElementById(element_id).value = parseInt(document.getElementById(element_id).value) + 1;
     }
 
-    // Add to counter
-    function add(specimen_project_id, specimen_id) {
-        //console.log("value of "+specimen_id+" input is "+document.getElementById(specimen_id).value);
-        document.getElementById(specimen_id).value = parseInt(document.getElementById(specimen_id).value) + 1;
-        var container = document.getElementById(specimen_id+"$container");
-        var overlay = document.getElementById(specimen_id+"$overlay");
+    // Subtract for charcoal and lycopodium
+    function subtract(element_id){
+        document.getElementById(element_id).value = parseFloat(document.getElementById(element_id).value) - 1;
+    }
+
+    // Update counter text on hover
+    function updateCounter(element){
+        var container = $(element).closest(".specimen-container");
+        var counter = container.find(".counter-text");
+        var input = container.find("input");
+        counter.html(input.val());
+    }
+
+
+    // Add to specimen counter
+    function addToSpecimen(element) {
+        var container = $(element).closest(".specimen-container");
+        var input = container.find("input");
+        var overlay = container.find(".overlay");
+        input.val(Number(input.val())+1);
+        updateCounter(container);
+
         $(container).addClass('interaction-highlight');
         $(overlay).addClass('interaction-highlight');
         setTimeout(function () {
@@ -372,27 +388,29 @@ $page_render->renderPage();
         }, 1000);
     }
 
-    // Subtract from counter
-    function subtract(specimen_id){
-        document.getElementById(specimen_id).value = parseFloat(document.getElementById(specimen_id).value) - 1;
-    }
+    // Store outside function so it doesn't have to be calculated every time on keypress
+    var containers = $(".specimen-container");
 
     // Enable key presses for counter
     window.onkeyup = function(e) {
-        // noinspection JSAnnotator
-        let key = e.keyCode ? e.keyCode : e.which;
         <?php
-        $keys = str_split("qwertyuiopasdfghjklzxcvbnm"); // hotkeys
-        $i = 0;
-        foreach ($keys as $k) {
-            echo "if (key == ".(ord($k) - 32).") {
-                    add('".$specimen_data[$i]["specimen_project_id"]."', '".$specimen_data[$i]["specimen_id"]."');
-                    updateCounter('".$specimen_data[$i]["specimen_project_id"]."', '".$specimen_data[$i]["specimen_id"]."');
-                  }";
-            $i++;
-            if ($i >= count($specimen_data)) break;
-        }
+        $keys = json_encode(str_split("qwertyuiopasdfghjklzxcvbnm")); // hotkeys
         ?>
+        var key_pressed;
+        if (e.key !== undefined) {
+            key_pressed = e.key;
+        } else if (e.keyIdentifier !== undefined) {
+            key_pressed = e.keyIdentifier;
+        } else if (e.keyCode !== undefined) {
+            key_pressed = e.keyCode;
+        }
+        let keys = <?=$keys?>;
+        containers.each(function(index, e){
+            if (key_pressed == keys[index] || key_pressed == keys[index].toUpperCase()) {
+                addToSpecimen(this);
+                return false;
+            }
+        });
     };
 
     // The popover for the graph
