@@ -299,6 +299,9 @@ function getForgotPasswordModal () {
  */
 function sendForgotPasswordEmail ($actual_link) {
 
+    global $messages;
+
+
     // Mail server to send email from
     $smtp_settings = array(
         'host' => 'smtp.gmail.com',
@@ -350,7 +353,7 @@ function sendForgotPasswordEmail ($actual_link) {
                 storeErrorMsg("Could not send email!");
             }
             if (stripos($sent_message, "error")) {
-                storeErrorMsg($sent_message);
+                $messages['error'] = $sent_message;
             } else {
                 storeSuccessMsg("Email sent successfully!");
             }

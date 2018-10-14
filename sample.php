@@ -32,7 +32,7 @@ class Sample_Count_Form extends Post_Form {
             storeErrorMsg("You cannot do that as visitor");
             return;
         }
-
+ 
         // -------- DELETE --------
         $specimen_project_id = key($_POST["delete"]);
         $specimen_id = key($_POST["delete"][$specimen_project_id]);
