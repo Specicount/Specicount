@@ -306,8 +306,8 @@ function sendForgotPasswordEmail ($actual_link) {
     $smtp_settings = array(
         'host' => 'smtp.gmail.com',
         'smtp_auth' => true,    // Enable SMTP authentication
-        'username' => 'anu.biodata@gmail.com',     // SMTP username
-        'password' => 'Bio123Data',     // SMTP password
+        'username' => 'specicount@gmail.com',     // SMTP username
+        'password' => 'Wm9^Jkd757ps',     // SMTP password
         'smtp_secure' => 'tls',  // Enable TLS encryption, `ssl` also accepted
         'port' => 587
     );
