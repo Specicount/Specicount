@@ -198,7 +198,7 @@ $form->setOptions(array('buttonWrapper'=>'')); // So that the button can be prin
 
 $my_access_level = getAccessLevel();
 
-if ($my_access_level != "visitor") {
+if ($my_access_level == "owner" || $my_access_level == "admin") {
     $form->startFieldset('Add New User to Project');
 
     $form->setCols(0,6);
@@ -288,7 +288,7 @@ foreach ($db->recordsArray() as $user) {
 }
 $form->endFieldset();
 
-if ($my_access_level != "visitor") {
+if ($my_access_level == "owner" || $my_access_level == "admin") {
     $form->startFieldset('');
     $form->setCols(0,12);
     $form->addHtml("<br>");

@@ -32,7 +32,7 @@ function getTable(){
         width: 100%;
     }
     .project-list th, .project-list td{
-        border: 1px solid #343a40;
+        border: 1px solid #b9b9b9;
         padding: 0px;
         vertical-align:top;
     }
@@ -68,12 +68,15 @@ function getTable(){
         $num_specimens = $db->querySingleValue("SELECT COUNT(*) FROM specimens WHERE project_id=".$project_id_sql);
         $db->selectRows("samples", array("project_id"=>$project_id_sql),"last_edit", "last_edit", true);
         $last_sample_edit = $db->recordsArray()[0]["last_edit"];
-//        $db->query("SELECT cores.core_id, COUNT(samples.sample_id) AS cnt FROM cores LEFT JOIN samples ON cores.core_id = samples.core_id WHERE cores.project_id =".$project_id_sql." GROUP BY cores.core_id ORDER BY cores.core_id");
-        if ($project_id == $_GET["project_id"]) {
-            $output .= "<tr class='rowlink active' data-link='?project_id=".$project_id."'>";
-        } else {
-            $output .= "<tr class='rowlink' data-link='?project_id=".$project_id."'>";
+        $class = "";
+        if ($project_id == "Global Reference Specimens") {
+            $class .= " table-primary";
         }
+        if ($project_id == $_GET["project_id"]) {
+            $class .= " active";
+        }
+
+        $output .= "<tr class='rowlink ".$class."' data-link='?project_id=".$project_id."'>";
         $output .= "<td><text>".$project_id."</text></td>";
         $output .= "<td><text>".$project_array["access_level"]."</text></td>";
         $output .= "<td><text>".$num_cores."</text></td>";

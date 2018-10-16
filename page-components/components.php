@@ -47,6 +47,12 @@ function getNavbar ($render_side, $navbar_text) {
     ";
     // If a user is logged in
     if (isset($_SESSION["email"])) {
+        // If a user is trusted
+        $db = new Mysql();
+        $db->selectRows("users", array("email"=>Mysql::sqlValue($_SESSION["email"])));
+        if ($db->recordsArray()[0]["is_trusted"] == true) {
+            $output .= '<a style="color:white; margin-right: 20px;text-decoration: none;" href="new_trusted_user.php"><i class="fa fa-user-plus"></i> New Trusted User</a>';
+        }
         $output .= '<a style="color:white; margin-right: 20px;text-decoration: none;" href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a>';
     } else {
         $output .= "<a style=\"color:white; margin-right: 20px;text-decoration: none;\" href='#' data-remodal-target=\"modal-login-target\"><i class=\"fa fa-sign-in-alt\"></i> Log In</a>";
@@ -168,15 +174,22 @@ function getSidebar () {
             // Print the projects
             $output .= "<ul id='".$project_id."' class='list-unstyled'>
                         <li><a href='project_access.php?project_id=".$project_id."'><i class='fa fa-users'></i> View Project Users</a></li>";
-            if ($my_access_level == "visitor") {
-                $output .= "<li><a href='add_new_project.php?edit=true&project_id=".$project_id."'><i class='fa fa-info-circle'></i> View Project Details</a></li>";
-            } else {
-                $output .= "<li><a href='add_new_project.php?edit=true&project_id=".$project_id."'><i class='fa fa-edit'></i> Edit Project</a></li>";
+            if ($project_id != "Global Reference Specimens") {
+                if ($my_access_level == "visitor") {
+                    $output .= "<li><a href='add_new_project.php?edit=true&project_id=" . $project_id . "'><i class='fa fa-info-circle'></i> View Project Details</a></li>";
+                } else {
+                    $output .= "<li><a href='add_new_project.php?edit=true&project_id=" . $project_id . "'><i class='fa fa-edit'></i> Edit Project</a></li>";
+                }
             }
 
             if ($my_access_level != "visitor") {
-                $output .= "<li><a href='add_new_specimen.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Specimen</a></li>
-                            <li><a href='add_new_core.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Core</a></li>";
+                $output .= "<li><a href='add_new_specimen.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Specimen</a></li>";
+                if ($project_id != "Global Reference Specimens") {
+                    $output .= "<li><a href='add_new_core.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Core</a></li>";
+                } else {
+                    $output .= '<li><a href="search_specimen.php?project_id='.$project_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>';
+                }
+
             }
             $db->selectRows("cores", array("project_id" => Mysql::SQLValue($project_id)), "core_id", "core_id", true);
             foreach ($db->recordsArray() as $core_array) {

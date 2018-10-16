@@ -178,3 +178,6 @@ CREATE TABLE IF NOT EXISTS concentration_curve (
   FOREIGN KEY (core_id) REFERENCES cores (core_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- Create the 'Global Reference Specimens' project so trusted users can be added to it
+INSERT INTO `BioBase`.`projects` (`project_id`, `is_global`) VALUES ('Global Reference Specimens', '1');

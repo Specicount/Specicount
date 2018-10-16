@@ -202,7 +202,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $my_access_level = getAccessLevel();
             if ($my_access_level != "visitor") {
                 $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
-                $form->addBtn('submit', 'add-to-sample-btn', $specimen_pkeys, 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button mid-btn, data-style=zoom-in');
+                if (isset($_GET["sample_id"])) {
+                    $form->addBtn('submit', 'add-to-sample-btn', $specimen_pkeys, 'Add To Sample <i class="fa fa-plus-circle" aria-hidden="true"></i>', 'class=btn btn-success ladda-button mid-btn, data-style=zoom-in');
+                }
                 $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-right-btn"></i></a>');
             } else {
                 $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-right-btn"></i></a>');
@@ -212,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $form->addHtml('</div><br><br>');
     } else {
-        $form->addHtml('<p class="alert alert-danger col-sm-10">No samples found</p>');
+        $form->addHtml('<p class="alert alert-danger col-sm-10">No specimen found</p>');
     }
 }
 
@@ -225,6 +227,6 @@ $form->addPlugin('formvalidation', '#add-new-sample', 'bs4');
 $title = $_GET['project_id']." > ". $_GET['core_id']. " > ".$_GET['sample_id']." > Search Sample";
 $page_render = new \classes\Page_Renderer();
 $page_render->setForm($form);
-$page_render->setPageRestrictions(true, true, true, true);
+$page_render->setPageRestrictions(true, true, false, false);
 $page_render->setPageTitle($title);
 $page_render->renderPage();
