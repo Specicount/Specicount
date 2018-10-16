@@ -111,15 +111,7 @@ class Search_Form extends Post_Form {
             case "my-projects": $sql = "SELECT project_id FROM user_project_access WHERE email=$my_email AND access_level='owner'"; break;
             case "shared-projects": $sql = "SELECT project_id FROM user_project_access WHERE email=$my_email AND access_level<>'owner'"; break;
             case "global-projects": $sql = "SELECT project_id FROM projects WHERE is_global=TRUE"; break;
-            case "trusted-global-projects": $this->db->query("DROP TABLE IF EXISTS temp1, temp2");
-                                            $this->db->query("CREATE TEMPORARY TABLE temp1 AS
-                                                                  (SELECT DISTINCT project_id, is_trusted
-                                                                  FROM projects NATURAL JOIN user_project_access NATURAL JOIN users
-                                                                  WHERE is_global=TRUE)");
-                                            $this->db->query("CREATE TEMPORARY TABLE temp2 AS (SELECT * FROM temp1)");
-                                            $sql = "SELECT DISTINCT project_id FROM temp1
-                                                        WHERE is_trusted=TRUE AND project_id NOT IN 
-                                                        (SELECT DISTINCT project_id FROM temp2 WHERE is_trusted=FALSE)"; break;
+            case "global-reference-specimens": $sql = "SELECT project_id FROM projects WHERE project_id='Global Reference Specimens'"; break;
         }
         $this->db->query($sql);
         $projects = $this->db->recordsArray();
@@ -169,7 +161,7 @@ $form->addOption("project-filter", "this-project", "This project");
 $form->addOption("project-filter", "my-projects", "My projects");
 $form->addOption("project-filter", "shared-projects", "Shared projects");
 $form->addOption("project-filter", "global-projects", "Global projects");
-$form->addOption("project-filter", "trusted-global-projects", "Trusted global projects");
+$form->addOption("project-filter", "global-reference-specimens", "Global reference specimens");
 $form->addOption("project-filter", "all", "All");
 $form->setCols(0, 3);
 $form->addSelect("project-filter", '', 'required');
