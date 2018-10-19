@@ -10,6 +10,19 @@ use phpformbuilder\Form;
 use const phpformbuilder\database\DBNAME;
 
 /**
+ * Create min folders
+ */
+function createMinFolders ()
+{
+    if (!is_dir("/var/www/html/phpformbuilder/plugins/min/js")) {
+        mkdir("/var/www/html/phpformbuilder/plugins/min/js", 755);
+    }
+    if (!is_dir("/var/www/html/phpformbuilder/plugins/min/css")) {
+        mkdir("/var/www/html/phpformbuilder/plugins/min/css", 755);
+    }
+}
+
+/**
  * @return mixed|string the system OS
  */
 function getOS() {
@@ -362,5 +375,24 @@ function sendForgotPasswordEmail ($actual_link) {
         }
     } else {
         storeErrorMsg("Email address not found!");
+    }
+}
+
+/**
+ * Delete entire folder including its contents
+ * @param $target string the folder to be removed
+ */
+function delete_files($target) {
+    if(is_dir($target)){
+        $files = glob( $target . '*', GLOB_MARK ); //GLOB_MARK adds a slash to directories returned
+
+        foreach( $files as $file )
+        {
+            delete_files( $file );
+        }
+
+        rmdir( $target );
+    } elseif(is_file($target)) {
+        unlink( $target );
     }
 }

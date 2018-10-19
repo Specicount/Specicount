@@ -17,3 +17,5 @@ $db = new Mysql();
 $db->updateRows("users", array("password_reset_code" => "NULL"));
 
 // TODO do the backups (also how to backup pictures)
+
+//

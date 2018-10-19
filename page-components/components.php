@@ -36,7 +36,7 @@ function getHeader() {
 
 # Return Navbar
 function getNavbar ($render_side, $navbar_text) {
-    $output = "
+    /*$output = "
     <nav><div class=\"navbar navbar-expand\">
     <div class=\"navbar-nav mr-auto\">";
     if ($render_side) {
@@ -44,38 +44,51 @@ function getNavbar ($render_side, $navbar_text) {
     }
     $output .= "<text class=\"text-center\">Specicount - $navbar_text</text>
     </div>
-    ";
+    ";*/
+
+    $output = "";
+
+
+    $accounts = "";
     // If a user is logged in
     if (isset($_SESSION["email"])) {
         // If a user is trusted
         $db = new Mysql();
         $db->selectRows("users", array("email"=>Mysql::sqlValue($_SESSION["email"])));
         if ($db->recordsArray()[0]["is_trusted"] == true) {
-            $output .= '<a style="color:white; margin-right: 20px;text-decoration: none;" href="new_trusted_user.php"><i class="fa fa-user-plus"></i> New Trusted User</a>';
+            $accounts .= '<a href="new_trusted_user.php"><i class="fa fa-user-plus"></i> New Trusted User</a>';
         }
-        $output .= '<a style="color:white; margin-right: 20px;text-decoration: none;" href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a>';
+        $accounts .= '<a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a>';
     } else {
-        $output .= "<a style=\"color:white; margin-right: 20px;text-decoration: none;\" href='#' data-remodal-target=\"modal-login-target\"><i class=\"fa fa-sign-in-alt\"></i> Log In</a>";
+        $accounts .= "<a href='#' data-remodal-target=\"modal-login-target\"><i class=\"fa fa-sign-in-alt\"></i> Log In</a>";
     }
-    $output .= "</div>
 
+
+
+    $output = "
     <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">
-        <a class=\"ribbon-button\" href=\"index.php\" style=\"width:33.333%\"><i class=\"fa fa-home\"></i> Home</a>
-        <div class=\"dropdown\" style=\"width:33.333%\">
+        <a class=\"ribbon-button\" href=\"index.php\" style=\"width:25%\"><i class=\"fa fa-home\"></i> Home</a>
+        <div class=\"dropdown\" style=\"width:25%\">
             <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\"><i class=\"fa fa-folder\"></i> Projects</a>
             <div class=\"dropdown-content\" style=\"width:100%\">
                 <a href=\"projects.php\">Recent Projects</a>
                 <a href=\"add_new_project.php\">New Project</a>
             </div>
         </div>
-        <div class=\"dropdown\" style=\"width:33.334%\">
-            <a href=\"help.php\"  class=\"ribbon-button\"><i class=\"fa fa-question-circle\"></i> Help</a>
+        <div class=\"dropdown\" style=\"width:25%\">
+            <a href=\"help.php\" class=\"ribbon-button\"><i class=\"fa fa-question-circle\"></i> Help</a>
             <div class=\"dropdown-content\">
-                <a href=\"stats.php\">Stats</a>
+                <!--<a href=\"stats.php\">Stats</a>-->
                 <a href=\"help.php?tab=FAQ\">Frequently Asked Questions</a>
                 <a href=\"help.php?tab=Documentation\">Documentation</a>
                 <a href=\"help.php?tab=User_Guide\">How To Use</a>
                 <a href=\"mailto:&#097;&#110;&#117;&#046;&#098;&#105;&#111;&#100;&#097;&#116;&#097;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;?subject=BioData Bug Report\"><i class=\"fa fa-bug\"></i> Report A Bug</a>
+            </div>
+        </div>
+        <div class=\"dropdown\" style=\"width:25%\">
+            <a href=\"#\" class=\"ribbon-button\" style=\"width:100%\"><i class=\"fa fa-user-circle\"></i> Account</a>
+            <div class=\"dropdown-content\" style=\"width:100%\">
+                $accounts
             </div>
         </div>
     </div>
