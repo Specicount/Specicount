@@ -89,7 +89,7 @@ if (isset($specimen["image_folder"])) {
         if (!$fileinfo->isDot()) {
             $image = $fileinfo->getFilename();
             if ($image != "thumbnail") {
-                $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["specimen_id"] . '/' . $image . '"><br />';
+                $output .= '<img style="width: 300px;padding-bottom: 15px;" src="/phpformbuilder/images/uploads/' . $specimen["project_id"] . '/' . $specimen["specimen_id"] . '/' . $image . '"><br />';
             }
         }
     }

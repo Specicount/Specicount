@@ -182,15 +182,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         foreach ($results as $specimen) {
             $specimen_pkeys = $specimen["project_id"].'~'.$specimen["specimen_id"];
             $image = $specimen["image_folder"].$specimen["primary_image"];
-            $form->addHtml('<div id="'.$specimen_pkeys.'$container" class="specimen-container cell"');
+            $form->addHtml('<div class="specimen-container cell"');
             if (is_file($image)) {
-                $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
+                $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["project_id"].'/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
             }
             $form->addHtml('>');
-            $form->addHtml('<div id="'.$specimen_pkeys.'$counter" class="counter"><p id="'.$specimen_pkeys.'$counter_text">ID: ' . $specimen["specimen_id"] . '</p></div>');
-            $form->addHtml('<div id="'.$specimen_pkeys.'$overlay" class="overlay">');
+            $form->addHtml('<div class="counter"><p class="counter-text">ID: ' . $specimen["specimen_id"] . '</p></div>');
+            $form->addHtml('<div class="overlay">');
             $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
-            $form->addHtml('<a href="#"><span><i id="'.$specimen_pkeys.'$close" class="fas fa-window-close top-right-btn"></i></span></a>');
+            $form->addHtml('<a href="#"><span><i class="fas fa-window-close top-right-btn close"></i></span></a>');
             $my_access_level = getAccessLevel();
             if ($my_access_level != "visitor") {
                 $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');

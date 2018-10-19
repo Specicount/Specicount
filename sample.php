@@ -281,9 +281,7 @@ if($db->rowCount() > 0) {
     foreach ($specimen_data as $specimen) {
         $specimen_pkeys = $specimen["specimen_project_id"].'~'.$specimen["specimen_id"];
         $image = $specimen["image_folder"].$specimen["primary_image"];
-
-        // i.e. reference with $('.container .counter') {$(this).do whatever}
-        $form->addHtml('<div data-project-id="'.$specimen["specimen_project_id"].'" data-specimen-id="'.$specimen["specimen_project_id"].'" class="specimen-container cell"');
+        $form->addHtml('<div class="specimen-container cell"');
         if (is_file($image)) {
             $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_project_id"].'/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
         }
