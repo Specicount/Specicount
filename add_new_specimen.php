@@ -664,9 +664,9 @@ if(!is_dir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["project_id"] . 
     umask(0);
 }
 
-// NOT WORKING ATM
+
 if ($_GET["edit"]) {
-    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"].'/';
+    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["project_id"].'/'.$_GET["specimen_id"].'/';
     if (file_exists($current_file_path)) {
         $dir = new DirectoryIterator($current_file_path);
         foreach ($dir as $fileinfo) {
