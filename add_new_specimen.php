@@ -31,7 +31,7 @@ class Specimen_Form extends Add_New_Post_Form {
             storeDbMsg($this->db);
         } else {
             global $image_folder;
-            delete_files($image_folder . '/' . $_GET["project_id"] . '/' . $_POST["specimen_id"]. "/");
+            delete_files($image_folder . $_GET["project_id"] . "/" . $_POST["specimen_id"]. "/");
             $success_message = urlencode(ucwords($this->form_ID) . " successfully deleted!");
             header("location: index.php?success_message=".$success_message);
             exit;
@@ -122,14 +122,13 @@ class Specimen_Form extends Add_New_Post_Form {
         $update["morphology_notes"] = Mysql::SQLValue($_POST["morphology_notes"], "text");
 
         if (!empty($_POST["uploaded-images"])) {
-            $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["specimen_id"] . "/", "text");
-            mkdir($image_folder . $_POST["specimen_id"]);
+            $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["project_id"] . "/" . $_POST["specimen_id"]. "/", "text");
+            mkdir($image_folder . $_POST["project_id"] . "/" . $_POST["specimen_id"]);
             $uploaded_images = json_decode($_POST["uploaded-images"], true);
             $update["primary_image"] = Mysql::SQLValue(extract_name($uploaded_images[0]["file"]), "text");
             foreach ($uploaded_images as $image) {
                 $image = extract_name($image["file"]);
-                //echo $image_folder.$image, $image_folder.$_POST["specimen_id"]."/".$image;
-                rename($image_folder . $image, $image_folder . $_POST["specimen_id"] . "/" . $image);
+                rename($image_folder . $image, $image_folder . $_POST["project_id"] . "/" . $_POST["specimen_id"]. "/" . $image);
             }
         }
 
@@ -665,9 +664,9 @@ if(!is_dir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["project_id"] . 
     umask(0);
 }
 
-// NOT WORKING ATM
+
 if ($_GET["edit"]) {
-    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"].'/';
+    $current_file_path = '/var/www/html/phpformbuilder/images/uploads/'.$_GET["project_id"].'/'.$_GET["specimen_id"].'/';
     if (file_exists($current_file_path)) {
         $dir = new DirectoryIterator($current_file_path);
         foreach ($dir as $fileinfo) {

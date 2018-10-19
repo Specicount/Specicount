@@ -285,7 +285,7 @@ if($db->rowCount() > 0) {
         // i.e. reference with $('.container .counter') {$(this).do whatever}
         $form->addHtml('<div data-project-id="'.$specimen["specimen_project_id"].'" data-specimen-id="'.$specimen["specimen_project_id"].'" class="specimen-container cell"');
         if (is_file($image)) {
-            $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
+            $form->addHtml(' style="background-image:url(\'/phpformbuilder/images/uploads/'.$specimen["specimen_project_id"].'/'.$specimen["specimen_id"].'/'.$specimen["primary_image"].'\');"');
         }
         $form->addHtml('>');
         $form->addHtml('<div class="counter"><p class="counter-text">' . $specimen["count"] . '</p></div>');
