@@ -12,21 +12,6 @@ use classes\Add_New_Post_Form;
 require_once "classes/Page_Renderer.php";
 require_once "classes/Add_New_Post_Form.php";
 
-function delete_files($target) {
-    if(is_dir($target)){
-        $files = glob( $target . '*', GLOB_MARK ); //GLOB_MARK adds a slash to directories returned
-
-        foreach( $files as $file )
-        {
-            delete_files( $file );
-        }
-
-        rmdir( $target );
-    } elseif(is_file($target)) {
-        unlink( $target );
-    }
-}
-
 function extract_name($file) {
     $file_array = explode("/", $file);
     return empty($file_array[1]) ? $file_array[0] : $file_array[1];
@@ -46,7 +31,7 @@ class Specimen_Form extends Add_New_Post_Form {
             storeDbMsg($this->db);
         } else {
             global $image_folder;
-            delete_files($image_folder . $_POST["specimen_id"]. "/");
+            delete_files($image_folder . '/' . $_GET["project_id"] . '/' . $_POST["specimen_id"]. "/");
             $success_message = urlencode(ucwords($this->form_ID) . " successfully deleted!");
             header("location: index.php?success_message=".$success_message);
             exit;
@@ -675,16 +660,9 @@ $fileUpload_config = array(
     'debug'         => true
 );
 
-if(!is_dir('/var/www/html/phpformbuilder/images/uploads')) {
-    mkdir('/var/www/html/phpformbuilder/images/uploads', 0777);
+if(!is_dir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["project_id"] . "/" . $_GET["specimen_id"])) {
+    mkdir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["project_id"] . "/" . $_GET["specimen_id"], 0777, true);
     umask(0);
-    chmod('/var/www/html/phpformbuilder/images/uploads', 0777);
-}
-
-if(!is_dir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"])) {
-    mkdir('/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"], 0777);
-    umask(0);
-    chmod('/var/www/html/phpformbuilder/images/uploads/'.$_GET["specimen_id"], 0777);
 }
 
 // NOT WORKING ATM
@@ -703,7 +681,7 @@ if ($_GET["edit"]) {
                             'name' => $current_file_name,
                             'size' => $current_file_size,
                             'type' => $current_file_type,
-                            'file' => '/phpformbuilder/images/uploads/' . $_GET["specimen_id"] . "/" . $current_file_name, // url of the file
+                            'file' => '/phpformbuilder/images/uploads/' . $_GET["project_id"] . '/' . $_GET["specimen_id"] . "/" . $current_file_name, // url of the file
                             'data' => array(
                                 'listProps' => array(
                                     'file' => $current_file_name
@@ -719,7 +697,7 @@ if ($_GET["edit"]) {
         $fileUpload_config = array(
             'xml' => 'image-upload', // the thumbs directories must exist
             'uploader' => 'ajax_upload_image.php', // the uploader file in phpformbuilder/plugins/fileuploader/[xml]/php
-            'upload_dir' => '../../../../images/uploads/' . $_GET["specimen_id"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
+            'upload_dir' => '../../../../images/uploads/' . $_GET["project_id"] . '/' . $_GET["specimen_id"] . '/', // the directory to upload the files. relative to [plugins dir]/fileuploader/image-upload/php/ajax_upload_file.php
             'limit' => 10, // max. number of files
             'file_max_size' => 3, // each file's maximal size in MB {null, Number}
             'extensions' => ['jpg', 'jpeg', 'png'],
