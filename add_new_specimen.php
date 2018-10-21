@@ -120,13 +120,13 @@ class Specimen_Form extends Add_New_Post_Form {
         $update["morphology_notes"] = Mysql::SQLValue($_POST["morphology_notes"], "text");
 
         if (!empty($_POST["uploaded-images"])) {
-            $update["image_folder"] = Mysql::SQLValue($image_folder . $_POST["project_id"] . "/" . $_POST["specimen_id"]. "/", "text");
-            mkdir($image_folder . $_POST["project_id"] . "/" . $_POST["specimen_id"]);
+            $update["image_folder"] = Mysql::SQLValue($image_folder . $_GET["project_id"] . "/" . $_POST["specimen_id"]. "/", "text");
+            mkdir($image_folder . $_GET["project_id"] . "/" . $_POST["specimen_id"]);
             $uploaded_images = json_decode($_POST["uploaded-images"], true);
             $update["primary_image"] = Mysql::SQLValue(extract_name($uploaded_images[0]["file"]), "text");
             foreach ($uploaded_images as $image) {
                 $image = extract_name($image["file"]);
-                rename($image_folder . $image, $image_folder . $_POST["project_id"] . "/" . $_POST["specimen_id"]. "/" . $image);
+                rename($image_folder . $image, $image_folder . $_GET["project_id"] . "/" . $_POST["specimen_id"]. "/" . $image);
             }
         }
 
