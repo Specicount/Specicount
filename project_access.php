@@ -159,6 +159,11 @@ class Access_Form extends Post_Form {
 
     protected function leaveAsOwner() {
         // -------- VALIDATION --------
+        if (empty($_POST["new-owner-email"])) {
+            storeErrorMsg("You must enter another user's email");
+            return;
+        }
+
         $my_access_level = getAccessLevel();
         // Make sure that only the owner can transfer ownership
         if ($my_access_level != "owner") {
@@ -305,7 +310,7 @@ if ($my_access_level == "owner") {
     $form->groupInputs("new-owner-email","leave-btn");
     $form->setCols(0,5);
     $form->addHelper("New Owner's Email", "new-owner-email");
-    $form->addInput("text","new-owner-email", "", "", "required");
+    $form->addInput("text","new-owner-email", "", "", "");
     $form->setCols(0,7);
     $form->addBtn('submit', 'leave-owner-btn', true, '<i class="fa fa-sign-out-alt" aria-hidden="true"></i> Leave and Transfer Ownership', "class=btn btn-warning, onclick=return confirm('Are you sure you want to leave this project and transfer ownership?')");
 } else {
