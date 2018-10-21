@@ -51,19 +51,58 @@ button:focus {outline:0;}
 <br>
 <button class="collapsible" id="FAQ">FAQ</button>
 <div class="content">
-  <p style="padding-top: 10px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer aliquet sapien id sapien interdum, ac euismod sapien mollis. Aenean lacinia libero id diam viverra, eu vestibulum lacus convallis. Fusce lacus enim, malesuada in lorem et, venenatis bibendum lacus. Ut vestibulum erat nibh, eget ullamcorper risus pretium in. Ut fermentum convallis congue. Nulla semper varius imperdiet. Curabitur convallis, nibh sed eleifend luctus, erat ex tincidunt enim, vel ornare felis lectus non quam. Donec rutrum elit vel rhoncus gravida. Vivamus ornare velit vitae quam venenatis accumsan. Sed ac massa posuere, ultrices dui nec, tincidunt elit. Proin ut cursus lorem, ac molestie dui.</p>
-  <p style="padding-top: 10px;">Sed porta lorem rutrum nisl fringilla ullamcorper. Donec tristique varius lectus, nec ultrices nisl lacinia a. Phasellus sollicitudin tortor nec tincidunt pharetra. Maecenas placerat euismod urna non malesuada. Nunc ac enim libero. Integer vehicula diam sed sagittis elementum. Aenean sit amet vestibulum augue. Nunc facilisis pulvinar eros, sit amet blandit nunc congue vitae. Cras laoreet enim a volutpat pellentesque. Duis aliquam ex quis est bibendum, et pulvinar ligula aliquam. Nunc non lorem ligula. Nam rhoncus diam eget tempor finibus. Praesent diam dui, venenatis nec ligula vel, ultricies mollis dolor.</p>
+  <p style="padding-top: 10px; font-weight: bold;">Help! I can’t access the projects page</p>
+  <p>Don’t panic, this is likely because you’re not logged in or the session has expired.<br>
+     Please click on the accounts tab to check if you’re currently logged in.<br>
+     If you still don’t access, please go to the Help tab and click report a bug to report your issue.
+  </p>
+  <p style="padding-top: 10px; font-weight: bold;">My projects page is empty!</p>
+  <p>No need to worry, this is likely because you don’t have any projects. Just click new project in the projects tab to create a fresh project. Once this is done you should be able to see and click on your new project. Alternatively, if you are collaborating with another member, ask them to share their project with you so that you can start collaborating!
+     <br><br>
+     If you did have projects previously and your project page is empty, please check that your current account is correct, otherwise this is an issue and should be reported immediately.
+  </p>
+  <p style="padding-top: 10px; font-weight: bold;">I\'ve forgotten my password!</p>
+  <p>No need to worry! You can reset your password by getting a password reset link.
+     <br>Simply go to the normal login page and click \'Forgot Password\'.
+     <br>Enter your email address and a password reset link will be sent to you with instructions on how to reset your password.
+     <br><br>If you still have any problems, or you forgot your email please contact support about your issue.
+  </p>
+  <p style="padding-top: 10px; font-weight: bold;">Note:  As this is a beta release, if you have any issues - please do not hesitate to use the report a bug feature. We will try get back to you as soon as possible.</p>
 </div>
 <br>
 <button class="collapsible" id="Documentation">Documentation</button>
 <div class="content">
-  <p style="padding-top: 10px;">Integer ultricies elementum tortor sed iaculis. Fusce ut mauris bibendum, elementum quam id, blandit velit. Etiam eget vehicula est, et consectetur justo. Duis lorem nunc, cursus eget pretium gravida, convallis sed ex. Cras in viverra ante. Integer imperdiet velit ac urna fermentum, vel ultricies diam congue. Mauris iaculis erat eros, vel ornare eros pretium a. Phasellus at dapibus ipsum. Donec rutrum lorem nec sapien molestie, sit amet tempus nunc mollis. In at eleifend urna, quis consequat eros. Fusce ut lorem sagittis, molestie nunc a, convallis erat. Praesent eget odio cursus, aliquam massa vel, hendrerit velit. Pellentesque ornare fermentum lobortis. Sed congue enim vitae sodales feugiat. Fusce urna quam, laoreet sit amet lorem vel, euismod condimentum risus. Nullam commodo dolor in tristique ullamcorper.</p>
+  <p style="padding-top: 10px; font-weight: bold;">For documentation, please see the User Manual for full list of features and functionalities</p>
 </div>
 <br>
 <button class="collapsible" id="User_Guide">User Guide</button>
 <div class="content">
-  <p style="padding-top: 10px;">Vestibulum pulvinar ut nibh eu volutpat. Aliquam vel tempor libero. Donec at interdum metus. Donec libero justo, mollis sit amet mi non, mattis vehicula justo. Suspendisse congue sagittis eros, vitae dignissim nisl. Integer venenatis tincidunt orci, at venenatis orci. Phasellus eu finibus mi. Donec est odio, lacinia ut lorem at, gravida tristique dui. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas nec lorem mattis erat consectetur commodo. Maecenas justo dui, commodo sed auctor nec, mollis dapibus neque. Quisque quis tortor tellus. Suspendisse bibendum metus id posuere porttitor. Nunc sit amet velit congue, suscipit purus id, rhoncus arcu. Curabitur dapibus dolor sit amet eros auctor, at luctus est euismod.</p>
-  <p style="padding-top: 10px;">Aenean aliquet libero a bibendum consequat. Quisque sem turpis, eleifend id sodales at, venenatis eget massa. Mauris vitae interdum nibh. Proin ultricies ornare lacus, et consequat ante iaculis vitae. Quisque et posuere metus, vel scelerisque dolor. Aliquam auctor enim imperdiet, volutpat ipsum vel, congue lacus. Quisque blandit turpis quis est feugiat, a bibendum nunc varius. Sed suscipit porta congue. Nam tempus, elit quis auctor sodales, massa mi eleifend lorem, vitae cursus est purus vitae justo. Praesent sit amet eros non enim vulputate porttitor. Proin leo justo, bibendum vel tempus a, ultrices quis risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In elementum leo odio, eget imperdiet nulla dignissim id. Pellentesque a dapibus libero, nec pulvinar sem. Morbi eget accumsan nibh, at consequat nulla.</p>
+  <p style="padding-top: 10px; font-weight: bold;">"Note: This is a brief user guide to get started. For the full user guide please see the user manual.</p>
+  <p style="padding-top: 10px; font-weight: bold;">Register and Login</p>
+  <p>First, please register and login to gain access to the projects page as well as the Specicount software.
+     This can be done through he accounts tab, please use a valid email address, strong password and try to fill the fields as accurately as possible. 
+     <br><br>By universal law your data will not be used for anything besides authentication and contact purposes, your privacy is our concern and we will ensure that your data is safely stored. 
+  </p>
+   <p style="padding-top: 10px; font-weight: bold;">Projects page and getting started</p>
+   <p>To get started you first want to create a project, unless you’ve been invited to collaborate with another member. 
+     <br>To create a project, click on the projects tab and click on the ‘New Project’ tab. Fill in the required fields and click ‘Save’.
+     <br><br>Now please see the next steps for Specimens, Cores and Samples.
+  </p>
+  <p style="padding-top: 10px; font-weight: bold;"> Specimens, Cores and Samples</p>
+  <p>To create a specimen, core or sample simply go open the project you have created or been invited too and a sidebar should appear on the left.
+     <br><br>Click ‘add new specimen’ on the sidebar to create a new specimen and fill in the required fields. Your created specimen will now be visible to samples, which means you must create a core and sample to view it.
+     <br><br>Click ‘add new core’ on the sidebar to create a new core and fill in the required fields. Once a core has been created you should notice it appear on the sidebar with the name of the Core ID you used.
+     <br><br>Samples are linked to cores; therefore, a core must be created first. Once the core has been created click on the core and you should see a ‘add new sample’. Click on this and fill in the required fields and it should appear bellow your core now. Now click on the sample and you should now be able to add new specimens to the sample or search for one you have made previously.
+  </p>
+  <p style="padding-top: 10px; font-weight: bold;">Deleting</p>
+  <p>To delete a project, specimen, core or sample, simply click the edit tab for the relevant object and click the delete button.</p>
+  <p style="padding-top: 10px; font-weight: bold;">Sharing your project</p>
+  <p>To share your project, click on your project and click view projected users on the sidebar. Then enter the email of the person you want to add and select the access level which you want to give them.</p>
+  <p style="padding-top: 10px; font-weight: bold;">Reporting a bug/Feedback on Specicount</p>
+  <p>If you find any ‘bugs’/issues, concerns or feedback please click on the report a bug tab on the help main help tab. You will be redirected to your email client and you can send an email with your problem there. 
+     <br><br>Please keep the subject related to your issue and describe as best you can how you got to you issue -so we can fast track and recreate your problem. 
+     <br><br>We will get back to you as soon as possible and hopefully your problem will be fixed by our development team.
+   </p>
 </div>
 <br>
 <script>
