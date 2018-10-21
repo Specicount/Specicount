@@ -19,7 +19,7 @@ USE BioBase; -- Uncomment this line if you want to execute this script in your S
 CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(50) NOT NULL,
   `password` CHAR(128) NOT NULL,
-  `password_reset_code` CHAR(128) NOT NULL,
+  `password_reset_code` CHAR(128) DEFAULT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
   institution VARCHAR(100),
