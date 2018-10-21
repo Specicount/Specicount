@@ -79,7 +79,6 @@ class Specimen_Form extends Add_New_Post_Form {
         $update["family"] = Mysql::SQLValue($_POST["family"], "text");
         $update["genus"] = Mysql::SQLValue($_POST["genus"], "text");
         $update["species"] = Mysql::SQLValue($_POST["species"], "text");
-        $update["depth"] = Mysql::SQLValue($_POST["depth"], "float");
         $update["poll_spore"] = Mysql::SQLValue($type, "text");
         $update["grain_arrangement"] = Mysql::SQLValue($_POST["grain_arrangement"], "text");
         $update["grain_morphology"] = Mysql::SQLValue(implode(",", $_POST["grain_morphology_$type"]), "text"); // poll / spore
@@ -140,7 +139,6 @@ class Specimen_Form extends Add_New_Post_Form {
         $_SESSION[$this->form_ID]["family"] = $specimen["family"];
         $_SESSION[$this->form_ID]["genus"] = $specimen["genus"];
         $_SESSION[$this->form_ID]["species"] = $specimen["species"];
-        $_SESSION[$this->form_ID]["depth"] = $specimen["depth"];
         $_SESSION[$this->form_ID]["poll_spore"] = $specimen["poll_spore"];
         $_SESSION[$this->form_ID]["grain_arrangement"] = $specimen["grain_arrangement"];
         $_SESSION[$this->form_ID]["grain_morphology_" . $specimen["poll_spore"]] = explode(",", $specimen["grain_morphology"]); // poll / spore
