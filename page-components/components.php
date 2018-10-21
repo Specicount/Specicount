@@ -39,16 +39,11 @@ function getNavbar ($render_side, $navbar_text) {
     /*$output = "
     <nav><div class=\"navbar navbar-expand\">
     <div class=\"navbar-nav mr-auto\">";
-    if ($render_side) {
-        $output .= "<a class=\"sidebar-toggle text-light mr-3\"><i class=\"fa fa-bars\"></i></a>";
-    }
     $output .= "<text class=\"text-center\">Specicount - $navbar_text</text>
     </div>
     ";*/
 
     $output = "";
-
-
     $accounts = "";
     // If a user is logged in
     if (isset($_SESSION["email"])) {
@@ -65,8 +60,12 @@ function getNavbar ($render_side, $navbar_text) {
 
 
 
-    $output = "
-    <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">
+    $output .= "
+    <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">";
+    if ($render_side) {
+        $output .= "<a class=\"ribbon-button sidebar-toggle text-light\" style=\"width:50px; border-right: 1px solid white;\"><i class=\"fa fa-bars\"></i></a>";
+    }
+    $output .= "
         <a class=\"ribbon-button\" href=\"index.php\" style=\"width:25%\"><i class=\"fa fa-home\"></i> Home</a>
         <div class=\"dropdown\" style=\"width:25%\">
             <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\"><i class=\"fa fa-folder\"></i> Projects</a>
