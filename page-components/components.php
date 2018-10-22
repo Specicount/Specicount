@@ -16,6 +16,7 @@ require_once $current_dir.'/functions.php';
 # Return header
 function getHeader() {
     return '
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -63,12 +64,12 @@ function getNavbar ($render_side, $navbar_text) {
     $output .= "
     <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">";
     if ($render_side) {
-        $output .= "<a class=\"ribbon-button sidebar-toggle text-light\" style=\"width:50px; border-right: 1px solid white;\"><i class=\"fa fa-bars\"></i></a>";
+        $output .= "<a class=\"ribbon-button sidebar-toggle text-light\" style=\"width:50px;\"><i class=\"fa fa-bars\"></i></a>";
     }
     $output .= "
         <a class=\"ribbon-button\" href=\"index.php\" style=\"width:25%\"><i class=\"fa fa-home\"></i> Home</a>
         <div class=\"dropdown\" style=\"width:25%\">
-            <a href=\"projects.php\"  class=\"ribbon-button\" style=\"width:100%\"><i class=\"fa fa-folder\"></i> Projects</a>
+            <a href=\"#\"  class=\"ribbon-button\" style=\"width:100%\"><i class=\"fa fa-folder\"></i> Projects</a>
             <div class=\"dropdown-content\" style=\"width:100%\">
                 <a href=\"projects.php\">Recent Projects</a>
                 <a href=\"add_new_project.php\">New Project</a>

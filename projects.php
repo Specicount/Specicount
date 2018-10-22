@@ -14,49 +14,23 @@ function getTable(){
 
     $output= "
     <style>
-    .project-list a, .project-list text {
-        color: inherit;
-        padding:8px;
-        width: 100%;
-        height: 100%;
-        display:inline-block;
-        text-decoration: none;
-    }
-    .project-list tr.rowlink:hover {
-        background-color: #dddddd;
+    .table-row{
         cursor:pointer;
     }
-    .project-list table {
-        border-collapse: collapse;
-        color: #343a40;
-        width: 100%;
-    }
-    .project-list th, .project-list td{
-        border: 1px solid #b9b9b9;
-        padding: 0px;
-        vertical-align:top;
-    }
-    .project-list tr.active{
-        background-color: #dddddd;
-    }
-    .internal-list table, .internal-list td {
-        border-collapse: collapse;
-        background-color: inherit;
-        border: 0px;
-        width: 100%;
-    }
-    .internal-list tr:not(:first-child) {
-        border-top: 1px solid #cccccc;
-    }
     </style>
-    <div>  
-    <table class='project-list' style='width: 100%'>
-    <tr><th style='width: 25%'><text>Name</text></th>
-        <th style='width: 15%'><text>Access Level</text></th>
-        <th style='width: 15%'><text>No. Cores</text></th>
-        <th style='width: 15%'><text>No. Samples</text></th>
-        <th style='width: 15%'><text>No. Specimens</text></th>
-        <th style='width: 15%'><text>Last Sample Edit</text></tr>
+    <div class='container'>  
+    <table class='table table-bordered table-condensed table-striped table-hover' style='width: 100%'>
+    <thead>
+        <tr>
+            <th style='width: 25%'>Name</th>
+            <th style='width: 15%'>Access Level</th>
+            <th style='width: 15%'>No. Cores</th>
+            <th style='width: 15%'>No. Samples</th>
+            <th style='width: 15%'>No. Specimens</th>
+            <th style='width: 15%'>Last Sample Edit</th>
+        </tr>
+    </thead>
+    <tbody>
     ";
 
     foreach ($db->recordsArray() as $project_array) {
@@ -68,24 +42,17 @@ function getTable(){
         $num_specimens = $db->querySingleValue("SELECT COUNT(*) FROM specimens WHERE project_id=".$project_id_sql);
         $db->selectRows("samples", array("project_id"=>$project_id_sql),"last_edit", "last_edit", true);
         $last_sample_edit = $db->recordsArray()[0]["last_edit"];
-        $class = "";
-        if ($project_id == "Global Reference Specimens") {
-            $class .= " table-primary";
-        }
-        if ($project_id == $_GET["project_id"]) {
-            $class .= " active";
-        }
 
-        $output .= "<tr class='rowlink ".$class."' data-link='?project_id=".$project_id."'>";
-        $output .= "<td><text>".$project_id."</text></td>";
-        $output .= "<td><text>".$project_array["access_level"]."</text></td>";
-        $output .= "<td><text>".$num_cores."</text></td>";
-        $output .= "<td><text>".$num_samples."</text></td>";
-        $output .= "<td><text>".$num_specimens."</text></td>";
-        $output .= "<td><text>".$last_sample_edit."</text></td>";
+        $output .= "<tr class='table-row' data-href='?project_id=".$project_id."'>";
+        $output .= "<td>".$project_id."</td>";
+        $output .= "<td>".$project_array["access_level"]."</td>";
+        $output .= "<td>".$num_cores."</td>";
+        $output .= "<td>".$num_samples."</td>";
+        $output .= "<td>".$num_specimens."</td>";
+        $output .= "<td>".$last_sample_edit."</td>";
         $output .= "</tr>";
     }
-    $output .= "</table></div>";
+    $output .= "</tbody></table></div>";
 
     return $output;
 
@@ -105,3 +72,11 @@ if (isset($_GET["project_id"])) {
     $page_render->disableSidebar();
 }
 $page_render->renderPage();
+?>
+<script>
+    $(document).ready(function($) {
+        $(".table-row").click(function() {
+            window.document.location = $(this).data("href");
+        });
+    });
+</script>

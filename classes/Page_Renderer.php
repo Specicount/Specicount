@@ -11,6 +11,8 @@
 
 namespace classes;
 
+ini_set('session.cookie_httponly',1);
+ini_set('session.cookie_secure',1);
 
 use phpformbuilder\Form;
 use classes\Post_Form;
