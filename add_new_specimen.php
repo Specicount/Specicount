@@ -313,6 +313,12 @@ $form->addHelper('Min (rounded to 1dp on save)', 'polar_axis_length_min');
 $form->addHelper('Avg. (rounded to 1dp on save)', 'polar_axis_length_avg');
 $form->addHelper('Max (rounded to 1dp on save)', 'polar_axis_length_max');
 $form->addHelper('Number of measurements', 'polar_axis_n');
+if (!$_GET["edit"]) {
+    unset($_SESSION[$form->getFormName()]['polar_axis_length_min']);
+    unset($_SESSION[$form->getFormName()]['polar_axis_length_avg']);
+    unset($_SESSION[$form->getFormName()]['polar_axis_length_max']);
+    unset($_SESSION[$form->getFormName()]['polar_axis_n']);
+}
 $form->addInput('number', 'polar_axis_length_min', '', 'Polar axis length (µm)', 'readonly="readonly"');
 $form->addInput('number', 'polar_axis_length_avg', '', '', 'readonly="readonly"');
 $form->addInput('number', 'polar_axis_length_max', '', '', 'readonly="readonly"');
@@ -336,6 +342,12 @@ $form->addHelper('Min (rounded to 1dp on save)', 'equatorial_axis_length_min');
 $form->addHelper('Avg. (rounded to 1dp on save)', 'equatorial_axis_length_avg');
 $form->addHelper('Max (rounded to 1dp on save)', 'equatorial_axis_length_max');
 $form->addHelper('Number of measurements', 'equatorial_axis_n');
+if (!$_GET["edit"]) {
+    unset($_SESSION[$form->getFormName()]['equatorial_axis_length_min']);
+    unset($_SESSION[$form->getFormName()]['equatorial_axis_length_avg']);
+    unset($_SESSION[$form->getFormName()]['equatorial_axis_length_max']);
+    unset($_SESSION[$form->getFormName()]['equatorial_axis_n']);
+}
 $form->addInput('number', 'equatorial_axis_length_min', '', 'Equatorial axis length (µm)', 'readonly="readonly"');
 $form->addInput('number', 'equatorial_axis_length_avg', '', '', 'readonly="readonly"');
 $form->addInput('number', 'equatorial_axis_length_max', '', '', 'readonly="readonly"');
