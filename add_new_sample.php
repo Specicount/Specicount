@@ -11,6 +11,8 @@ class Sample_Form extends Add_New_Post_Form {
         parent::setUpdateArray();
         $this->update["start_date"] = Mysql::SQLValue($_POST["start_date"], "date");
         $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
+        $this->update["depth"] = Mysql::SQLValue($_POST["depth"], "float");
+        $this->update["age"] = Mysql::SQLValue($_POST["age"], "int");
     }
 }
 
@@ -57,8 +59,11 @@ if ($my_access_level != "visitor") {
 }
 $form->addInput('text', 'start_date', '', 'Start Date ', $readonly_attr.'required');
 
-$form->addHelper('Years Old', 'modelled_age');
-$form->addInput('number', 'modelled_age', '', 'Modelled Age', $readonly_attr);
+$form->addHelper('Depth (cm)', 'depth');
+$form->addInput('number', 'depth', '', 'Depth', $readonly_attr.'required');
+
+$form->addHelper('Calendar Years (BP)', 'age');
+$form->addInput('number', 'age', '', 'Modelled Age', $readonly_attr.'required');
 
 #######################
 # Clear/Save
