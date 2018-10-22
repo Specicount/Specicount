@@ -54,7 +54,7 @@ function getNavbar ($render_side, $navbar_text) {
         if ($db->recordsArray()[0]["is_trusted"] == true) {
             $accounts .= '<a href="new_trusted_user.php"><i class="fa fa-user-plus"></i> New Trusted User</a>';
         }
-        $accounts .= '<a href="register.php?edit=true"><i class="fa fa-edit"></i> Edit User Details</a>';
+        $accounts .= '<a href="register.php?edit=true"><i class="fa fa-edit"></i> Edit My Details</a>';
         $accounts .= '<a href="logout.php"><i class="fa fa-sign-out-alt"></i> Log Out</a>';
     } else {
         $accounts .= "<a href='#' data-remodal-target=\"modal-login-target\"><i class=\"fa fa-sign-in-alt\"></i> Log In</a>";
