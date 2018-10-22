@@ -15,7 +15,7 @@
 }*/
 
 define('DBUSER', 'root');
-define('DBPASS', 'root');
+define('DBPASS', 'mymape123');
 define('DBHOST', 'localhost');
 define('DBNAME', 'BioBase');
 

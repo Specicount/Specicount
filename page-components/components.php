@@ -63,7 +63,7 @@ function getNavbar ($render_side, $navbar_text) {
 
 
     $output .= "
-    <div class=\"btn-group\" style=\"width: 100%; font-size: 0; min-width: 510px;\">";
+    <div class=\"btn-group fixed-top\" style=\"width: 100%; font-size: 0; min-width: 510px;\">";
     if ($render_side) {
         $output .= "<a class=\"ribbon-button sidebar-toggle text-light\" style=\"width:50px;\"><i class=\"fa fa-bars\"></i></a>";
     }
@@ -93,8 +93,7 @@ function getNavbar ($render_side, $navbar_text) {
             </div>
         </div>
     </div>
-    </nav>
-    
+    <div style='padding-bottom: 41px'></div>
     ";
     return $output;
 }
@@ -148,18 +147,14 @@ function getScripts () {
 
 # Return Sidebar
 function getSidebar () {
-    // Sample Side Bar (shown if sample is selected)
-
-    if(!isset($_SESSION["email"])) return "";
-
-    $output = '';
+    $output = '<nav class="sidebar" style="font-size: 15px;"></nav>';
     if (!empty($_GET["sample_id"])) {
         $sample_id = $_GET["sample_id"];
         $core_id = $_GET["core_id"];
         $project_id = $_GET["project_id"];
         $my_access_level = getAccessLevel();
 
-        $output .= '<nav class="sidebar bg-dark"><ul class="list-unstyled">';
+        $output .= '<nav class="sidebar bg-dark fixed-top" style="margin-top: 41px"><ul class="list-unstyled">';
 
         $output .= "<li><text>Sample: ".$_GET['sample_id']."</text></li>";
 
@@ -182,7 +177,7 @@ function getSidebar () {
 
     // Project Side Bar (shown if not in sample - has drop downs of project, core and samples extracted from database)
     } else {
-        $output .= '<nav class="sidebar bg-dark">';
+        $output .= '<nav class="sidebar bg-dark fixed-top" style="margin-top: 41px">';
             $db = new Mysql();
             $project_id = $_GET['project_id'];
             $my_access_level = getAccessLevel();
@@ -243,5 +238,6 @@ function getSidebar () {
             $output .= "</ul>";
             $output .= '</nav>';
     }
+
     return $output;
 }

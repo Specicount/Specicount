@@ -311,6 +311,9 @@ class Page_Renderer {
             }
             // If not logged in
             $login_form = array(getLoginModal(), getForgotPasswordModal());
+
+            // Sample Side Bar (shown if sample is selected)
+            $this->render_sidebar = false;
         }
 
         $this->setPageAccess();
