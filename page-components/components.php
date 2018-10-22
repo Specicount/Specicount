@@ -158,8 +158,10 @@ function getSidebar () {
         $project_id = $_GET["project_id"];
         $my_access_level = getAccessLevel();
 
-        $output .= '<nav class="sidebar bg-dark">
-            <ul class="list-unstyled">';
+        $output .= '<nav class="sidebar bg-dark"><ul class="list-unstyled">';
+
+        $output .= "<li><text>Sample: ".$_GET['sample_id']."</text></li>";
+
         if (basename($_SERVER['PHP_SELF']) == "sample.php") {
             $output .= '<li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>';
             if ($my_access_level == "visitor") {
@@ -186,6 +188,7 @@ function getSidebar () {
             // If currently on a page that is connected to this project, expand the project dropdown
             // Print the projects
             $output .= "<ul id='".$project_id."' class='list-unstyled'>
+                        <li><text>Project: ".$_GET['project_id']."</text></li>
                         <li><a href='project_access.php?project_id=".$project_id."'><i class='fa fa-users'></i> View Project Users</a></li>";
             if ($project_id != "Global Reference Specimens") {
                 if ($my_access_level == "visitor") {
