@@ -23,12 +23,12 @@ class Mysql
 {
     // SET THESE VALUES TO MATCH YOUR DATA CONNECTION
     private $db_host         = "localhost"; // server name
-    private $db_user         = "root";          // user name
-    private $db_pass         = "root";          // password
-    private $db_dbname       = "biobase";          // database name
+    private $db_user         = "";          // user name
+    private $db_pass         = "";          // password
+    private $db_dbname       = "";          // database name
     private $db_host_local   = "localhost";  // server name
     private $db_user_local   = "root";       // user name
-    private $db_pass_local   = "password";           // password
+    private $db_pass_local   = "";           // password
     private $db_dbname_local = "test";      // database name
     private $db_charset      = "utf8";          // optional character set (i.e. utf8)
     private $db_pcon         = false;      // use persistent connection?
