@@ -13,11 +13,15 @@ require_once "page-components/functions.php";
 use classes\Post_Form;
 
 class Password_Reset_Form extends Post_Form {
+
+    protected function registerPostActions() {
+        $this->registerPostAction("updatePassword", isset($_POST['update-btn']));
+    }
+
     protected function setUpdateArray() {
-        parent::setUpdateArray();
         // Create encrypted password
         $this->update["password"] = Mysql::SQLValue(password_hash($_POST["password"], PASSWORD_DEFAULT));
-        $this->update["password_reset_code"] = "NULL";
+        $this->update["password_reset_code"] = Mysql::SQLValue("NULL");
     }
 
     protected function additionalValidation() {
@@ -27,7 +31,7 @@ class Password_Reset_Form extends Post_Form {
         return true;
     }
 
-    protected function create() {
+    protected function updatePassword() {
         $reset_code = $this->db->querySingleValue("SELECT password_reset_code FROM users WHERE email=".Mysql::SQLValue($_GET["email"]));
         if ($reset_code == $_GET["reset_code"]) {
             $this->db->updateRows("users", $this->update, array("email" => Mysql::SQLValue($_GET["email"])));
@@ -35,10 +39,6 @@ class Password_Reset_Form extends Post_Form {
         } else {
             storeErrorMsg("You do not have the correct link, please try resetting your password again!");
         }
-    }
-
-    protected function update() {
-        $this->raiseNotImplemented();
     }
 
     protected function fillFormWithDbValues($record_array) {
@@ -57,16 +57,14 @@ $form = new Password_Reset_Form("password_reset", "users", 'horizontal', 'novali
 $form->setCols(3, 9);
 
 $form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter", "password");
-$form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
+$form->addInput('password', 'password', '', 'New Password', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
-$form->addInput('password', 'password_conf', '', 'Password Confirmation', 'required, class=col-5,
+$form->addInput('password', 'password_conf', '', 'Confirm New Password', 'required, class=col-5,
                 data-fv-stringlength, data-fv-stringlength-min=8, data-fv-stringlength-message=Your password must be at least 8 characters long');
 
 $form->addRecaptcha('6Ley73EUAAAAAGlW8U8cgkYJ6k7fIDbTF5Am47Qj', 'recaptcha2', true);
 
-$form->addBtn('submit', 'submit-btn', "save", '<i class="fa fa-user-plus" aria-hidden="true"></i> Update', 'class=btn btn-success ladda-button, data-style=zoom-in', 'my-btn-group');
-
-$form->printBtnGroup('my-btn-group');
+$form->addBtn('submit', 'update-btn', '', 'Update Password', 'class=btn btn-success ladda-button, data-style=zoom-in');
 
 // jQuery validation
 $form->addPlugin("formvalidation","#".$form->getFormName(), "bs4");

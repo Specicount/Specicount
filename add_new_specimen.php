@@ -636,7 +636,7 @@ $form->endFieldset();
 #######################
 # Plan Functional Group
 #######################
-$form->startFieldset('Plan Functional Group');
+$form->startFieldset('Plant Functional Group');
 $form->addOption('plant_function_type[]', 'Tree/Shrub (Gymnosperm) (TRSH Gym)',  'Tree/Shrub (Gymnosperm) (TRSH Gym)', '', '');
 $form->addOption('plant_function_type[]', 'Tree/Shrub (Angiosperm) (TRSH An)',  'Tree/Shrub (Angiosperm) (TRSH An)', '', '');
 $form->addOption('plant_function_type[]', 'Liana (L)',  'Liana (L)', '', '');
@@ -644,7 +644,7 @@ $form->addOption('plant_function_type[]', 'Herb (Dry) (HERB D)',  'Herb (Dry) (H
 $form->addOption('plant_function_type[]', 'Herb (Wet) (HERB W)',  'Herb (Wet) (HERB W)', '', '');
 $form->addOption('plant_function_type[]', 'Pteridophyte (PTER)',  'Pteridophyte (PTER)', '', '');
 $form->addHelper('Multiple Choice', 'plant_function_type[]');
-$form->addSelect('plant_function_type[]', 'Plan Function Type ', 'class=select2, data-width=100%, multiple=multiple');
+$form->addSelect('plant_function_type[]', 'Plant Function Type ', 'class=select2, data-width=100%, multiple=multiple');
 $form->endFieldset();
 
 #######################
