@@ -61,6 +61,8 @@ abstract class Post_Form extends Form {
         if (isset($_GET["edit"])) {
             $this->db->selectRows($this->table_name, $this->filter);
             $this->fillFormWithDbValues($this->db->recordsArray()[0]);
+        } else {
+            Form::clear($this->form_ID);
         }
 
         // If the form has been posted (saved, deleted, etc) back to the server
