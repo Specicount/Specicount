@@ -170,7 +170,12 @@ $form->printBtnGroup('my-btn-group');
 #######################
 # Concentration curve
 #######################
-$form->addHtml('<div id="chart_div" style="z-index:10;display:none;">');
+$form->addHtml('<div id="chart_div" 
+style=" z-index:10;
+        display:none; 
+        -webkit-box-shadow: 0px 0px 5px 5px rgba(221,221,221,1);
+        -moz-box-shadow: 0px 0px 5px 5px rgba(221,221,221,1);
+        box-shadow: 0px 0px 5px 5px rgba(221,221,221,1);">');
 $db->selectRows('concentration_curve', $form->getFilterArray());
 $curve_data = array();
 if (!$db->error()) {
@@ -186,7 +191,7 @@ if ($curve_data) {
     $data = [
         'labels' => ['X', 'Y'],
         'datasets' => [[
-            'label' => 'Concentration Curve',
+            'label' => 'Species Accumulation Plot',
             'data' => $curve_data,
             'backgroundColor' => '#28a745',
             'borderColor' => '#28a745',
@@ -199,16 +204,40 @@ if ($curve_data) {
         'maintainAspectRatio' => false,
         'scales' => [
             'xAxes' => [[
-                'type' => 'logarithmic',
-                'position' => 'bottom'
+                'type' => 'linear',
+                'position' => 'bottom',
+                'scaleLabel' => [
+                    'display' => true,
+                    'labelString' => 'Unique Specimens'
+                ],
+                'ticks' => [
+                    'min' => 1
+                ]
+            ]],
+            'yAxes' => [[
+                'scaleLabel' => [
+                    'display' => true,
+                    'labelString' => 'Specimens Counted'
+                ],
+                'ticks' => [
+                    'min' => 1
+                ]
             ]]
+        ],
+        'layout' => [
+                'padding' => [
+                        'left' => 5,
+                        'right' => 20,
+                        'top' => 5,
+                        'bottom' => 5
+                ]
         ]
     ];
 
     $attributes = ['id' => 'concentration_curve'];
-    $Line = new ChartJS('line', $data, $options, $attributes);
+    $Scatter = new ChartJS('scatter', $data, $options, $attributes);
 
-    $form->addHtml($Line);
+    $form->addHtml($Scatter);
 } else {
     $form->addHtml('No data');
 }
@@ -417,7 +446,13 @@ $page_render->renderPage();
     let ref = $("button[name='stats-btn']");
     let popup = $("#chart_div");
     let popper = new Popper(ref, popup, {
-        placement: 'bottom'
+        placement: 'bottom',
+        modifiers: {
+            offset: {
+                enabled: true,
+                offset: '0,7'
+            }
+        }
     });
     ref.click(function() {
         popup.toggle();
