@@ -7,6 +7,10 @@ print_r($_POST);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['export-core-btn'])) {
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="sample_export_'.date("Ymd").'.csv";');
+        $project_id = Mysql::sqlValue($_GET['project_id']);
+        $core_id = Mysql::sqlValue($_POST['export-core-btn']);
 
     }
 }
