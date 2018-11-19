@@ -7,6 +7,7 @@
  */
 
 namespace classes;
+use phpformbuilder\Form;
 require_once "Post_Form.php";
 
 class Add_New_Post_Form extends Post_Form {
@@ -20,6 +21,7 @@ class Add_New_Post_Form extends Post_Form {
             $this->page_title = "Edit ".ucwords($this->form_ID).' '.$id;
         } else {
             $this->page_title = 'Add New '.ucwords($this->form_ID);
+            Form::clear($this->form_ID);
         }
     }
 }
