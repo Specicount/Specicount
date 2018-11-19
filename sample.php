@@ -291,12 +291,12 @@ if($db->rowCount() > 0) {
         $form->addHtml('<text>ID: ' . $specimen["specimen_id"] . '</text>');
         $form->addHtml('<a href="#"><span><i class="fas fa-window-close top-right-btn close"></i></span></a>');
         if ($my_access_level != "visitor") {
-            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-edit bot-left-btn"></i></a>');
+            $form->addHtml('<a href="add_new_specimen.php?edit=true&project_id='.$specimen["project_id"].'&specimen_id='.$specimen["specimen_id"].'"><i class="fa fa-edit bot-left-btn"></i></a>');
             $form->addBtn('button', 'add-to-count', 1, '<i class="fa fa-plus"></i>', 'class=btn btn-success mid-btn, data-style=zoom-in, onclick=addToSpecimen(this);updateCounter(this)');
             // Delete button must have an array as well - bit ugly :(
             $form->addBtn('submit', 'delete['.$specimen["specimen_project_id"].']['.$specimen["specimen_id"].']', 1, ' <i class="fa fa-trash"></i>', 'class=btn btn-danger bot-right-btn, data-style=zoom-in, onclick=return confirm(\'Are you sure you want to delete this specimen from the sample?\')');
         } else {
-            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'" target="_blank"><i class="fa fa-info-circle bot-left-btn"></i></a>');
+            $form->addHtml('<a href="specimen_details.php?project_id='.$specimen["specimen_project_id"].'&specimen_id='.$specimen["specimen_id"].'"><i class="fa fa-info-circle bot-left-btn"></i></a>');
         }
 
         // Create POST array in the form specimen_counts[project_id][specimen_id]
