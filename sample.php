@@ -26,6 +26,7 @@ class Sample_Count_Form extends Post_Form {
     }
 
     protected function delete() {
+        $this->save();
         // -------- VALIDATION --------
         $my_access_level = getAccessLevel();
         if ($my_access_level == "visitor") {
@@ -334,6 +335,10 @@ $page_render->renderPage();
 <script src="js/Chart.min.js"></script>
 <script src="js/driver.js"></script>
 <script>
+    $( document ).ready(function() {
+        $('form').areYouSure();
+    });
+
     // Chart.js load
     (function() {
         loadChartJsPhp();
@@ -342,6 +347,7 @@ $page_render->renderPage();
     // Undo changes for the sample (only if not previously saved)
     function reload(){
         if (confirm('Are you sure you want to reset the sample?')) {
+            $('form').areYouSure( {'silent':true} ); // Disable "are-you-sure" popup
             window.location.reload();
         }
     }
@@ -362,6 +368,7 @@ $page_render->renderPage();
         var counter = container.find(".counter-text");
         var input = container.find("input");
         counter.html(input.val());
+        input.trigger("update-counter"); // Let the "are-you-sure" plugin know that the input was updated
     }
 
 

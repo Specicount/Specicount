@@ -107,6 +107,7 @@ function getScripts () {
         <script src="js/popper.js"></script>
         <script src="js/bsadmin.js"></script>
         <script src="js/fontawesome-all.js"></script>
+        <script src="js/jquery.are-you-sure.js"></script>
         <!--The following script is for the overlays for each specimen on the counting page (fiddly and a bit ugly but somewhat works be wary if playing with)-->
         <script>
         
