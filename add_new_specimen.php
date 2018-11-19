@@ -308,19 +308,19 @@ $form->setOptions(array('buttonWrapper'=>''));
 
 # Polar axis length
 $form->setCols(4, 2);
-$form->groupInputs('polar_axis_length_min', 'polar_axis_length_avg', 'polar_axis_length_max', 'polar_axis_n');
-$form->addHelper('Min (rounded to 1dp on save)', 'polar_axis_length_min');
+$form->groupInputs('polar_axis_length_avg', 'polar_axis_length_min', 'polar_axis_length_max', 'polar_axis_n');
 $form->addHelper('Avg. (rounded to 1dp on save)', 'polar_axis_length_avg');
+$form->addHelper('Min (rounded to 1dp on save)', 'polar_axis_length_min');
 $form->addHelper('Max (rounded to 1dp on save)', 'polar_axis_length_max');
 $form->addHelper('Number of measurements', 'polar_axis_n');
 if (!$_GET["edit"]) {
-    unset($_SESSION[$form->getFormName()]['polar_axis_length_min']);
     unset($_SESSION[$form->getFormName()]['polar_axis_length_avg']);
+    unset($_SESSION[$form->getFormName()]['polar_axis_length_min']);
     unset($_SESSION[$form->getFormName()]['polar_axis_length_max']);
     unset($_SESSION[$form->getFormName()]['polar_axis_n']);
 }
-$form->addInput('number', 'polar_axis_length_min', '', 'Polar axis length (µm)', 'readonly="readonly"');
-$form->addInput('number', 'polar_axis_length_avg', '', '', 'readonly="readonly"');
+$form->addInput('number', 'polar_axis_length_avg', '', 'Polar axis length (µm)', 'readonly="readonly"');
+$form->addInput('number', 'polar_axis_length_min', '', '', 'readonly="readonly"');
 $form->addInput('number', 'polar_axis_length_max', '', '', 'readonly="readonly"');
 $form->addInput('number', 'polar_axis_n', '', '', 'readonly="readonly"');
 
@@ -337,19 +337,19 @@ $form->addHtml('</div>');
 
 # Equatorial axis length
 $form->setCols(4, 2);
-$form->groupInputs('equatorial_axis_length_min', 'equatorial_axis_length_avg', 'equatorial_axis_length_max', 'equatorial_axis_n');
-$form->addHelper('Min (rounded to 1dp on save)', 'equatorial_axis_length_min');
+$form->groupInputs('equatorial_axis_length_avg', 'equatorial_axis_length_min', 'equatorial_axis_length_max', 'equatorial_axis_n');
 $form->addHelper('Avg. (rounded to 1dp on save)', 'equatorial_axis_length_avg');
+$form->addHelper('Min (rounded to 1dp on save)', 'equatorial_axis_length_min');
 $form->addHelper('Max (rounded to 1dp on save)', 'equatorial_axis_length_max');
 $form->addHelper('Number of measurements', 'equatorial_axis_n');
 if (!$_GET["edit"]) {
-    unset($_SESSION[$form->getFormName()]['equatorial_axis_length_min']);
     unset($_SESSION[$form->getFormName()]['equatorial_axis_length_avg']);
+    unset($_SESSION[$form->getFormName()]['equatorial_axis_length_min']);
     unset($_SESSION[$form->getFormName()]['equatorial_axis_length_max']);
     unset($_SESSION[$form->getFormName()]['equatorial_axis_n']);
 }
-$form->addInput('number', 'equatorial_axis_length_min', '', 'Equatorial axis length (µm)', 'readonly="readonly"');
-$form->addInput('number', 'equatorial_axis_length_avg', '', '', 'readonly="readonly"');
+$form->addInput('number', 'equatorial_axis_length_avg', '', 'Equatorial axis length (µm)', 'readonly="readonly"');
+$form->addInput('number', 'equatorial_axis_length_min', '', '', 'readonly="readonly"');
 $form->addInput('number', 'equatorial_axis_length_max', '', '', 'readonly="readonly"');
 $form->addInput('number', 'equatorial_axis_n', '', '', 'readonly="readonly"');
 
@@ -801,8 +801,8 @@ $page_render->renderPage();
 
         // If polar and equatorial data points exist
         if (document.getElementById("polar_axis_n").value && document.getElementById("equatorial_axis_n").value) {
-            var p = parseFloat(document.getElementById("polar_axis_length_max").value);
-            var e = parseFloat(document.getElementById("equatorial_axis_length_max").value);
+            var p = parseFloat(document.getElementById("polar_axis_length_avg").value);
+            var e = parseFloat(document.getElementById("equatorial_axis_length_avg").value);
             update_size(p,e);
             update_equatorial_shape_major(p,e);
         }
