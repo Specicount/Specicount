@@ -21,7 +21,7 @@
         'change' : null,
         'silent' : false,
         'addRemoveFieldsMarksDirty' : false,
-        'fieldEvents' : 'change keyup propertychange input update-counter',
+        'fieldEvents' : 'change keyup propertychange input',
         'fieldSelector': ":input:not(input[type=submit]):not(input[type=button])"
       }, options);
 

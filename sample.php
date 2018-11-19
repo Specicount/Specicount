@@ -336,7 +336,7 @@ $page_render->renderPage();
 <script src="js/driver.js"></script>
 <script>
     $( document ).ready(function() {
-        $('form').areYouSure();
+        $('form').areYouSure(); // Show a popup dialog box when navigating away from sample without saving changes
     });
 
     // Chart.js load
@@ -368,7 +368,7 @@ $page_render->renderPage();
         var counter = container.find(".counter-text");
         var input = container.find("input");
         counter.html(input.val());
-        input.trigger("update-counter"); // Let the "are-you-sure" plugin know that the input was updated
+        $('form').trigger('rescan.areYouSure'); // Let the "are-you-sure" plugin know that the input was updated
     }
 
 
