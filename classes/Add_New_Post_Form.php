@@ -21,7 +21,7 @@ class Add_New_Post_Form extends Post_Form {
             $this->page_title = "Edit ".ucwords($this->form_ID).' '.$id;
         } else {
             $this->page_title = 'Add New '.ucwords($this->form_ID);
-            Form::clear($this->form_ID);
+            Form::clear($this->form_ID); // Clear form so inputs don't have old filled in values
         }
     }
 }
