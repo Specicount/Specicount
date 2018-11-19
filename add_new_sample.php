@@ -60,10 +60,10 @@ if ($my_access_level != "visitor") {
 $form->addInput('text', 'start_date', '', 'Start Date ', $readonly_attr.'required');
 
 $form->addHelper('Depth (cm)', 'depth');
-$form->addInput('number', 'depth', '', 'Depth', $readonly_attr.'required');
+$form->addInput('number', 'depth', '', 'Depth', $readonly_attr);
 
 $form->addHelper('Calendar Years (BP)', 'age');
-$form->addInput('number', 'age', '', 'Modelled Age', $readonly_attr.'required');
+$form->addInput('number', 'age', '', 'Modelled Age', $readonly_attr);
 
 #######################
 # Clear/Save
