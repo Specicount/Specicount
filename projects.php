@@ -3,6 +3,14 @@ use phpformbuilder\database\Mysql;
 
 require_once 'classes/Page_Renderer.php';
 
+print_r($_POST);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['export-core-btn'])) {
+
+    }
+}
+
 function getTable(){
 
     $db = new Mysql();

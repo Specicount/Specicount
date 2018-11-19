@@ -221,6 +221,7 @@ function getSidebar () {
                 } else {
                     $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-edit'></i> Edit Core</a></li>";
                 }
+                $output .= "<li><form id='export-core' action='".$_SERVER['PHP_SELF'].'?'.http_build_query($_GET,'','',PHP_QUERY_RFC3986)."' method='POST' style='margin-bottom:0;'><button type='submit' id='export-core-btn' name='export-core-btn'><i class='fa fa-download'></i> Export Core Data</button></form></li>";
 
                 if ($my_access_level != "visitor") {
                     $output .= "<li><a href='add_new_sample.php?project_id=".$project_id."&core_id=".$core_id."' data-parent='#".$core_id."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
