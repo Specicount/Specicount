@@ -392,11 +392,13 @@ $page_render->renderPage();
     // Add for charcoal and lycopodium
     function add(element_id) {
         document.getElementById(element_id).value = parseInt(document.getElementById(element_id).value) + 1;
+        $('form').trigger('rescan.areYouSure'); // Let the "are-you-sure" plugin know that the input was updated
     }
 
     // Subtract for charcoal and lycopodium
     function subtract(element_id){
         document.getElementById(element_id).value = parseFloat(document.getElementById(element_id).value) - 1;
+        $('form').trigger('rescan.areYouSure'); // Let the "are-you-sure" plugin know that the input was updated
     }
 
     // Update counter text on hover
@@ -405,7 +407,6 @@ $page_render->renderPage();
         var counter = container.find(".counter-text");
         var input = container.find("input");
         counter.html(input.val());
-        $('form').trigger('rescan.areYouSure'); // Let the "are-you-sure" plugin know that the input was updated
     }
 
 
@@ -416,6 +417,7 @@ $page_render->renderPage();
         var overlay = container.find(".overlay");
         input.val(Number(input.val())+1);
         updateCounter(container);
+        $('form').trigger('rescan.areYouSure'); // Let the "are-you-sure" plugin know that the input was updated
 
         $(container).addClass('interaction-highlight');
         $(overlay).addClass('interaction-highlight');
