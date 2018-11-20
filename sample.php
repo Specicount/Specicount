@@ -87,6 +87,7 @@ class Sample_Count_Form extends Post_Form {
         $sample_data = $this->db->selectRows("samples", $this->filter);
         // Concurrency control - if this sample was last updated by this device
         if ($sample_data["last_edit"] == $_POST["last_edit"] || empty($sample_data["last_edit"])) {
+            $total_specimens_counted = 0; // Used to update the x-value of the last data point on the species accumulation plot
             foreach ($_POST["specimen_counts"] as $specimen_project_id => $specimen_ids) {
                 foreach ($specimen_ids as $specimen_id => $count) {
                     $filter = $this->filter;
@@ -95,6 +96,7 @@ class Sample_Count_Form extends Post_Form {
                     $update["count"] = Mysql::SQLValue($count);
                     $this->db->updateRows("found_specimens", $update, $filter);
                     storeDbMsg($this->db);
+                    $total_specimens_counted += $count;
                 }
             }
             $update_sample = array();
@@ -102,6 +104,12 @@ class Sample_Count_Form extends Post_Form {
             $update_sample["lycopodium"] = Mysql::SQLValue($_POST["lycopodium"]);
             $update_sample["charcoal"] = Mysql::SQLValue($_POST["charcoal"]);
             $this->db->updateRows($this->table_name, $update_sample, $this->filter);
+            storeDbMsg($this->db);
+            $update_curve = array();
+            $update_curve['tally_count'] = Mysql::SQLValue($total_specimens_counted);
+            $sql = Mysql::buildSQLUpdate('concentration_curve', $update_curve, $this->filter);
+            $sql .= " ORDER BY tally_count DESC LIMIT 1";
+            $this->db->query($sql);
             storeDbMsg($this->db,"Successfully updated sample!");
         } else {
             storeErrorMsg("Updated by another device, please reload the page again and try again. Warning: You will lose all your progress since your last save");
@@ -208,7 +216,7 @@ if ($curve_data) {
                 'position' => 'bottom',
                 'scaleLabel' => [
                     'display' => true,
-                    'labelString' => 'Unique Specimens'
+                    'labelString' => 'Specimens Counted'
                 ],
                 'ticks' => [
                     'min' => 1
@@ -217,7 +225,7 @@ if ($curve_data) {
             'yAxes' => [[
                 'scaleLabel' => [
                     'display' => true,
-                    'labelString' => 'Specimens Counted'
+                    'labelString' => 'Unique Specimens'
                 ],
                 'ticks' => [
                     'min' => 1
