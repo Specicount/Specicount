@@ -201,7 +201,8 @@ class Page_Renderer {
     /**
      * Determines whether the page will be rendered based on class variables set by setPageRestrictions
      */
-    private function setPageAccess() {
+    private function setPageAccess()
+    {
         // ------------- user logged in -------------
         if ($this->require_login && !isset($_SESSION["email"])) {
             $this->page_access = false;
@@ -233,21 +234,18 @@ class Page_Renderer {
             $this->page_access = false;
             storeErrorMsg("Specimen $specimen_id not found in database");
             return;
-        }
-        // If trying to access a sample
+        } // If trying to access a sample
         else if ($this->require_sample && !$db->querySingleValue("SELECT sample_id FROM samples WHERE project_id=$project_id AND core_id=$core_id AND sample_id=$sample_id")) {
             $this->page_access = false;
             storeErrorMsg("Sample $sample_id not found in database");
             return;
-        }
-        // If trying to access a core
-        else if ($this->require_core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")){
+        } // If trying to access a core
+        else if ($this->require_core && !$db->querySingleValue("SELECT core_id FROM cores WHERE project_id=$project_id AND core_id=$core_id")) {
             $this->page_access = false;
             storeErrorMsg("Core $core_id not found in database");
             return;
-        }
-        // If trying to access a project
-        else if ($this->require_project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")){
+        } // If trying to access a project
+        else if ($this->require_project && !$db->querySingleValue("SELECT project_id FROM projects WHERE project_id=$project_id")) {
             $this->page_access = false;
             storeErrorMsg("Project $project_id not found in database");
             return;
@@ -266,31 +264,61 @@ class Page_Renderer {
         }
     }
 
+
+    /**
+     * Checks whether the Export Core Data button was pressed and outputs a CSV file
+     */
     public function exportCoreData() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['export-core-btn'])) {
                 $project_id = $_GET['project_id'];
                 $core_id = $_POST['export-core-btn'];
+                header('Content-Type: application/csv');
+                header('Content-Disposition: attachment; filename="core_export_'.$project_id.'_'.$core_id.'.csv";');
 
                 $db = new Mysql();
                 $filter = array();
                 $filter['project_id'] = Mysql::sqlValue($_GET['project_id']);
                 $filter['core_id'] = Mysql::sqlValue($_POST['export-core-btn']);
                 $where_clause = Mysql::buildSQLWhereClause($filter);
+                $db->query("SELECT specimen_id FROM found_specimens ".$where_clause." GROUP BY specimen_id ORDER BY SUM(count) DESC");
+                $most_common_specimens = array_column($db->recordsArray(), 'specimen_id');
+                $initial_columns = ["sample ID", "depth cm", "age cal yrs BP", "volume cc", "total spike", "counted spike", "total pollen count"];
+                $columns = array_merge($initial_columns, $most_common_specimens);
 
-                header('Content-Type: application/csv');
-                header('Content-Disposition: attachment; filename="sample_export_'.$project_id.'_'.$core_id.'_'.date("Y-m-d").'.csv";');
-                $sql = "SELECT specimen_id, SUM(count) as total_count FROM found_specimens ".$where_clause." GROUP BY specimen_id ORDER BY total_count DESC";
-                $db->query($sql);
-                $specimen_counts = $db->recordsArray();
-                
+
+                $file = fopen('php://output', 'w');
+                fputcsv($file, $columns, ",");
+
                 $db->selectRows('samples', $filter);
-                foreach ($db->recordsArray() as $sample) {
+                $samples = $db->recordsArray();
+                foreach ($samples as $s) {
+                    $filter["sample_id"] = Mysql::sqlValue($s["sample_id"]);
+                    $where_clause = Mysql::buildSQLWhereClause($filter);
 
+                    $total_specimen_count = $db->querySingleValue("SELECT SUM(count) FROM found_specimens ".$where_clause);
+                    $initial_column_values = [$s["sample_id"], $s["depth"], $s["age"], $s["charcoal"], "", $s["lycopodium"], $total_specimen_count];
+
+                    $db->selectRows("found_specimens", $filter, ["specimen_id","count"], "count", false);
+                    $specimen_counts = $db->recordsArray();
+                    $specimen_column_values = array(); // array_fill(0, count($most_common_specimens),0);
+
+                    for ($i=0; $i<count($most_common_specimens); $i++) {
+                        $specimen_id_column = $most_common_specimens[$i];
+                        $specimen_column_values[$i] = 0;
+                        foreach ($specimen_counts as $specimen_count) {
+                            if ($specimen_count["specimen_id"] == $specimen_id_column) {
+                                $specimen_column_values[$i] = $specimen_count["count"];
+                            }
+                        }
+                    }
+
+                    $column_values = array_merge($initial_column_values, $specimen_column_values);
+                    fputcsv($file, $column_values, ',');
                 }
 
-                $total_pollen_count = $db->querySingleValue("SELECT SUM(count) FROM found_specimens ".$where_clause);
-
+                header("Refresh:0");
+                exit;
             }
         }
     }
@@ -299,6 +327,7 @@ class Page_Renderer {
      * Create the page for displaying
      */
     public function renderPage() {
+        $this->exportCoreData();
         // Use the form's default page title if a page title hasn't been explicitly set
         if (empty($this->page_title)) {
             if (isset($this->form) && !is_array($this->form)) {
