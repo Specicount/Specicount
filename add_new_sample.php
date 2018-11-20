@@ -28,12 +28,11 @@ if ($my_access_level == "visitor") {
 }
 
 
-$form->addHelper('Sample ID', 'sample_id');
 
 if ($_GET["edit"]) {
-    $form->addInput('text', 'sample_id', '', 'Sample ID ', 'required, readonly=readonly');
+    $form->addInput('text', 'sample_id', '', 'Sample ID', 'required, readonly=readonly');
 } else {
-    $form->addInput('text', 'sample_id', '', 'Sample ID ', 'required');
+    $form->addInput('text', 'sample_id', '', 'Sample ID', 'required');
 }
 
 # Fill in first and last name with logged in user's first and last name
@@ -48,7 +47,7 @@ $_SESSION[$form->getFormName()]['analyst_last_name'] = $user['last_name'];
 $form->setCols(4, 4);
 $form->groupInputs('analyst_first_name', 'analyst_last_name');
 $form->addHelper('First Name', 'analyst_first_name');
-$form->addInput('text', 'analyst_first_name', '', 'Analyst ', $readonly_attr.'required');
+$form->addInput('text', 'analyst_first_name', '', 'Analyst', $readonly_attr.'required');
 $form->setCols(0, 4);
 $form->addHelper('Last Name', 'analyst_last_name');
 $form->addInput('text', 'analyst_last_name', '', '', $readonly_attr.'required');
@@ -57,12 +56,12 @@ $form->setCols(4, 8);
 if ($my_access_level != "visitor") {
     $form->addPlugin('pickadate', '#start_date');
 }
-$form->addInput('text', 'start_date', '', 'Start Date ', $readonly_attr.'required');
+$form->addInput('text', 'start_date', '', 'Start Date', $readonly_attr.'required');
 
 $form->addHelper('Depth (cm)', 'depth');
 $form->addInput('number', 'depth', '', 'Depth', $readonly_attr);
 
-$form->addHelper('Calendar Years (BP)', 'age');
+$form->addHelper('Calibrated Years (Before Present)', 'age');
 $form->addInput('number', 'age', '', 'Modelled Age', $readonly_attr);
 
 #######################

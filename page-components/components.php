@@ -160,7 +160,7 @@ function getSidebar () {
         $output .= "<li><text>Sample: ".$_GET['sample_id']."</text></li>";
 
         if (basename($_SERVER['PHP_SELF']) == "sample.php") {
-            $output .= '<li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core</a></li>';
+            $output .= '<li><a href="projects.php?project_id='.$project_id.'&core_id='.$core_id.'"><i class="fa fa-reply"></i> Return to Core/Sample Group</a></li>';
             if ($my_access_level == "visitor") {
                 $output .= '<li><a href="add_new_sample.php?edit=true&project_id='.$project_id.'&core_id='.$core_id.'&sample_id='.$sample_id.'"><i class="fa fa-info-circle"></i> View Sample Details</a></li>';
             } else {
@@ -198,7 +198,7 @@ function getSidebar () {
             if ($my_access_level != "visitor") {
                 $output .= "<li><a href='add_new_specimen.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Specimen</a></li>";
                 if ($project_id != "Global Reference Specimens") {
-                    $output .= "<li><a href='add_new_core.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Core</a></li>";
+                    $output .= "<li><a href='add_new_core.php?project_id=".$project_id."'><i class='fa fa-plus'></i> Add New Core/Sample Group</a></li>";
                 } else {
                     $output .= '<li><a href="search_specimen.php?project_id='.$project_id.'"><i class="fa fa-search"></i> Search Specimen</a></li>';
                 }
@@ -217,11 +217,11 @@ function getSidebar () {
                 $output .= "<a href='#".$core_id."' data-toggle='collapse' ".$toggle_expand_parent."><i class='fa fa-database'></i> ".$core_id."</a>
                         <ul id='".$core_id."' class='list-unstyled collapse ".$toggle_expand_child."'>";
                 if ($my_access_level == "visitor") {
-                    $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-info-circle'></i> View Core Details</a></li>";
+                    $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-info-circle'></i> View Core/Sample Group Details</a></li>";
                 } else {
-                    $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-edit'></i> Edit Core</a></li>";
+                    $output .= "<li><a href='add_new_core.php?edit=true&project_id=".$project_id."&core_id=".$core_id."'><i class='fa fa-edit'></i> Edit Core/Sample Group</a></li>";
                 }
-                $output .= "<li><form id='export-core' action='".$_SERVER['PHP_SELF'].'?'.http_build_query($_GET,'','',PHP_QUERY_RFC3986)."' method='POST' style='margin-bottom:0;'><button type='submit' id='export-core-btn' name='export-core-btn' value='".$core_id."'><i class='fa fa-download'></i> Export Core Data</button></form></li>";
+                $output .= "<li><form id='export-core' action='".$_SERVER['PHP_SELF'].'?'.http_build_query($_GET,'','',PHP_QUERY_RFC3986)."' method='POST' style='margin-bottom:0;'><button type='submit' id='export-core-btn' name='export-core-btn' value='".$core_id."'><i class='fa fa-download'></i> Export Core/Sample Group Data</button></form></li>";
 
                 if ($my_access_level != "visitor") {
                     $output .= "<li><a href='add_new_sample.php?project_id=".$project_id."&core_id=".$core_id."' data-parent='#".$core_id."'><i class='fa fa-plus'></i> Add New Sample</a></li>";
