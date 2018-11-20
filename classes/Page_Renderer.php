@@ -266,6 +266,35 @@ class Page_Renderer {
         }
     }
 
+    public function exportCoreData() {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (isset($_POST['export-core-btn'])) {
+                $project_id = $_GET['project_id'];
+                $core_id = $_POST['export-core-btn'];
+
+                $db = new Mysql();
+                $filter = array();
+                $filter['project_id'] = Mysql::sqlValue($_GET['project_id']);
+                $filter['core_id'] = Mysql::sqlValue($_POST['export-core-btn']);
+                $where_clause = Mysql::buildSQLWhereClause($filter);
+
+                header('Content-Type: application/csv');
+                header('Content-Disposition: attachment; filename="sample_export_'.$project_id.'_'.$core_id.'_'.date("Y-m-d").'.csv";');
+                $sql = "SELECT specimen_id, SUM(count) as total_count FROM found_specimens ".$where_clause." GROUP BY specimen_id ORDER BY total_count DESC";
+                $db->query($sql);
+                $specimen_counts = $db->recordsArray();
+                
+                $db->selectRows('samples', $filter);
+                foreach ($db->recordsArray() as $sample) {
+
+                }
+
+                $total_pollen_count = $db->querySingleValue("SELECT SUM(count) FROM found_specimens ".$where_clause);
+
+            }
+        }
+    }
+
     /**
      * Create the page for displaying
      */
