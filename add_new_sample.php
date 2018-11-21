@@ -66,7 +66,7 @@ $form->addInput('number', 'depth', '', 'Depth', $readonly_attr);
 $form->addHelper('Calibrated Years (Before Present)', 'age');
 $form->addInput('number', 'age', '', 'Modelled Age', $readonly_attr);
 
-$form->addHelper('In cubic cm', 'volume');
+$form->addHelper('Volume (cubic cm)', 'volume');
 $form->addInput('number', 'volume', '', 'Volume', $readonly_attr);
 
 $form->addHelper('The total number of exotic spikes per tablet added to each sample', 'total_spike');
