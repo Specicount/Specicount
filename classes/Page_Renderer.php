@@ -297,7 +297,7 @@ class Page_Renderer {
                     $where_clause = Mysql::buildSQLWhereClause($filter);
 
                     $total_specimen_count = $db->querySingleValue("SELECT SUM(count) FROM found_specimens ".$where_clause);
-                    $initial_column_values = [$s["sample_id"], $s["depth"], $s["age"], $s["charcoal"], "", $s["lycopodium"], $total_specimen_count];
+                    $initial_column_values = [$s["sample_id"], $s["depth"], $s["age"], $s["volume"], $s["total_spike"], $s["lycopodium"], $total_specimen_count];
 
                     $db->selectRows("found_specimens", $filter, ["specimen_id","count"], "count", false);
                     $specimen_counts = $db->recordsArray();
