@@ -13,6 +13,8 @@ class Sample_Form extends Add_New_Post_Form {
         $this->update["last_edit"] = Mysql::SQLValue(date("Y-m-d H:i:s"), "date");
         $this->update["depth"] = Mysql::SQLValue($_POST["depth"], "float");
         $this->update["age"] = Mysql::SQLValue($_POST["age"], "int");
+        $this->update["volume"] = Mysql::SQLValue($_POST["volume"], "float");
+        $this->update["total_spike"] = Mysql::SQLValue($_POST["total_spike"], "int");
     }
 }
 
@@ -63,6 +65,12 @@ $form->addInput('number', 'depth', '', 'Depth', $readonly_attr);
 
 $form->addHelper('Calibrated Years (Before Present)', 'age');
 $form->addInput('number', 'age', '', 'Modelled Age', $readonly_attr);
+
+$form->addHelper('In cubic cm', 'volume');
+$form->addInput('number', 'volume', '', 'Volume', $readonly_attr);
+
+$form->addHelper('The total number of exotic spikes per tablet added to each sample', 'total_spike');
+$form->addInput('number', 'total_spike', '', 'Total Spike', $readonly_attr);
 
 #######################
 # Clear/Save

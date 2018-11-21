@@ -67,6 +67,8 @@ CREATE TABLE IF NOT EXISTS samples (
   start_date DATE NOT NULL,
   depth DECIMAL(19,1),
   age INT (11),
+  volume DECIMAL(9,6),
+  total_spike INT (11),
   lycopodium INT (11) DEFAULT 0,
   charcoal INT (11) DEFAULT 0,
   last_edit DATE NOT NULL,
