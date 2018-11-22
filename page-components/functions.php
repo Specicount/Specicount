@@ -314,7 +314,6 @@ function sendForgotPasswordEmail ($actual_link) {
 
     global $messages;
 
-
     // Mail server to send email from
     $smtp_settings = array(
         'host' => 'smtp.gmail.com',
@@ -349,7 +348,7 @@ function sendForgotPasswordEmail ($actual_link) {
             );
             // The email data
             $email_config = array(
-                'sender_email' => 'anu.biodata@gmail.com',
+                'sender_email' => 'specicount@gmail.com',
                 'sender_name' => 'Specicount',
                 'recipient_email' => addslashes($user_data["email"]),
                 'subject' => 'Specicount Password Reset',
@@ -366,7 +365,7 @@ function sendForgotPasswordEmail ($actual_link) {
                 storeErrorMsg("Could not send email!");
             }
             if (stripos($sent_message, "error")) {
-                $messages['error'] = $sent_message;
+                $messages['error'][] = $sent_message;
             } else {
                 storeSuccessMsg("Email sent successfully!");
             }
