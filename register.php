@@ -24,7 +24,7 @@ class Register_Form extends Post_Form {
             $this->validator->email()->validate('email');
             $this->validator->hasUppercase()->hasLowercase()->hasNumber()->minLength(8)->validate('password');
             $this->validator->matches('password')->validate('password_conf');
-            $this->validator->recaptcha($_POST["captcha_code"], 'Recaptcha Error')->validate('g-recaptcha-response');
+            $this->validator->recaptcha("6Ley73EUAAAAAP0HYqdRqckHE3dHRcD3X7iwdtQF", 'Recaptcha Error')->validate('g-recaptcha-response');
         }
         return true;
     }
