@@ -269,65 +269,66 @@ class Page_Renderer {
      * Checks whether the Export Core Data button was pressed and outputs a CSV file
      */
     public function exportCoreData() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if (isset($_POST['export-core-btn'])) {
-                $project_id = $_GET['project_id'];
-                $core_id = $_POST['export-core-btn'];
-                header('Content-Type: application/csv');
-                header('Content-Disposition: attachment; filename="core_export_'.$project_id.'_'.$core_id.'.csv";');
+        $project_id = $_GET['project_id'];
+        $core_id = $_POST['export-core-btn'];
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="core_export_'.$project_id.'_'.$core_id.'.csv";');
 
-                $db = new Mysql();
-                $filter = array();
-                $filter['project_id'] = Mysql::sqlValue($_GET['project_id']);
-                $filter['core_id'] = Mysql::sqlValue($_POST['export-core-btn']);
-                $where_clause = Mysql::buildSQLWhereClause($filter);
-                $db->query("SELECT specimen_id FROM found_specimens ".$where_clause." GROUP BY specimen_id ORDER BY SUM(count) DESC");
-                $most_common_specimens = array_column($db->recordsArray(), 'specimen_id');
-                $initial_columns = ["sample ID", "depth cm", "age cal yrs BP", "volume cc", "total spike", "counted spike", "total pollen count"];
-                $columns = array_merge($initial_columns, $most_common_specimens);
+        $db = new Mysql();
+        $filter = array();
+        $filter['project_id'] = Mysql::sqlValue($_GET['project_id']);
+        $filter['core_id'] = Mysql::sqlValue($_POST['export-core-btn']);
+        $where_clause = Mysql::buildSQLWhereClause($filter);
+        $db->query("SELECT specimen_id FROM found_specimens ".$where_clause." GROUP BY specimen_id ORDER BY SUM(count) DESC");
+        $most_common_specimens = array_column($db->recordsArray(), 'specimen_id');
+        $initial_columns = ["sample ID", "depth cm", "age cal yrs BP", "volume cc", "total spike", "counted spike", "total pollen count"];
+        $columns = array_merge($initial_columns, $most_common_specimens);
 
 
-                $file = fopen('php://output', 'w');
-                fputcsv($file, $columns, ",");
+        $file = fopen('php://output', 'w');
+        fputcsv($file, $columns, ",");
 
-                $db->selectRows('samples', $filter);
-                $samples = $db->recordsArray();
-                foreach ($samples as $s) {
-                    $filter["sample_id"] = Mysql::sqlValue($s["sample_id"]);
-                    $where_clause = Mysql::buildSQLWhereClause($filter);
+        $db->selectRows('samples', $filter);
+        $samples = $db->recordsArray();
+        foreach ($samples as $s) {
+            $filter["sample_id"] = Mysql::sqlValue($s["sample_id"]);
+            $where_clause = Mysql::buildSQLWhereClause($filter);
 
-                    $total_specimen_count = $db->querySingleValue("SELECT SUM(count) FROM found_specimens ".$where_clause);
-                    $initial_column_values = [$s["sample_id"], $s["depth"], $s["age"], $s["volume"], $s["total_spike"], $s["lycopodium"], $total_specimen_count];
+            $total_specimen_count = $db->querySingleValue("SELECT SUM(count) FROM found_specimens ".$where_clause);
+            $initial_column_values = [$s["sample_id"], $s["depth"], $s["age"], $s["volume"], $s["total_spike"], $s["lycopodium"], $total_specimen_count];
 
-                    $db->selectRows("found_specimens", $filter, ["specimen_id","count"], "count", false);
-                    $specimen_counts = $db->recordsArray();
-                    $specimen_column_values = array(); // array_fill(0, count($most_common_specimens),0);
+            $db->selectRows("found_specimens", $filter, ["specimen_id","count"], "count", false);
+            $specimen_counts = $db->recordsArray();
+            $specimen_column_values = array(); // array_fill(0, count($most_common_specimens),0);
 
-                    for ($i=0; $i<count($most_common_specimens); $i++) {
-                        $specimen_id_column = $most_common_specimens[$i];
-                        $specimen_column_values[$i] = 0;
-                        foreach ($specimen_counts as $specimen_count) {
-                            if ($specimen_count["specimen_id"] == $specimen_id_column) {
-                                $specimen_column_values[$i] = $specimen_count["count"];
-                            }
-                        }
+            for ($i=0; $i<count($most_common_specimens); $i++) {
+                $specimen_id_column = $most_common_specimens[$i];
+                $specimen_column_values[$i] = 0;
+                foreach ($specimen_counts as $specimen_count) {
+                    if ($specimen_count["specimen_id"] == $specimen_id_column) {
+                        $specimen_column_values[$i] = $specimen_count["count"];
                     }
-
-                    $column_values = array_merge($initial_column_values, $specimen_column_values);
-                    fputcsv($file, $column_values, ',');
                 }
-
-                header("Refresh:0");
-                exit;
             }
+
+            $column_values = array_merge($initial_column_values, $specimen_column_values);
+            fputcsv($file, $column_values, ',');
         }
+
+        header("Refresh:0");
+        exit;
     }
 
     /**
      * Create the page for displaying
      */
     public function renderPage() {
-        $this->exportCoreData();
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (isset($_POST['export-core-btn'])) {
+                $this->exportCoreData();
+            }
+        }
+
         // Use the form's default page title if a page title hasn't been explicitly set
         if (empty($this->page_title)) {
             if (isset($this->form) && !is_array($this->form)) {
@@ -338,7 +339,6 @@ class Page_Renderer {
         }
 
         // If login button was pressed on login modal
-
         if (!isset($_SESSION['email'])) {
             if (isset($_POST['do-login'])) {
                 if (!$_POST['email']) {
