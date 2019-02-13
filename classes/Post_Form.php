@@ -48,13 +48,6 @@ abstract class Post_Form extends Form {
         $this->setRequiredAccessLevelsForPost();
         $this->registerPostActions();
 
-        // Debug purposes
-//        unset($_SESSION[$this->form_ID]);
-//        $_SESSION["email"] = "alex@niven.com";
-//        $_SESSION["email"] = "elliott.wagener@hotmail.com";
-//        $_SESSION["email"] = "matthew.knill@hotmail.com";
-//        print_r($_SESSION["email"]." is ".getAccessLevel());
-
         // FILL FORM
         // ------------------------------
         // If editing a form, then populate the fields with the current database values

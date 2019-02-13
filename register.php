@@ -13,6 +13,11 @@ require_once "page-components/functions.php";
 use classes\Post_Form;
 
 class Register_Form extends Post_Form {
+
+    protected function setFilterArray() {
+        $this->filter["email"] = Mysql::SQLValue($_SESSION["email"]);
+    }
+
     protected function setUpdateArray() {
         parent::setUpdateArray();
         // Create encrypted password
@@ -54,20 +59,20 @@ class Register_Form extends Post_Form {
     The Form
 ================================================== */
 
-//Form::clear("register");
+
 $form = new Register_Form("register","users", 'horizontal', 'novalidate', 'bs4');
+
 
 $form->setCols(3, 9);
 
 if (!isset($_GET["edit"])) {
+    unset($_SESSION[$form->getFormName()]);
     $form->addInput('email', 'email', '', 'Email', 'required, class=col-5');
 }
 $form->addInput('text', 'first_name', '', 'First Name', 'required, class=col-5');
 $form->addInput('text', 'last_name', '', 'Last Name', 'required, class=col-5');
 $form->addInput('text', 'institution', '', 'Your Institution/Company', "class=col-5");
 
-unset($_SESSION[$form->getFormName()]["password"]);
-unset($_SESSION[$form->getFormName()]["password_conf"]);
 if (!isset($_GET["edit"])) {
     $form->addHelper("Must contain atleast 1 number, 1 uppercase letter, 1 lowercase letter", "password");
     $form->addInput('password', 'password', '', 'Password', 'required, class=col-5,
