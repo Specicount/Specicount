@@ -2725,16 +2725,6 @@ class Form
                 $mail->Password   = $smtp_settings['password'];     // SMTP password
                 $mail->SMTPSecure = $smtp_settings['smtp_secure'];  // Enable TLS encryption, `ssl` also accepted
                 $mail->Port       = $smtp_settings['port'];         // TCP port to connect to
-
-                // IPC Solutions addition
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true,
-                    ),
-                );
-                // IPC Solutions end addition
             }
 
             if ($sender_name != '') {
